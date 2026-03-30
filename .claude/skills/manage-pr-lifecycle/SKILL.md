@@ -46,51 +46,72 @@ Usar a ferramenta MCP `list_pull_requests` para buscar PRs abertos para o branch
 
 **Não se aplica a tarefas exclusivamente de governança** (sem código, sem build, sem Docker).
 
-### Passo 0: Informar esteiras e tempo médio
+### Passo 0: Obter tempos históricos do pipeline
 
-1. Identificar todas as esteiras (workflows) que serão executadas pelo push/PR
-2. Consultar a página "Actions Performance Metrics" do repositório para cada esteira:
+1. Identificar o PR mais recente já concluído (merged ou com check runs completos)
+2. Usar a ferramenta MCP `pull_request_read` com `method: get_check_runs` no PR anterior para obter dados de timing históricos
+3. Passar o JSON dos check runs ao script `scripts/pipeline-timing.sh` para calcular tempos:
    ```bash
-   # URL: https://github.com/<owner>/<repo>/actions/workflows/<workflow-file>/performance
+   echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
    ```
-3. Informar ao usuário quais esteiras serão monitoradas e qual é o tempo médio total de conclusão
+4. Informar ao usuário quais esteiras serão monitoradas e qual é o tempo total histórico do pipeline
 
-### Passo 1: Calcular estratégia de polling por esteira
+### Passo 1: Calcular estratégia de polling
 
-| Tempo médio de conclusão | Estratégia de polling |
+Com base no tempo total do pipeline histórico obtido no Passo 0:
+
+| Tempo total histórico | Estratégia de polling |
 |---|---|
 | **≤ 30 segundos** | Consultar o status a cada **10 segundos** desde o início |
-| **> 30 segundos** | Aguardar **(tempo médio − 15 segundos)** antes da primeira verificação, depois consultar a cada **5 segundos** até a conclusão |
+| **> 30 segundos** | Aguardar **(tempo total − 15 segundos)** antes da primeira verificação, depois consultar a cada **5 segundos** até a conclusão |
 
-### Passo 2: Identificar a execução ativa
+### Passo 2: Acompanhar os check runs
 
-Usar a ferramenta MCP `list_workflow_runs` para identificar a execução mais recente do repositório.
+Usar a ferramenta MCP `pull_request_read` com `method: get_check_runs` no PR atual para consultar o status dos jobs.
 
-### Passo 3: Acompanhar os jobs
+- Aplicar o intervalo de espera conforme a estratégia calculada no Passo 1
+- Continuar até que todos os check runs tenham `status: completed`
 
-Usar a ferramenta MCP `get_workflow_run` para consultar o status dos jobs da execução identificada.
+### Passo 3: Exibir métricas de tempo
 
-- Aplicar o intervalo de espera conforme a estratégia calculada
-- Continuar até que todos os jobs tenham `status: completed`
+Quando todos os check runs estiverem completos, calcular e exibir as métricas:
+
+```bash
+echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
+```
 
 ### Passo 4: Avaliar resultado
 
 **Se todos os jobs passarem** (`conclusion: success`):
 - Verificar os logs no Datadog usando os filtros referentes ao pipeline (env: `ci`, service, timestamp)
 - Procurar por erros, exceções ou comportamentos anômalos
-- Se não houver erros: reportar o resultado final. Tarefa concluída.
+- Se não houver erros: reportar o resultado final com as métricas de tempo. Tarefa concluída.
 - Se houver erros: diagnosticar, corrigir, registrar em `bash-errors-log.md` e reiniciar o ciclo
 
 ### Passo 5: Tratar falhas
 
 **Se algum job falhar** (`conclusion: failure`):
-1. Obter os logs do job que falhou via ferramenta MCP `get_workflow_run_logs`
-2. Analisar os logs considerando **apenas registros de erro do horário de execução** — ignorar logs antigos
-3. Diagnosticar a causa raiz
-4. Corrigir o código, testes ou configuração
-5. Reiniciar o pipeline a partir do passo apropriado
-6. Registrar o erro em `bash-errors-log.md` se for novo
-7. Repetir o ciclo até todos os jobs passarem
+1. O campo `html_url` do check run fornece o link direto para os logs do job no GitHub
+2. Usar o Datadog MCP para buscar logs do pipeline (env: `ci`, timestamp da execução) como fonte complementar
+3. Analisar os logs considerando **apenas registros de erro do horário de execução** — ignorar logs antigos
+4. Diagnosticar a causa raiz
+5. Corrigir o código, testes ou configuração
+6. Reiniciar o pipeline a partir do passo apropriado
+7. Registrar o erro em `bash-errors-log.md` se for novo
+8. Repetir o ciclo até todos os jobs passarem
+
+---
+
+## Ferramentas MCP Utilizadas
+
+| Ferramenta | Método | Propósito |
+|---|---|---|
+| `list_pull_requests` | — | Buscar PRs abertos para o branch |
+| `create_pull_request` | — | Criar novo PR |
+| `update_pull_request` | — | Atualizar título e descrição do PR |
+| `pull_request_read` | `get_check_runs` | Obter status e timing dos jobs do CI |
+
+**Nota**: Os logs detalhados de jobs falhados não estão disponíveis via MCP. O campo `html_url` do check run direciona ao GitHub para inspeção visual. O Datadog MCP complementa com logs da aplicação (env: `ci`).
 
 ---
 
@@ -107,8 +128,10 @@ Quando a tarefa é análise de PR:
 ## Arquivos de Governança Relacionados
 
 - `.claude/rules/pr-metadata-governance.md` — política que este workflow implementa
+- `.claude/rules/execution-time-tracking.md` — política de rastreamento de tempo (métricas de pipeline)
 - `.claude/rules/bash-error-logging.md` — erros de CI devem ser registrados
 - `.github/pull_request_template.md` — template obrigatório de descrição do PR
+- `scripts/pipeline-timing.sh` — script de cálculo de métricas de tempo do pipeline
 
 ---
 
@@ -118,3 +141,4 @@ Quando a tarefa é análise de PR:
 |---|---|---|
 | 2026-03-21 | Criado: workflow extraído de pr-metadata-governance.md (separação rules/skills) | Auditoria de governança |
 | 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (usuário ClaudeCode-Bot) | Migração API → MCP |
+| 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
