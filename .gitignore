@@ -1,0 +1,7 @@
+bin/
+obj/
+*.user
+.vs/
+.env
+.claude/.pr-analysis-context
+.claude/.session-timer
