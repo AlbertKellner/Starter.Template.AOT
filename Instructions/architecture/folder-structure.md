@@ -17,6 +17,16 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 ├── open-questions.md                   # Dúvidas e ambiguidades abertas
 ├── assumptions-log.md                  # Premissas ativas
 │
+├── scripts/                            # Scripts operacionais e de configuração de ambiente
+│   ├── governance-audit.sh             # Auditoria automatizada de consistência de governança
+│   ├── pipeline-timing.sh             # Cálculo de métricas de tempo do pipeline CI
+│   ├── setup-env.sh                    # Modelo declarativo de configuração de ambiente
+│   ├── setup-dotnet.sh                 # Setup do .NET SDK (Linux)
+│   ├── setup-dotnet.ps1                # Setup do .NET SDK (Windows)
+│   ├── operational-runbook.md          # Portas, URLs, comandos, troubleshooting
+│   ├── required-vars.md               # Variáveis de ambiente e secrets requeridos
+│   └── container-setup.md             # Dependências de sistema e configuração do container
+│
 ├── wiki/                               # Arquivos-fonte da GitHub Wiki (fonte canônica)
 │   ├── Home.md                         # Ponto de entrada e sumário navegável
 │   ├── _Sidebar.md                     # Sidebar de navegação por agrupamento
@@ -49,6 +59,9 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── folder-governance.md
 │   │   ├── governance-policies.md       # Consolidação: normalização, contexto, propagação, ambiguidade, snippets
 │   │   ├── instruction-review.md        # Meta-regra: revisão obrigatória via REVIEW.md
+│   │   ├── execution-time-tracking.md   # Rastreamento de tempo efetivo de sessão e métricas de pipeline
+│   │   ├── governance-audit.md          # Auditoria automatizada de consistência de governança
+│   │   ├── governance-behavior-tracking.md # Rastreamento de comportamentos esperados
 │   │   ├── naming-governance.md
 │   │   ├── pr-metadata-governance.md
 │   │   └── source-of-truth-priority.md
@@ -59,9 +72,13 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── implement-request/
 │   │   ├── ingest-definition/
 │   │   ├── governance-behavior-tracking/ # Rastreamento de comportamentos esperados
+│   │   ├── manage-pr-lifecycle/         # Criação/atualização de PR e acompanhamento de CI
+│   │   ├── pr-analysis/                 # Análise de solicitações de mudança em PR existente
 │   │   ├── resolve-ambiguity/
 │   │   ├── review-alignment/
-│   │   └── review-instructions/         # Executa REVIEW.md
+│   │   ├── review-instructions/         # Executa REVIEW.md
+│   │   ├── validate-endpoints/          # Validação HTTP real de endpoints
+│   │   └── verify-environment/          # Verificação de pré-requisitos de ambiente
 │   │
 │   ├── hooks/                          # Scripts de enforcement
 │   │   ├── instruction-change-detector.sh
@@ -260,3 +277,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-21 | .claude/skills/governance-behavior-tracking/ adicionada à estrutura de governança | Instrução do usuário |
 | 2026-03-22 | wiki/ reorganizada: estrutura por agrupamentos (Governance-*, Domain-*, Feature-*, Claude-*); páginas Infra-* e estruturais antigas substituídas por páginas com prefixo de grupo | Instrução do usuário |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
+| 2026-03-30 | Completude: scripts/ adicionado à estrutura raiz; 3 rules faltantes adicionadas (execution-time-tracking, governance-audit, governance-behavior-tracking); 4 skills faltantes adicionadas (manage-pr-lifecycle, pr-analysis, validate-endpoints, verify-environment) | Auditoria de governança |
