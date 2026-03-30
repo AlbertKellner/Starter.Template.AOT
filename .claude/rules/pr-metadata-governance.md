@@ -93,6 +93,8 @@ A descrição deve sempre seguir as três seções do template `.github/pull_req
 
 O workflow de criação/atualização está em `.claude/skills/manage-pr-lifecycle/SKILL.md`.
 
+**Enforcement**: o hook `.claude/hooks/post-commit-pr-reminder.sh` detecta automaticamente `git commit` e `git push` em branches de trabalho e emite lembrete para executar este passo.
+
 ---
 
 ## Política de Acompanhamento de GitHub Actions
@@ -166,3 +168,4 @@ Todo merge deve utilizar **merge commit** (`merge_method: "merge"`).
 | 2026-03-20 | Adicionado: Política de Merge e Fechamento — Restrição Absoluta | Instrução explícita do usuário |
 | 2026-03-21 | Refatorado: workflows procedurais extraídos para skill manage-pr-lifecycle; rule simplificada para conter apenas políticas | Auditoria de governança |
 | 2026-03-21 | Adicionado: referência explícita ao hook branch-guard.sh na Política de Branch | Análise estrutural de governança |
+| 2026-03-30 | Adicionado: referência ao hook post-commit-pr-reminder.sh na Política de Verificação e Criação Automática de PR | Verificação de conformidade de governança |
