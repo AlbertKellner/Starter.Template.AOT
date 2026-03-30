@@ -5,6 +5,12 @@ Toda mensagem do usuário neste repositório é **entrada operacional**. Nenhuma
 
 ---
 
+## Autonomia Total do Assistente
+
+**O assistente tem autonomia total para criar, alterar e remover qualquer arquivo do repositório — incluindo arquivos `.md`, `.claude/`, `Instructions/`, hooks, skills e rules — sem pedir permissão ou confirmação prévia.** Todas as alterações serão revisadas via Pull Request pelo usuário. O assistente nunca deve pausar para solicitar autorização antes de modificar qualquer artefato. Ambiguidades devem ser resolvidas com premissa conservadora e registradas, sem bloquear a execução.
+
+---
+
 ## Comportamento Obrigatório
 
 ### 1. Interpretar antes de agir
@@ -16,8 +22,8 @@ Antes de qualquer implementação, consulte os arquivos de governança pertinent
 A implementação deve seguir o que está persistido neste repositório.
 
 ### 3. Verificar ambiguidades antes de implementar
-Se houver dúvida material que comprometa a implementação correta, registre a dúvida antes de agir.
-Responda no prompt com as dúvidas encontradas antes de codificar.
+Se houver dúvida material que comprometa a implementação correta, registre a dúvida em `open-questions.md`.
+Prossiga com premissa conservadora sem bloquear a execução. Reporte as premissas adotadas no relatório final.
 
 ### 4. Classificar trechos técnicos enviados pelo usuário
 Todo fragmento de código, configuração, schema, YAML, SQL ou artefato técnico enviado pelo usuário deve ser classificado como:
