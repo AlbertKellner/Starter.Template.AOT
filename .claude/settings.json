@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(*)",
+      "Read(**)",
+      "Write(**)",
+      "Edit(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "mcp__github__*",
+      "WebFetch(*)",
+      "WebSearch(*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(docker system prune --all)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/instruction-change-detector.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\" || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/branch-guard.sh || true"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-timer.sh || true"
+          }
+        ]
+      }
+    ]
+  }
+}
