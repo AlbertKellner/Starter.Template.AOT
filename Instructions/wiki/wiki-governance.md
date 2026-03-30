@@ -229,6 +229,18 @@ Toda menção a conceito, componente, endpoint ou assunto que possua página pr�
   - Só cria commit se houver mudanças efetivas
 - Para forçar uma publicação sem alterar arquivos de wiki, usar o gatilho manual (`workflow_dispatch`) do workflow `Publicar Wiki` na aba Actions do GitHub
 
+### Pré-requisito: Inicialização da Wiki
+
+A GitHub Wiki de um repositório **precisa ser inicializada manualmente** antes que o workflow de publicação automática funcione. Sem inicialização, o `git clone` do repositório wiki (`<repo>.wiki.git`) falha silenciosamente no workflow.
+
+**Procedimento de inicialização (uma única vez por repositório):**
+1. Acessar o repositório no GitHub → aba **Wiki**
+2. Clicar em **Create the first page**
+3. Salvar a página com qualquer conteúdo (será sobrescrita pelo workflow)
+4. Disparar manualmente o workflow `Publicar Wiki` via aba **Actions** → `workflow_dispatch`, ou aguardar o próximo push para `main` com alterações em `wiki/`
+
+**Verificação:** Após o workflow executar com sucesso, as páginas da pasta `wiki/` devem estar visíveis na aba Wiki do repositório no GitHub.
+
 ---
 
 ## Idioma
@@ -258,3 +270,4 @@ Toda a documentação da Wiki deve ser escrita em **português brasileiro**.
 | 2026-03-21 | Esclarecido: nomenclatura de páginas wiki distingue Feature, Infra e páginas estruturais | Análise estrutural de governança |
 | 2026-03-21 | Adicionado: referência cruzada para checks de auditoria automatizada | Análise de capacidade de auto-diagnóstico |
 | 2026-03-22 | Reorganizado: estrutura por agrupamentos (Governança, Domínio e Negócio, Claude, Não categorizado); padrão mínimo de página com descrição resumida obrigatória; nomenclatura por prefixo de grupo; páginas de Infra migradas para Governança; seção Claude adicionada | Instrução do usuário |
+| 2026-03-30 | Adicionado: pré-requisito de inicialização manual da Wiki no GitHub antes da publicação automática | Verificação de conformidade de governança |
