@@ -36,9 +36,9 @@ public class DatadogAgentHealthCheck : IHealthCheck
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[DatadogAgentHealthCheck][CheckHealthAsync] Retornar Unhealthy — Datadog Agent indisponível");
+            _logger.LogWarning(ex, "[DatadogAgentHealthCheck][CheckHealthAsync] Retornar Degraded — Datadog Agent indisponível");
 
-            return HealthCheckResult.Unhealthy("Datadog Agent indisponível", ex);
+            return HealthCheckResult.Degraded("Datadog Agent indisponível", ex);
         }
     }
 }
