@@ -66,6 +66,9 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   ├── hooks/                          # Scripts de enforcement
 │   │   ├── instruction-change-detector.sh
 │   │   ├── pre-commit-gate.sh
+│   │   ├── branch-guard.sh
+│   │   ├── session-timer.sh
+│   │   ├── post-commit-pr-reminder.sh
 │   │   └── README.md
 │
 └── Instructions/

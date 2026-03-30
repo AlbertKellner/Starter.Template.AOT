@@ -49,6 +49,15 @@ Hooks são scripts shell que executam automaticamente em resposta a eventos de u
 | **Comportamento** | Exibe o tempo efetivo acumulado após cada chamada Bash, permitindo ao assistente e ao usuário acompanhar a duração do trabalho. Utiliza o arquivo de estado `.claude/.session-timer` |
 | **Cálculo** | Contabiliza apenas tempo em que o assistente está ativamente processando; períodos de espera por resposta do usuário são excluídos |
 
+### post-commit-pr-reminder.sh
+
+| Campo | Valor |
+|---|---|
+| **Gatilho** | PostToolUse em Bash |
+| **Propósito** | Lembra o assistente de executar o passo 10 do pipeline (criar/atualizar PR) após `git commit` ou `git push` |
+| **Comportamento** | Detecta comandos `git commit` ou `git push` em branches de trabalho (não main/master). Ignora contexto de pr-analysis (PR já existe). Emite lembrete informativo com o nome do branch atual |
+| **Proteção** | Previne omissão silenciosa do passo 10, que se aplica a todos os escopos de tarefa (código e governança) |
+
 ### pre-commit-gate.sh
 
 | Campo | Valor |
