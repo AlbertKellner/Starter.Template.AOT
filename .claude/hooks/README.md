@@ -13,7 +13,7 @@ Esta pasta contém os hooks de enforcement do Claude Code para este repositório
 | `instruction-change-detector.sh` | PostToolUse | Write\|Edit | Detecta mudanças em arquivos de governança e emite lembrete de revisão via REVIEW.md. A auditoria (`scripts/governance-audit.sh`) é executada no passo 0.1 do pipeline pré-commit, não por este hook. |
 | `pre-commit-gate.sh` | Manual | — | Gate de validação: dotnet build + dotnet test antes de commit; paths resolvidos dinamicamente |
 | `branch-guard.sh` | PostToolUse | Bash | Detecta operações de branch incorretas durante pr-analysis; emite alerta se o branch não for o head.ref esperado |
-| `session-timer.sh` | PostToolUse | Bash | Exibe tempo efetivo acumulado da sessão após cada chamada Bash; informativo, nunca bloqueante |
+| `session-timer.sh` | PostToolUse | Bash | Auto-inicializa e rastreia tempo efetivo da sessão; cria `.claude/.session-timer` na primeira invocação; detecta segmentos de trabalho; exibe tempo acumulado periodicamente; informativo, nunca bloqueante |
 | `post-commit-pr-reminder.sh` | PostToolUse | Bash | Detecta `git commit`/`git push` e emite lembrete para executar passo 10 (criar/atualizar PR); informativo, nunca bloqueante |
 
 ---
@@ -29,7 +29,7 @@ Os hooks são configurados em `.claude/settings.json` na seção `hooks`. Os hoo
 - `instruction-change-detector.sh` → ativa `.claude/rules/instruction-review.md` → emite lembrete para executar `REVIEW.md`; a auditoria é executada no passo 0.1 do pipeline pré-commit
 - `pre-commit-gate.sh` → implementa parte do pipeline de validação pré-commit definido em `CLAUDE.md`
 - `branch-guard.sh` → protege o branch correto durante pr-analysis; usa `.claude/.pr-analysis-context` como contexto; arquivo criado pela skill pr-analysis
-- `session-timer.sh` → implementa `.claude/rules/execution-time-tracking.md` → exibe tempo efetivo acumulado; usa `.claude/.session-timer` como estado
+- `session-timer.sh` → implementa `.claude/rules/execution-time-tracking.md` → auto-inicializa, rastreia e exibe tempo efetivo acumulado; usa `.claude/.session-timer` como estado
 - `post-commit-pr-reminder.sh` → implementa enforcement do passo 10 de `.claude/rules/pr-metadata-governance.md` → lembra criação de PR após commit/push
 
 ---
