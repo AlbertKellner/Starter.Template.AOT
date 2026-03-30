@@ -45,8 +45,8 @@ Hooks são scripts shell que executam automaticamente em resposta a eventos de u
 | Campo | Valor |
 |---|---|
 | **Gatilho** | PostToolUse em Bash |
-| **Propósito** | Rastreia o tempo de execução efetivo da sessão |
-| **Comportamento** | Exibe o tempo efetivo acumulado após cada chamada Bash, permitindo ao assistente e ao usuário acompanhar a duração do trabalho. Utiliza o arquivo de estado `.claude/.session-timer` |
+| **Propósito** | Auto-inicializa, rastreia e exibe tempo de execução efetivo da sessão |
+| **Comportamento** | Na primeira invocação, cria automaticamente o arquivo de estado `.claude/.session-timer` e exibe `[Sessão iniciada: HH:MM:SS]`. Nas invocações seguintes, acumula tempo efetivo e exibe periodicamente `[Tempo efetivo: MM:SS]`. Reseta sessões com mais de 4 horas (encerramento anormal). Detecta novo segmento de trabalho quando o gap entre invocações é maior que 120 segundos |
 | **Cálculo** | Contabiliza apenas tempo em que o assistente está ativamente processando; períodos de espera por resposta do usuário são excluídos |
 
 ### post-commit-pr-reminder.sh

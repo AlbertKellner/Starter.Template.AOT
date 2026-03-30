@@ -15,53 +15,78 @@ Esta rule define a política de rastreamento e reporte de tempo de execução ef
 
 ## Políticas
 
-### Inicialização
+### Tempo Efetivo de Sessão
 
-No início de cada sessão (primeiro processamento de mensagem do usuário), o assistente deve:
-1. Executar `date +%s%3N` para obter o timestamp atual em milissegundos
-2. Criar o arquivo `.claude/.session-timer` com os valores iniciais
-3. Emitir uma linha informativa: `[Sessão iniciada: HH:MM:SS]`
+O rastreamento de tempo efetivo é **auto-gerenciado pelo hook `session-timer.sh`**, que é acionado automaticamente após cada chamada Bash (PostToolUse). O assistente não precisa criar nem atualizar o arquivo de estado manualmente.
 
-Se o arquivo `.claude/.session-timer` já existir com idade superior a 4 horas, considerar como sessão anterior encerrada de forma anormal — resetar o arquivo.
+#### Inicialização automática
 
-### Segmentos de Trabalho
+O hook `session-timer.sh` auto-inicializa o arquivo `.claude/.session-timer` na primeira invocação:
+- Se o arquivo não existe → cria com valores iniciais e exibe `[Sessão iniciada: HH:MM:SS]`
+- Se o arquivo existe mas tem mais de 4 horas → reseta (sessão anterior encerrada anormalmente)
+- Se o arquivo existe e é válido → continua a sessão
 
-Cada mensagem do usuário processada constitui um **segmento de trabalho**:
-- **Início do segmento**: registrar timestamp ao começar a processar a mensagem
-- **Fim do segmento**: registrar timestamp e acumular a duração em `SEGMENTS_TOTAL_MS` ao concluir o processamento
-- O tempo entre segmentos (período em que o assistente está inativo, aguardando o usuário) **não é contabilizado**
+#### Segmentos de Trabalho
 
-### Reporte Periódico
+A detecção de segmentos é automática, baseada no intervalo entre invocações:
+- **Gap > 120 segundos** entre invocações → novo segmento (assistente estava inativo aguardando o usuário)
+- **Gap ≤ 120 segundos** → continuação do mesmo segmento; tempo acumulado
+- O tempo de inatividade (gap entre segmentos) **não é contabilizado**
 
-A cada ~60 segundos de tempo efetivo acumulado (verificado após cada chamada de ferramenta), o assistente deve emitir uma linha de status:
+#### Reporte Periódico
+
+A cada ~60 segundos de tempo efetivo acumulado, o hook exibe automaticamente:
 
 ```
 [Tempo efetivo: MM:SS]
 ```
 
-O reporte ocorre em pontos de interrupção naturais (entre chamadas de ferramenta), não em intervalos de relógio. O hook `session-timer.sh` exibe o tempo acumulado após cada chamada Bash, tornando o tempo visível para o assistente decidir quando reportar.
+#### Reporte Final
 
-### Reporte Final
-
-Ao concluir a sessão ou a última tarefa, o assistente deve emitir um resumo:
+Ao concluir a sessão ou a última tarefa, o assistente deve emitir um resumo baseado nos dados do arquivo de estado:
 
 ```
 [Tempo total efetivo da sessão: HH:MM:SS (N segmentos de trabalho)]
 ```
 
-### Arquivo de Estado
+#### Arquivo de Estado
 
 | Campo | Descrição |
 |---|---|
 | `SESSION_START` | Epoch em milissegundos do início da sessão |
 | `SEGMENTS_TOTAL_MS` | Tempo efetivo acumulado em milissegundos |
 | `LAST_SEGMENT_START` | Epoch em milissegundos do início do segmento atual |
+| `LAST_INVOCATION` | Epoch em milissegundos da última invocação do hook |
 | `LAST_REPORT_AT_MS` | Valor de `SEGMENTS_TOTAL_MS` no momento do último reporte periódico |
 | `SEGMENT_COUNT` | Número de segmentos de trabalho processados |
 
 - **Localização**: `.claude/.session-timer`
 - **Formato**: pares `CHAVE=VALOR` (compatível com `source` do bash)
-- **Ciclo de vida**: criado no início da sessão, transiente — não versionado (adicionado ao `.gitignore`)
+- **Ciclo de vida**: criado automaticamente pelo hook na primeira invocação, transiente — não versionado (adicionado ao `.gitignore`)
+
+### Métricas de Tempo do Pipeline CI
+
+O tempo de execução do pipeline de CI/CD é rastreado via check runs do GitHub Actions, disponíveis pela ferramenta MCP `pull_request_read` com método `get_check_runs`.
+
+#### Fonte de dados
+
+Cada check run retorna `started_at` e `completed_at`, permitindo calcular:
+- Duração individual de cada job
+- Tempo total do pipeline (wall clock: primeiro `started_at` até último `completed_at`)
+- Ganho de paralelismo (soma dos jobs vs. wall clock)
+
+#### Cálculo
+
+O script `scripts/pipeline-timing.sh` recebe o JSON dos check runs via stdin e exibe tabela formatada:
+
+```bash
+echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
+```
+
+#### Quando reportar
+
+- **Após conclusão do CI (passo 11)**: exibir métricas de tempo do pipeline como parte do relatório final
+- **Para estimar tempo de espera**: consultar check runs do PR anterior para obter tempos históricos e calcular estratégia de polling
 
 ---
 
@@ -69,6 +94,7 @@ Ao concluir a sessão ou a última tarefa, o assistente deve emitir um resumo:
 
 - `environment-readiness.md` — a inicialização do timer faz parte da preparação do ambiente de sessão
 - `governance-policies.md` — eficiência de execução (§2) complementada por visibilidade de tempo
+- `pr-metadata-governance.md` — métricas de pipeline são reportadas no encerramento da tarefa (passo 11)
 
 ---
 
@@ -77,3 +103,4 @@ Ao concluir a sessão ou a última tarefa, o assistente deve emitir um resumo:
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-21 | Criado: regra de rastreamento de tempo de execução efetivo | Instrução do usuário |
+| 2026-03-30 | Corrigido: inicialização auto-gerenciada pelo hook (não depende mais do assistente); adicionadas métricas de pipeline CI via check runs + `pipeline-timing.sh` | Correção de implementação |
