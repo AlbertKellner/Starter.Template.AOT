@@ -140,6 +140,23 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 
 ---
 
+## Inicialização da GitHub Wiki
+
+A GitHub Wiki precisa ser inicializada manualmente **uma única vez** antes que a publicação automática via `wiki-publish.yml` funcione. Sem esta etapa, o workflow falha ao tentar clonar o repositório wiki.
+
+### Procedimento
+
+1. Acessar o repositório no GitHub → aba **Wiki**
+2. Clicar em **Create the first page**
+3. Salvar a página com qualquer conteúdo (será sobrescrita pelo workflow)
+4. Ir para aba **Actions** → workflow **Publicar Wiki** → **Run workflow** (`workflow_dispatch`)
+5. Verificar que o workflow concluiu com sucesso
+6. Confirmar na aba Wiki que as 20 páginas de `wiki/` estão publicadas
+
+> **Referência**: `Instructions/wiki/wiki-governance.md` — governança completa da Wiki
+
+---
+
 ## Referências Cruzadas
 
 - `scripts/required-vars.md` — detalhes de cada secret e variável de ambiente, ciclo de vida de credenciais
@@ -157,3 +174,4 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-19 | Criado: runbook operacional unificado com portas, URLs, comandos, troubleshooting e dependências externas | Instrução do usuário |
+| 2026-03-30 | Adicionado: seção de inicialização da GitHub Wiki com procedimento passo-a-passo | Verificação de conformidade de governança |
