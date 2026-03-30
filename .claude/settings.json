@@ -8,7 +8,11 @@
       "Edit(**)",
       "Glob(**)",
       "Grep(**)",
+      "NotebookEdit(*)",
+      "TodoWrite(*)",
+      "Agent(*)",
       "mcp__github__*",
+      "mcp__*",
       "WebFetch(*)",
       "WebSearch(*)"
     ],
