@@ -1005,9 +1005,11 @@ BUSINESS_RULES="$REPO_ROOT/Instructions/business/business-rules.md"
 
 if [ -f "$BUSINESS_RULES" ] && [ -d "$BDD_DIR" ]; then
   # Contar RNs ativas (excluindo removidas/depreciadas)
-  ACTIVE_RN_COUNT=$(grep -cP '^### RN-\d+ —' "$BUSINESS_RULES" 2>/dev/null || echo "0")
+  ACTIVE_RN_COUNT=$(grep -cP '^### RN-\d+ —' "$BUSINESS_RULES" 2>/dev/null || true)
+  ACTIVE_RN_COUNT=${ACTIVE_RN_COUNT:-0}
   # Contar RNs com "BDD relacionado: Nenhum"
-  NO_BDD_COUNT=$(grep -cP 'BDD relacionado.*Nenhum' "$BUSINESS_RULES" 2>/dev/null || echo "0")
+  NO_BDD_COUNT=$(grep -cP 'BDD relacionado.*Nenhum' "$BUSINESS_RULES" 2>/dev/null || true)
+  NO_BDD_COUNT=${NO_BDD_COUNT:-0}
   # Contar arquivos .feature reais (excluindo example.feature)
   REAL_FEATURE_COUNT=$(find "$BDD_DIR" -name "*.feature" -type f ! -name "example.feature" 2>/dev/null | wc -l)
 
@@ -1129,9 +1131,11 @@ echo "--- 32. Consistência interna audit script ↔ rule ---"
 AUDIT_RULE="$REPO_ROOT/.claude/rules/governance-audit.md"
 if [ -f "$AUDIT_RULE" ]; then
   # Contar checks no script (linhas "echo \"--- N.")
-  SCRIPT_CHECK_COUNT=$(grep -cP '^echo "--- \d+\.' "$0" 2>/dev/null || echo "0")
+  SCRIPT_CHECK_COUNT=$(grep -cP '^echo "--- \d+\.' "$0" 2>/dev/null || true)
+  SCRIPT_CHECK_COUNT=${SCRIPT_CHECK_COUNT:-0}
   # Contar checks documentados na rule (linhas "| N |")
-  RULE_CHECK_COUNT=$(grep -cP '^\| \d+ \|' "$AUDIT_RULE" 2>/dev/null || echo "0")
+  RULE_CHECK_COUNT=$(grep -cP '^\| \d+ \|' "$AUDIT_RULE" 2>/dev/null || true)
+  RULE_CHECK_COUNT=${RULE_CHECK_COUNT:-0}
 
   # Verificação expandida: correspondência individual de IDs (não apenas contagem)
   SCRIPT_IDS=$(grep -oP '(?<=^echo "--- )\d+' "$0" 2>/dev/null | sort -n)
@@ -1171,7 +1175,8 @@ while IFS= read -r rule_file; do
   TOTAL_RULES=$((TOTAL_RULES + 1))
   refs=$(sed -n '/## Relação com Outras Rules/,/^##/p' "$rule_file" 2>/dev/null \
     | grep -oP '[a-z][-a-z]*\.md' 2>/dev/null | sed 's/\.md$//' | sort -u)
-  ref_count=$(echo "$refs" | grep -c '[a-z]' 2>/dev/null || echo "0")
+  ref_count=$(echo "$refs" | grep -c '[a-z]' 2>/dev/null || true)
+  ref_count=${ref_count:-0}
   TOTAL_EDGES=$((TOTAL_EDGES + ref_count))
   RULE_REFS["$rule_name"]="$refs"
   # Rules sem referência a nenhuma outra rule são potenciais órfãs
