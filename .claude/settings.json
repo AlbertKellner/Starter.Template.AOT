@@ -38,6 +38,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/session-timer.sh || true"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-commit-pr-reminder.sh || true"
           }
         ]
       }
