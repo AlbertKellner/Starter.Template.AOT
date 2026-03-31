@@ -82,6 +82,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │
 │   ├── hooks/                          # Scripts de enforcement
 │   │   ├── instruction-change-detector.sh
+│   │   ├── infra-config-propagation.sh    # Detecta alterações em arquivos de infra e emite lembrete de propagação para governança
 │   │   ├── pre-commit-gate.sh
 │   │   ├── branch-guard.sh
 │   │   ├── session-timer.sh
@@ -278,3 +279,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-22 | wiki/ reorganizada: estrutura por agrupamentos (Governance-*, Domain-*, Feature-*, Claude-*); páginas Infra-* e estruturais antigas substituídas por páginas com prefixo de grupo | Instrução do usuário |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
 | 2026-03-30 | Completude: scripts/ adicionado à estrutura raiz; 3 rules faltantes adicionadas (execution-time-tracking, governance-audit, governance-behavior-tracking); 4 skills faltantes adicionadas (manage-pr-lifecycle, pr-analysis, validate-endpoints, verify-environment) | Auditoria de governança |
+| 2026-03-31 | Hook `infra-config-propagation.sh` adicionado à estrutura de hooks | Prevenção de divergência infra↔governança |
