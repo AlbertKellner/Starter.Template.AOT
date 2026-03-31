@@ -196,16 +196,16 @@ check_dotnet() {
 }
 
 # =============================================================================
-# 6. Verificar GH_CLAUDE_CODE_MCP_CODIFICADOR (GitHub MCP)
+# 6. Verificar GH_CLAUDE_CODE_MCP (GitHub MCP)
 # =============================================================================
 check_gh_token_mcp() {
   local gh_token_mcp
-  gh_token_mcp="$(printenv GH_CLAUDE_CODE_MCP_CODIFICADOR 2>/dev/null || true)"
+  gh_token_mcp="$(printenv GH_CLAUDE_CODE_MCP 2>/dev/null || true)"
 
   if [ -n "$gh_token_mcp" ]; then
-    print_item "OK" "GH_CLAUDE_CODE_MCP_CODIFICADOR" "presente no ambiente"
+    print_item "OK" "GH_CLAUDE_CODE_MCP" "presente no ambiente"
   else
-    print_item "WARN" "GH_CLAUDE_CODE_MCP_CODIFICADOR" "ausente — servidor MCP do GitHub não funcionará (ver scripts/required-vars.md)"
+    print_item "WARN" "GH_CLAUDE_CODE_MCP" "ausente — servidor MCP do GitHub não funcionará (ver scripts/required-vars.md)"
   fi
 }
 

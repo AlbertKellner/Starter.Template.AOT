@@ -120,7 +120,7 @@ Recursos externos disponíveis para o assistente durante o desenvolvimento, conf
 | Recurso | Tipo | Configuração | Variáveis Requeridas | Capacidade |
 |---|---|---|---|---|
 | Datadog MCP | MCP Server (HTTP) | `.mcp.json` → `datadog` | `DD_API_KEY`, `DD_APP_KEY` | Acesso a logs de todos os ambientes (local, CI, produção) via ferramentas MCP do Datadog |
-| GitHub MCP | MCP Server (HTTP) | `.mcp.json` → `github` | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; manipulação de issues e releases via ferramentas MCP do GitHub (usuário ClaudeCode-Bot, nome de exibição: Codificador - Claude Agent) |
+| GitHub MCP | MCP Server (HTTP) | `.mcp.json` → `github` | `GH_CLAUDE_CODE_MCP` | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; manipulação de issues e releases via ferramentas MCP do GitHub (usuário ClaudeCode-Bot) |
 
 ### Como Novos Recursos São Registrados
 
