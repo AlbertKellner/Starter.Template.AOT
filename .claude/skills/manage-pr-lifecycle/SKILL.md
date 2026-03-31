@@ -14,7 +14,7 @@ Esta skill é ativada pelos passos 10 e 11 do pipeline de validação pré-commi
 
 ## Workflow — Verificação e Criação/Atualização de PR (Passo 10)
 
-Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot via `GH_CLAUDE_CODE_MCP`.
+Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot (nome de exibição: Codificador - Claude Agent) via `GH_CLAUDE_CODE_MCP_CODIFICADOR`.
 
 ### Passo 1: Verificar PR existente
 
@@ -142,3 +142,4 @@ Quando a tarefa é análise de PR:
 | 2026-03-21 | Criado: workflow extraído de pr-metadata-governance.md (separação rules/skills) | Auditoria de governança |
 | 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (usuário ClaudeCode-Bot) | Migração API → MCP |
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
+| 2026-03-31 | Migração: secret GH_CLAUDE_CODE_MCP renomeada para GH_CLAUDE_CODE_MCP_CODIFICADOR; nome de exibição da conta atualizado para Codificador - Claude Agent | Instrução do usuário |
