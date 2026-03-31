@@ -18,6 +18,7 @@
 #   4. Certificado CA do proxy disponível
 #   5. GitHub CLI (gh) instalado
 #   6. DD_APP_KEY disponível no ambiente (Datadog MCP)
+#   7. Git configurado como ClaudeCode-Bot (user.name, user.email, remote URL com token)
 #
 # Ver: scripts/required-vars.md   — variáveis e secrets a cadastrar na ferramenta externa
 #      scripts/container-setup.md — dependências de sistema do container
@@ -224,6 +225,24 @@ check_dd_app_key() {
 }
 
 # =============================================================================
+# 8. Configurar Git para usar ClaudeCode-Bot
+# =============================================================================
+setup_git_user() {
+  git config --local user.name "Codificador - Claude Agent"
+  git config --local user.email "269983391+ClaudeCode-Bot@users.noreply.github.com"
+
+  local gh_token_mcp
+  gh_token_mcp="$(printenv GH_CLAUDE_CODE_MCP_CODIFICADOR 2>/dev/null || true)"
+
+  if [ -n "$gh_token_mcp" ]; then
+    git remote set-url origin "https://ClaudeCode-Bot:${gh_token_mcp}@github.com/AlbertKellner/Starter.Template.AOT.git"
+    print_item "PREP" "Git user" "configurado como ClaudeCode-Bot com token para push"
+  else
+    print_item "WARN" "Git user" "nome configurado mas GH_CLAUDE_CODE_MCP_CODIFICADOR ausente — push usará credenciais padrão"
+  fi
+}
+
+# =============================================================================
 # Execução principal
 # =============================================================================
 main() {
@@ -241,6 +260,7 @@ main() {
   check_dotnet
   check_gh_token_mcp
   check_dd_app_key
+  setup_git_user
 
   print_summary
 
