@@ -114,7 +114,7 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 |---|---|---|---|---|
 | Datadog | `app.datadoghq.com` | API Key | `DD_API_KEY` no ambiente/`.env` | `/health` retorna `Degraded` ou `Unhealthy`; logs não fluem ao Datadog |
 | Datadog MCP | `mcp.datadoghq.com` | API Key + App Key | `DD_API_KEY` + `DD_APP_KEY` no ambiente | Ferramentas MCP do Datadog ficam indisponíveis para o assistente |
-| GitHub MCP | Local (stdio via `@modelcontextprotocol/server-github`) | PAT classic (`repo` scope) | `GH_CLAUDE_CODE_MCP_CODIFICADOR` no ambiente | Ferramentas MCP do GitHub ficam indisponíveis para o assistente (criação/atualização de PRs, monitoramento de Actions) |
+| GitHub MCP | `api.githubcopilot.com` | Bearer Token (PAT) | `GH_CLAUDE_CODE_MCP` no ambiente | Ferramentas MCP do GitHub ficam indisponíveis para o assistente (criação/atualização de PRs, monitoramento de Actions) |
 
 ---
 
@@ -175,4 +175,3 @@ A GitHub Wiki precisa ser inicializada manualmente **uma única vez** antes que 
 |---|---|---|
 | 2026-03-19 | Criado: runbook operacional unificado com portas, URLs, comandos, troubleshooting e dependências externas | Instrução do usuário |
 | 2026-03-30 | Adicionado: seção de inicialização da GitHub Wiki com procedimento passo-a-passo | Verificação de conformidade de governança |
-| 2026-03-31 | GitHub MCP atualizado: URL base alterada de `api.githubcopilot.com` (HTTP) para local stdio (`@modelcontextprotocol/server-github`); tipo de autenticação atualizado para PAT classic com scope `repo` | Correção de autenticação MCP |
