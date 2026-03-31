@@ -29,10 +29,6 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/instruction-change-detector.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\" || true"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/infra-config-propagation.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\" || true"
           }
         ]
       },
