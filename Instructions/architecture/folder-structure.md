@@ -73,6 +73,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── ingest-definition/
 │   │   ├── governance-behavior-tracking/ # Rastreamento de comportamentos esperados
 │   │   ├── manage-pr-lifecycle/         # Criação/atualização de PR e acompanhamento de CI
+│   │   ├── auto-pr-review/              # Revisão automática de PR com ciclo Revisor↔Codificador
 │   │   ├── pr-analysis/                 # Análise de solicitações de mudança em PR existente
 │   │   ├── resolve-ambiguity/
 │   │   ├── review-alignment/

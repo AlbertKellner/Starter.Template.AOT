@@ -12,6 +12,7 @@
       "TodoWrite(*)",
       "Agent(*)",
       "mcp__github__*",
+      "mcp__github-revisor__*",
       "mcp__*",
       "WebFetch(*)",
       "WebSearch(*)"
