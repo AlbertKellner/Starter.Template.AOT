@@ -14,7 +14,7 @@ Esta skill é ativada pelos passos 10 e 11 do pipeline de validação pré-commi
 
 ## Workflow — Verificação e Criação/Atualização de PR (Passo 10)
 
-Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot via `GH_CLAUDE_CODE_MCP`.
+Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot (nome de exibição: Codificador - Claude Agent) via `GH_CLAUDE_CODE_MCP_CODIFICADOR`.
 
 ### Passo 1: Verificar PR existente
 
@@ -24,7 +24,7 @@ Usar a ferramenta MCP `list_pull_requests` para buscar PRs abertos para o branch
 
 - Usar a ferramenta MCP `create_pull_request` para criar o PR
 - Seguir o formato obrigatório de título (Semantic Commit) definido em `pr-metadata-governance.md`
-- Preencher a descrição com as três seções obrigatórias (Motivos, Plano, Realizado)
+- Preencher a descrição com as três seções obrigatórias (Motivos, Plano, Realizado) e o Checklist do template `.github/pull_request_template.md`
 - Reportar a URL do PR criado no relatório final
 
 ### Passo 2b: Se já existir PR aberto
@@ -39,6 +39,10 @@ Usar a ferramenta MCP `list_pull_requests` para buscar PRs abertos para o branch
 - O assistente **não deve perguntar** ao usuário se deve criar o PR — a criação é automática quando não existe PR aberto
 - O push para o branch remoto deve ocorrer **antes** da verificação/criação do PR
 - Se o push falhar, o PR não deve ser criado — registrar o erro e reportar
+
+### Restrição técnica: formatação do body no MCP
+
+O parâmetro `body` das ferramentas MCP `create_pull_request` e `update_pull_request` **deve conter newlines reais** (quebras de linha literais), não sequências de escape `\n`. Sequências `\n` são renderizadas como texto literal no GitHub, quebrando toda a formatação Markdown. O body deve ser passado como string multilinha com quebras de linha reais no JSON do parâmetro.
 
 ---
 
@@ -142,3 +146,5 @@ Quando a tarefa é análise de PR:
 | 2026-03-21 | Criado: workflow extraído de pr-metadata-governance.md (separação rules/skills) | Auditoria de governança |
 | 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (usuário ClaudeCode-Bot) | Migração API → MCP |
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
+| 2026-03-31 | Migração: secret GH_CLAUDE_CODE_MCP renomeada para GH_CLAUDE_CODE_MCP_CODIFICADOR; nome de exibição da conta atualizado para Codificador - Claude Agent | Instrução do usuário |
+| 2026-03-31 | Adicionado: restrição técnica de formatação do body no MCP (newlines reais obrigatórias); referência ao template de PR no passo 2a | Correção de causa-raiz |
