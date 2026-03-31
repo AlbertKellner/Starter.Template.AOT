@@ -1316,6 +1316,81 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# Check #37: .mcp.json server types match technical-overview.md
+# ---------------------------------------------------------------------------
+echo ""
+echo "--- 37. Consistência tipo MCP .mcp.json ↔ technical-overview.md ---"
+
+MCP_JSON="$REPO_ROOT/.mcp.json"
+if [ -f "$MCP_JSON" ] && [ -f "$TECH_OVERVIEW" ]; then
+  MCP_MISMATCH=""
+  # Extract server names and types from .mcp.json
+  while IFS= read -r server_name; do
+    server_name_clean=$(echo "$server_name" | tr -d ' "')
+    # Get the type for this server from .mcp.json
+    mcp_type=$(python3 -c "
+import json, sys
+with open('$MCP_JSON') as f:
+    data = json.load(f)
+servers = data.get('mcpServers', {})
+if '$server_name_clean' in servers:
+    print(servers['$server_name_clean'].get('type', 'unknown'))
+" 2>/dev/null || echo "unknown")
+    # Check if technical-overview.md mentions this server with matching type
+    if grep -qi "$server_name_clean.*MCP" "$TECH_OVERVIEW" 2>/dev/null; then
+      if [ "$mcp_type" = "stdio" ] && ! grep -qi "$server_name_clean.*stdio" "$TECH_OVERVIEW" 2>/dev/null; then
+        MCP_MISMATCH="$MCP_MISMATCH $server_name_clean(config=stdio,docs≠stdio)"
+      elif [ "$mcp_type" = "http" ] && ! grep -qi "$server_name_clean.*HTTP\|$server_name_clean.*http" "$TECH_OVERVIEW" 2>/dev/null; then
+        MCP_MISMATCH="$MCP_MISMATCH $server_name_clean(config=http,docs≠http)"
+      fi
+    fi
+  done < <(python3 -c "
+import json
+with open('$MCP_JSON') as f:
+    data = json.load(f)
+for k in data.get('mcpServers', {}):
+    print(k)
+" 2>/dev/null)
+  if [ -z "$MCP_MISMATCH" ]; then
+    pass "Tipos de servidores MCP em .mcp.json correspondem ao documentado em technical-overview.md"
+  else
+    fail "Tipo de servidor MCP em .mcp.json diverge do documentado em technical-overview.md" \
+      "$MCP_MISMATCH" \
+      "Arquivo .mcp.json foi alterado sem propagar a mudança para technical-overview.md" \
+      "Atualizar a tabela 'Recursos Operacionais do Assistente' em technical-overview.md com o tipo correto (http/stdio)"
+  fi
+else
+  pass ".mcp.json ou technical-overview.md não encontrado — verificação ignorada"
+fi
+
+# ---------------------------------------------------------------------------
+# Check #38: .mcp.json env vars documented in required-vars.md
+# ---------------------------------------------------------------------------
+echo ""
+echo "--- 38. Variáveis do .mcp.json documentadas em required-vars.md ---"
+
+REQUIRED_VARS="$REPO_ROOT/scripts/required-vars.md"
+if [ -f "$MCP_JSON" ] && [ -f "$REQUIRED_VARS" ]; then
+  MISSING_MCP_VARS=""
+  # Extract env var references from .mcp.json (${VAR_NAME} patterns)
+  while IFS= read -r var_name; do
+    if [ -n "$var_name" ] && ! grep -q "$var_name" "$REQUIRED_VARS" 2>/dev/null; then
+      MISSING_MCP_VARS="$MISSING_MCP_VARS $var_name"
+    fi
+  done < <(grep -oP '\$\{([A-Z_]+)\}' "$MCP_JSON" 2>/dev/null | sed 's/\${//;s/}//' | sort -u)
+  if [ -z "$MISSING_MCP_VARS" ]; then
+    pass "Variáveis de ambiente do .mcp.json estão documentadas em required-vars.md"
+  else
+    fail "Variáveis de ambiente do .mcp.json não documentadas em required-vars.md" \
+      "$MISSING_MCP_VARS" \
+      "Arquivo .mcp.json referencia variáveis que não estão documentadas nos requisitos de ambiente" \
+      "Adicionar as variáveis faltantes em scripts/required-vars.md com instruções de obtenção"
+  fi
+else
+  pass ".mcp.json ou required-vars.md não encontrado — verificação ignorada"
+fi
+
+# ---------------------------------------------------------------------------
 # Resumo
 # ---------------------------------------------------------------------------
 echo ""

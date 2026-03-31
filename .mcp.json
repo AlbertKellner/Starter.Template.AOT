@@ -9,10 +9,11 @@
       }
     },
     "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer ${GH_CLAUDE_CODE_MCP_CODIFICADOR}"
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GH_CLAUDE_CODE_MCP_CODIFICADOR}"
       }
     }
   }
