@@ -120,7 +120,7 @@ Recursos externos disponíveis para o assistente durante o desenvolvimento, conf
 | Recurso | Tipo | Configuração | Variáveis Requeridas | Capacidade |
 |---|---|---|---|---|
 | Datadog MCP | MCP Server (HTTP) | `.mcp.json` → `datadog` | `DD_API_KEY`, `DD_APP_KEY` | Acesso a logs de todos os ambientes (local, CI, produção) via ferramentas MCP do Datadog |
-| GitHub MCP | MCP Server (HTTP) | `.mcp.json` → `github` | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; manipulação de issues e releases via ferramentas MCP do GitHub (usuário ClaudeCode-Bot, nome de exibição: Codificador - Claude Agent) |
+| GitHub MCP | MCP Server (stdio) — `@modelcontextprotocol/server-github` via npx | `.mcp.json` → `github` | `GH_CLAUDE_CODE_MCP_CODIFICADOR` (mapeada para `GITHUB_PERSONAL_ACCESS_TOKEN`) | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; manipulação de issues e releases via ferramentas MCP do GitHub (usuário ClaudeCode-Bot, nome de exibição: Codificador - Claude Agent) |
 
 ### Como Novos Recursos São Registrados
 
@@ -188,3 +188,4 @@ Quando o usuário disponibilizar um novo recurso operacional (MCP server, integr
 | 2026-03-19 | Restrição adicionada: models de Input e Output de Features devem residir exclusivamente em `<Feature>Models/`, não em Shared | DA-020 |
 | 2026-03-21 | Infra/Logging/ documentada: DatadogHttpSink e DatadogLogEntry adicionados à tabela de componentes; lacuna de governança corrigida | Análise de causas-raiz |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
+| 2026-03-31 | GitHub MCP atualizado: tipo alterado de HTTP (`api.githubcopilot.com`) para stdio (`@modelcontextprotocol/server-github` via npx); token mapeado para `GITHUB_PERSONAL_ACCESS_TOKEN` | Correção de autenticação MCP |
