@@ -117,4 +117,3 @@ Esta tabela mapeia cada variável ao erro exato que aparece quando está ausente
 | 2026-03-21 | Adicionado: GITHUB_PAT documentada como variável condicional para a aplicação .NET consultar API GitHub; diferenciação entre GH_TOKEN (CLI) e GITHUB_PAT (aplicação) | Auditoria de governança |
 | 2026-03-21 | Migração: GH_TOKEN substituído por GH_CLAUDE_CODE_MCP; acesso ao GitHub via MCP (usuário ClaudeCode-Bot) em vez de CLI gh; ciclo de vida atualizado com instruções de token Fine-grained | Migração API → MCP |
 | 2026-03-31 | Migração: secret GH_CLAUDE_CODE_MCP renomeada para GH_CLAUDE_CODE_MCP_CODIFICADOR; mesma conta ClaudeCode-Bot (nome de exibição: Codificador - Claude Agent); preferência MCP mantida | Instrução do usuário |
-| 2026-03-31 | Adicionado: configuração de git user.name e user.email como ClaudeCode-Bot no setup-env.sh | Instrução do usuário |
