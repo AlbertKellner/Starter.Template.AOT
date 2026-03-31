@@ -61,8 +61,7 @@ Esta regra consolida as políticas (o quê, não como) de normalização de ling
 | Arquitetura (princípios, padrões) | Technical-overview, folder-structure, naming-conventions, implementação |
 | Nomenclatura | Glossário, BDD, contratos, código, documentação |
 | Snippet canônico | Implementações que usam o snippet |
-| Ferramentas operacionais (MCP, tokens, integrações) | technical-overview, environment-readiness, required-vars, container-setup, operational-runbook, pipeline pré-commit |
-| Configuração de infraestrutura (`.mcp.json`, `docker-compose.yml`, `Dockerfile`, `appsettings.json`, workflows CI) | technical-overview, operational-runbook, required-vars, folder-structure, wiki — enforcement via hook `infra-config-propagation.sh` |
+| Ferramentas operacionais (MCP, tokens, integrações) | technical-overview, environment-readiness, required-vars, container-setup, pipeline pré-commit |
 | Artefatos documentáveis (BDD, regras de negócio, contratos, testes, componentes, configuração, CI/CD) | Wiki (`wiki/`) — páginas de Feature, Business-Rules, Architecture, Project-Setup, CI-CD conforme `wiki-governance.md` |
 | Novo padrão organizacional de governança (organização de imports, classificação de rules, estrutura de seções) | `architecture-governance.md` (seção Separação de Governança Técnica e de Negócio), rules afetadas, CLAUDE.md |
 | Script de auditoria falha por bug do script (não por problema real nos artefatos) | `scripts/governance-audit.sh` — corrigir o script é parte da tarefa, não um problema pré-existente a ignorar |
@@ -131,4 +130,3 @@ Na ausência de sinal claro → assumir **ilustrativo**.
 | 2026-03-19 | Adicionado: artefatos documentáveis (BDD, regras, contratos, testes) como gatilho de propagação para wiki | Instrução do usuário |
 | 2026-03-30 | Adicionado: seção Classificação — meta-governança (ponte entre domínio técnico e de negócio) | Separação tech/negócio |
 | 2026-03-30 | Adicionado: 2 entradas no mapa de propagação — novo padrão organizacional de governança e correção de bug no script de auditoria | Análise de causa-raiz de omissão |
-| 2026-03-31 | Adicionado: entrada explícita no mapa de propagação para arquivos de configuração de infraestrutura (`.mcp.json`, `docker-compose.yml`, etc.) com enforcement via hook `infra-config-propagation.sh` | Prevenção de divergência infra↔governança |
