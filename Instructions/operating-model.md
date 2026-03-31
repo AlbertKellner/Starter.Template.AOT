@@ -28,6 +28,7 @@ Este repositório opera com um sistema de governança persistente. Todo conteúd
 | Fornecimento de trecho técnico | Entrega código, configuração, schema ou artefato para aplicar | `apply-user-snippet` |
 | Alteração de instrução | Cria, altera ou remove arquivos de governança | `review-instructions` |
 | Análise de PR | Analisa solicitações de mudança em pull request aberto | `pr-analysis` |
+| Revisão automática de PR | Revisão de código automatizada com ciclo Revisor↔Codificador | `auto-pr-review` |
 
 Uma mensagem pode ativar múltiplos tipos simultaneamente.
 
@@ -41,6 +42,7 @@ As seguintes skills são invocadas como passos do pipeline pré-commit (definido
 | `verify-environment` | Passo 0 | Verificação de pré-requisitos de ambiente |
 | `manage-pr-lifecycle` | Passos 10-11 | Criação/atualização de PR e acompanhamento de CI |
 | `governance-behavior-tracking` | Início e fim da tarefa | Coleta, apresentação e verificação de comportamentos esperados |
+| `auto-pr-review` | Pós-passo 10 (trigger) | Revisão automática de PR com ciclo Revisor↔Codificador |
 
 ---
 

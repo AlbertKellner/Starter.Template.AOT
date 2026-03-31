@@ -12,7 +12,7 @@ Skills são workflows executáveis que definem **como** executar processos. Cada
 
 ## Skills Ativadas por Tipo de Mensagem
 
-Estas 8 skills são ativadas automaticamente quando a mensagem do usuário é classificada no tipo correspondente:
+Estas 9 skills são ativadas automaticamente quando a mensagem do usuário é classificada no tipo correspondente:
 
 | Skill | Gatilho | Propósito |
 |---|---|---|
@@ -24,6 +24,7 @@ Estas 8 skills são ativadas automaticamente quando a mensagem do usuário é cl
 | `apply-user-snippet` | Trecho técnico fornecido | Classificar (normativo, ilustrativo, preferencial, contextual) e aplicar código ou configuração |
 | `review-instructions` | Alteração de instrução | Executar o checklist completo de `REVIEW.md` para mudanças de governança |
 | `pr-analysis` | Análise de PR | Analisar solicitações de mudança em pull request aberto |
+| `auto-pr-review` | Após criação de PR (confirmação do usuário) | Revisão automática de código em Pull Requests usando dois papéis distintos (Codificador e Revisor) com ciclo iterativo até aprovação. Verifica conformidade com diretrizes de governança do repositório |
 
 ---
 
@@ -42,7 +43,7 @@ Estas 4 skills são invocadas como passos do pipeline pré-commit definido em `C
 
 ## Total de Skills
 
-O repositório possui **12 skills** no total: 8 ativadas por tipo de mensagem + 4 de pipeline. Todas residem em `.claude/skills/`.
+O repositório possui **13 skills** no total: 9 ativadas por tipo de mensagem + 4 de pipeline. Todas residem em `.claude/skills/`.
 
 ---
 
