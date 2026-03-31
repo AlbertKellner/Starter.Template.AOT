@@ -218,6 +218,45 @@ O pipeline é a sequência obrigatória de validação antes de qualquer commit.
 
 ---
 
+## Revisão Automática de Pull Requests
+
+O repositório possui um mecanismo de revisão automática de código em Pull Requests, operado pela skill `auto-pr-review`.
+
+### Contas Envolvidas
+
+| Papel | Conta GitHub | Responsabilidade |
+|---|---|---|
+| **Codificador** | `ClaudeCode-Bot` | Implementa código, cria o PR, corrige solicitações de mudança da revisão |
+| **Revisor** | `Claude-Revisor` | Analisa o código do PR, verifica conformidade com a governança do repositório, solicita mudanças ou aprova |
+
+### Isolamento MCP
+
+Cada papel utiliza um servidor MCP distinto para garantir isolamento de permissões:
+
+| Papel | Prefixo MCP | Exemplo |
+|---|---|---|
+| Codificador | `mcp__github__*` | `mcp__github__create_pull_request`, `mcp__github__push_files` |
+| Revisor | `mcp__github-revisor__*` | `mcp__github-revisor__pull_request_review_write` |
+
+### Ciclo de Revisão
+
+1. O Codificador cria ou atualiza o PR
+2. O usuário confirma o início da revisão automática
+3. O Revisor analisa o código e submete review (aprovação ou solicitação de mudanças)
+4. Se houver solicitações de mudança, o Codificador corrige e faz push
+5. O Revisor analisa novamente
+6. O ciclo repete até aprovação ou até atingir o **limite máximo de 10 iterações**
+
+### Gatilho
+
+A revisão automática é disparada **após a criação do PR**, mediante confirmação do usuário. Não é ativada automaticamente — requer confirmação explícita para iniciar o ciclo.
+
+### Limite de Iterações
+
+O ciclo de revisão possui um limite máximo de **10 iterações** (revisão + correção). Se o limite for atingido sem aprovação, o ciclo é encerrado e o status é reportado ao usuário para intervenção manual.
+
+---
+
 ## Auditoria Automatizada
 
 O script `governance-audit.sh` executa **36 verificações automatizadas** da consistência estrutural dos arquivos de governança:

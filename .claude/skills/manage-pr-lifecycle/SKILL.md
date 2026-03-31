@@ -14,7 +14,7 @@ Esta skill é ativada pelos passos 10 e 11 do pipeline de validação pré-commi
 
 ## Workflow — Verificação e Criação/Atualização de PR (Passo 10)
 
-Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot via `GH_CLAUDE_CODE_MCP`.
+Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot via `GH_CLAUDE_CODE_MCP_CODIFICADOR`.
 
 ### Passo 1: Verificar PR existente
 
@@ -112,6 +112,18 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 | `pull_request_read` | `get_check_runs` | Obter status e timing dos jobs do CI |
 
 **Nota**: Os logs detalhados de jobs falhados não estão disponíveis via MCP. O campo `html_url` do check run direciona ao GitHub para inspeção visual. O Datadog MCP complementa com logs da aplicação (env: `ci`).
+
+---
+
+## Workflow — Trigger de Revisão Automática (skill auto-pr-review)
+
+Após a conclusão do Passo 2a (criação de novo PR) ou Passo 2b (atualização de PR existente), executar:
+
+1. Perguntar ao usuário: **"Deseja que a revisão automática de código seja realizada neste PR?"**
+2. Se a resposta for positiva → invocar a skill `auto-pr-review` com o número do PR
+3. Se a resposta for negativa → prosseguir normalmente (passo 11 se aplicável)
+
+**Este trigger não se aplica** durante tarefas de `pr-analysis` (o PR já está sendo analisado por outra skill).
 
 ---
 

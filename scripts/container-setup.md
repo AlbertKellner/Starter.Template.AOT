@@ -114,7 +114,8 @@ ls /usr/local/share/ca-certificates/swp-ca-production.crt
 # 4. Variáveis obrigatórias (ver required-vars.md)
 echo "DD_API_KEY=${DD_API_KEY:-(AUSENTE)}"
 echo "DD_APP_KEY=${DD_APP_KEY:-(AUSENTE — necessário para MCP Datadog)}"
-echo "GH_CLAUDE_CODE_MCP=${GH_CLAUDE_CODE_MCP:-(AUSENTE — necessário para MCP GitHub)}"
+echo "GH_CLAUDE_CODE_MCP_CODIFICADOR=${GH_CLAUDE_CODE_MCP_CODIFICADOR:-(AUSENTE — necessário para MCP GitHub Codificador)}"
+echo "GH_CLAUDE_CODE_MCP_REVISOR=${GH_CLAUDE_CODE_MCP_REVISOR:-(AUSENTE — necessário para MCP GitHub Revisor)}"
 echo "HTTP_PROXY=${HTTP_PROXY:-(não definido)}"
 ```
 

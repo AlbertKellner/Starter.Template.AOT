@@ -114,7 +114,8 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 |---|---|---|---|---|
 | Datadog | `app.datadoghq.com` | API Key | `DD_API_KEY` no ambiente/`.env` | `/health` retorna `Degraded` ou `Unhealthy`; logs não fluem ao Datadog |
 | Datadog MCP | `mcp.datadoghq.com` | API Key + App Key | `DD_API_KEY` + `DD_APP_KEY` no ambiente | Ferramentas MCP do Datadog ficam indisponíveis para o assistente |
-| GitHub MCP | `api.githubcopilot.com` | Bearer Token (PAT) | `GH_CLAUDE_CODE_MCP` no ambiente | Ferramentas MCP do GitHub ficam indisponíveis para o assistente (criação/atualização de PRs, monitoramento de Actions) |
+| GitHub MCP (Codificador) | `api.githubcopilot.com` | Bearer Token (PAT) | `GH_CLAUDE_CODE_MCP_CODIFICADOR` no ambiente | Ferramentas MCP do GitHub (Codificador) ficam indisponíveis (criação/atualização de PRs, monitoramento de Actions) |
+| GitHub MCP (Revisor) | `api.githubcopilot.com` | Bearer Token (PAT) | `GH_CLAUDE_CODE_MCP_REVISOR` no ambiente | Ferramentas MCP do GitHub (Revisor) ficam indisponíveis (revisão automática de PRs) |
 
 ---
 
