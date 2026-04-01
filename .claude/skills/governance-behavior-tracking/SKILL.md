@@ -44,7 +44,7 @@ FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
      - Escopo governança:
        [0.1] Executar auditoria de governança
        [9]   Commit
-       [9.1] Validação de governança via subagentes
+       [9.1] Validação de governança via subagentes (condicional — apenas quando afeta pipeline)
        [10]  Criar/atualizar PR
 
   3. Derivar comportamentos obrigatórios (CLAUDE.md seção "Comportamento Obrigatório"):

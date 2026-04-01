@@ -22,7 +22,7 @@ Esta rule define a política de validação funcional obrigatória de mudanças 
 
 ### Quando Ativar
 
-Esta validação é executada no **passo 9.1** do pipeline pré-commit, em **toda tarefa de escopo governança**, após o commit (passo 9) e antes da criação/atualização do PR (passo 10).
+Esta validação é executada no **passo 9.1** do pipeline pré-commit, após o commit (passo 9) e antes da criação/atualização do PR (passo 10). É ativada **apenas quando a tarefa altera aspectos que afetam o pipeline de codificação**: passos do pipeline pré-commit (0–11), comportamentos obrigatórios (1–13), skills de pipeline, rules que governam o fluxo de codificação, ou hooks de enforcement. Mudanças puramente documentais (glossário, wiki, ADRs, regras de negócio sem impacto no pipeline) **não ativam** este passo.
 
 ### Mecanismo de Validação
 
@@ -32,6 +32,8 @@ A validação utiliza dois subagentes executando o mesmo comando de teste:
 |---|---|---|---|
 | Subagente dev | Branch de desenvolvimento (atual) | Nenhum — roda na branch atual | Validar que o novo comportamento é aplicado + regressão de comportamentos existentes |
 | Subagente main | Branch `main` | `isolation: "worktree"` — cópia temporária | Teste regressivo: comparar com comportamento da branch principal |
+
+Ambos os subagentes são lançados **em paralelo** com o mesmo comando. A comparação de resultados é feita quando ambos terminam.
 
 ### Comando Idêntico
 
