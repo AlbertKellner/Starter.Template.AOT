@@ -42,7 +42,7 @@ Nem todos os comportamentos se aplicam a todos os escopos. A filtragem é obriga
 | Escopo | Passos do pipeline | Comportamentos obrigatórios |
 |---|---|---|
 | **Código** | Todos: 0 → 11 | Todos aplicáveis |
-| **Governança** | Apenas: 0.1, 9, 10 | Todos exceto os vinculados a build/execução |
+| **Governança** | Apenas: 0.1, 9, 9.1, 10 | Todos exceto os vinculados a build/execução |
 | **Análise de PR** | Conforme skill pr-analysis | Todos exceto criação de PR (passo 10) |
 
 ### Visibilidade Contínua
