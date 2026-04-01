@@ -62,7 +62,7 @@ Sistema de governança persistente que opera como "sistema operacional" de todas
 | Grupo | Propósito |
 |---|---|
 | `CLAUDE.md` | Ponto de entrada: pipeline pré-commit e imports de governança |
-| `.claude/rules/` | 14 políticas operacionais (o quê deve ser feito) |
+| `.claude/rules/` | 15 políticas operacionais (o quê deve ser feito) |
 | `.claude/skills/` | 13 workflows procedurais (como executar) |
 | `.claude/hooks/` | Scripts de enforcement automatizado |
 | `Instructions/architecture/` | Memória arquitetural: princípios, padrões, decisões, nomenclatura |

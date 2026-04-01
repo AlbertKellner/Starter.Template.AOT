@@ -63,6 +63,10 @@ Quando a tarefa for análise de solicitações de mudança em pull request (skil
 No início de cada tarefa, coletar e apresentar ao usuário a lista completa de todos os comportamentos esperados conforme definidos na governança (pipeline pré-commit, comportamentos obrigatórios, skills ativados). Manter a lista visível e atualizada durante toda a execução via TodoWrite. Ao final, verificar que todos foram executados; investigar e corrigir omissões com análise de causa raiz.
 Ver `.claude/rules/governance-behavior-tracking.md` para a política completa. Ver `.claude/skills/governance-behavior-tracking/SKILL.md` para o workflow.
 
+### 12. Consulta pré-planejamento obrigatória
+Antes de planejar, executar código ou propor/revisar/alterar governança: verificar perguntas abertas, definições pendentes, cenários e fluxos ainda não mapeados. Se a tarefa envolver integração, consultar documentação online primeiro para embasar a análise e resolver dúvidas autonomamente antes de apresentá-las ao usuário. Apresentar apenas pontos verdadeiramente abertos e iterar até que não restem pendências. Se novo código exigir adaptações de governança, apresentar sugestões objetivas ao usuário. Só prosseguir após resolução de todas as dúvidas e identificação de necessidades de adaptação.
+Ver `.claude/rules/pre-planning-consultation.md` para a política completa.
+
 ---
 
 ## Pipeline de Validação Pré-Commit (Obrigatório)
@@ -166,6 +170,7 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 @.claude/rules/source-of-truth-priority.md
 @.claude/rules/architecture-governance.md
 @.claude/rules/naming-governance.md
+@.claude/rules/pre-planning-consultation.md
 
 ### Rules operacionais ativas — técnicas
 
