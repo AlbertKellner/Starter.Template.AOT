@@ -43,8 +43,9 @@ FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
        [11] Acompanhar CI + verificar logs Datadog
      - Escopo governança:
        [0.1] Executar auditoria de governança
-       [9]  Commit
-       [10] Criar/atualizar PR
+       [9]   Commit
+       [9.1] Validação de governança via subagentes
+       [10]  Criar/atualizar PR
 
   3. Derivar comportamentos obrigatórios (CLAUDE.md seção "Comportamento Obrigatório"):
      - Interpretar antes de agir
