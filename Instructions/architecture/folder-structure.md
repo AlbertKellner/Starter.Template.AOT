@@ -73,6 +73,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── implement-request/
 │   │   ├── ingest-definition/
 │   │   ├── governance-behavior-tracking/ # Rastreamento de comportamentos esperados
+│   │   ├── governance-validation-pipeline/ # Validação de governança via subagentes
 │   │   ├── manage-pr-lifecycle/         # Criação/atualização de PR e acompanhamento de CI
 │   │   ├── auto-pr-review/              # Revisão automática de PR com ciclo Revisor↔Codificador
 │   │   ├── pr-analysis/                 # Análise de solicitações de mudança em PR existente
@@ -282,3 +283,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
 | 2026-03-30 | Completude: scripts/ adicionado à estrutura raiz; 3 rules faltantes adicionadas (execution-time-tracking, governance-audit, governance-behavior-tracking); 4 skills faltantes adicionadas (manage-pr-lifecycle, pr-analysis, validate-endpoints, verify-environment) | Auditoria de governança |
 | 2026-03-31 | .claude/rules/pre-planning-consultation.md e .claude/hooks/pre-planning-gate.sh adicionados à estrutura de governança | Instrução do usuário |
+| 2026-04-01 | .claude/skills/governance-validation-pipeline/ adicionada à estrutura de governança | Instrução do usuário |
