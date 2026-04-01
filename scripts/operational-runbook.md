@@ -92,8 +92,7 @@ docker compose down
 | Método | Rota | Autenticação | Descrição | Regra de Negócio |
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
-
-> **Nota**: Adicionar endpoints à medida que features forem implementadas. O endpoint `/health` é o único presente no template base.
+| `GET` | `/number-string/{number}` | Não | Converte número (1, 2) para string ("Um", "Dois") | — |
 
 ---
 
