@@ -1,28 +1,28 @@
 {
   "permissions": {
     "defaultMode": "bypassPermissions",
-    "allow": [
-      "Bash(*)",
-      "Read(**)",
-      "Write(**)",
-      "Edit(**)",
-      "Glob(**)",
-      "Grep(**)",
-      "NotebookEdit(*)",
-      "TodoWrite(*)",
-      "Agent(*)",
-      "mcp__github__*",
-      "mcp__github-revisor__*",
-      "mcp__*",
-      "WebFetch(*)",
-      "WebSearch(*)"
-    ],
     "deny": [
       "Bash(rm -rf /)",
       "Bash(docker system prune --all)"
     ]
   },
+  "autoMemoryEnabled": true,
+  "env": {
+    "GOVERNANCE_STRICT_MODE": "true",
+    "IDLE_THRESHOLD_MS": "120000"
+  },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start.sh || true"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
@@ -58,6 +58,60 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/post-commit-pr-reminder.sh || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "if": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Verifique se esta mensagem de commit segue o formato Semantic Commit em português conforme pr-metadata-governance.md: <tipo>(<escopo>): <descrição imperativa em português>. Se não seguir, sugira a correção."
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/bash-error-capture.sh || true"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/compact-context.sh pre || true"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/compact-context.sh post || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-verification.sh || true"
           }
         ]
       }

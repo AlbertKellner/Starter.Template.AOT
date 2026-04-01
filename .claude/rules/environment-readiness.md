@@ -1,3 +1,11 @@
+---
+paths:
+  - "**/Dockerfile"
+  - "**/docker-compose*.yml"
+  - "**/*.csproj"
+  - "**/appsettings*.json"
+---
+
 # Regra: Prontidão de Ambiente e Eficiência de Execução
 
 ## Propósito

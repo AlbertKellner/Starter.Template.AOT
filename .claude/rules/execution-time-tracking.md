@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/.session-timer"
+---
+
 # Regra: Rastreamento de Tempo de Execução Efetivo
 
 ## Propósito

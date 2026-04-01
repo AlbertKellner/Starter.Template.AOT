@@ -1,3 +1,15 @@
+---
+name: governance-validation-pipeline
+description: Validação funcional de governança via subagentes em dev e main
+context: fork
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - Agent
+---
+
 # Skill: governance-validation-pipeline
 
 ## Nome

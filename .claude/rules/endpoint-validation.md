@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.cs"
+  - "**/Endpoint*/**"
+---
+
 # Regra: Validação de Endpoint após Implementação de Feature
 
 ## Propósito

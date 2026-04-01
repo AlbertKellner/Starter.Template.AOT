@@ -1,3 +1,13 @@
+---
+name: review-instructions
+description: Revisão obrigatória de instruções e governança via checklist REVIEW.md
+paths:
+  - ".claude/**"
+  - "Instructions/**"
+  - "CLAUDE.md"
+  - "REVIEW.md"
+---
+
 # Skill: review-instructions
 
 ## Nome
