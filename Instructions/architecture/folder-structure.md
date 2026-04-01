@@ -63,6 +63,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── governance-audit.md          # Auditoria automatizada de consistência de governança
 │   │   ├── governance-behavior-tracking.md # Rastreamento de comportamentos esperados
 │   │   ├── naming-governance.md
+│   │   ├── pre-planning-consultation.md  # Consulta pré-planejamento obrigatória (comportamento #12)
 │   │   ├── pr-metadata-governance.md
 │   │   └── source-of-truth-priority.md
 │   │
@@ -84,6 +85,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   ├── hooks/                          # Scripts de enforcement
 │   │   ├── instruction-change-detector.sh
 │   │   ├── pre-commit-gate.sh
+│   │   ├── pre-planning-gate.sh
 │   │   ├── branch-guard.sh
 │   │   ├── session-timer.sh
 │   │   ├── post-commit-pr-reminder.sh
@@ -279,3 +281,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-22 | wiki/ reorganizada: estrutura por agrupamentos (Governance-*, Domain-*, Feature-*, Claude-*); páginas Infra-* e estruturais antigas substituídas por páginas com prefixo de grupo | Instrução do usuário |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
 | 2026-03-30 | Completude: scripts/ adicionado à estrutura raiz; 3 rules faltantes adicionadas (execution-time-tracking, governance-audit, governance-behavior-tracking); 4 skills faltantes adicionadas (manage-pr-lifecycle, pr-analysis, validate-endpoints, verify-environment) | Auditoria de governança |
+| 2026-03-31 | .claude/rules/pre-planning-consultation.md e .claude/hooks/pre-planning-gate.sh adicionados à estrutura de governança | Instrução do usuário |
