@@ -13,6 +13,11 @@ allowed-tools:
   - mcp__github-revisor__*
 ---
 
+## Contexto Dinâmico
+
+- Branch atual: !`git branch --show-current`
+- Últimos commits: !`git log --oneline -5`
+
 # Skill: pr-analysis
 
 ## Nome

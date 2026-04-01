@@ -42,4 +42,10 @@ if (( ${#missing_vars[@]} > 0 )); then
   echo "[SessionStart] Consultar scripts/required-vars.md para detalhes."
 fi
 
+# --- Persist environment variables for the session via CLAUDE_ENV_FILE ---
+if [[ -n "${CLAUDE_ENV_FILE:-}" ]]; then
+  echo "export CURRENT_BRANCH=$current_branch" >> "$CLAUDE_ENV_FILE"
+  echo "export REPO_ROOT=$REPO_ROOT" >> "$CLAUDE_ENV_FILE"
+fi
+
 exit 0

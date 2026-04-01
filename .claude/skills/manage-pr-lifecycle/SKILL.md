@@ -8,6 +8,11 @@ allowed-tools:
   - mcp__github__*
 ---
 
+## Contexto Dinâmico
+
+- Branch atual: !`git branch --show-current`
+- Último commit: !`git log --oneline -1`
+
 # Skill: manage-pr-lifecycle
 
 ## Propósito
