@@ -67,6 +67,10 @@ Ver `.claude/rules/governance-behavior-tracking.md` para a política completa. V
 Antes de planejar, executar código ou propor/revisar/alterar governança: verificar perguntas abertas, definições pendentes, cenários e fluxos ainda não mapeados. Se a tarefa envolver integração, consultar documentação online primeiro para embasar a análise e resolver dúvidas autonomamente antes de apresentá-las ao usuário. Apresentar apenas pontos verdadeiramente abertos e iterar até que não restem pendências. Se novo código exigir adaptações de governança, apresentar sugestões objetivas ao usuário. Só prosseguir após resolução de todas as dúvidas e identificação de necessidades de adaptação.
 Ver `.claude/rules/pre-planning-consultation.md` para a política completa.
 
+### 13. Validar mudanças de governança que afetam o pipeline de codificação via subagentes
+Quando a tarefa alterar aspectos que afetam o pipeline de codificação (passos 0–11, comportamentos obrigatórios 1–13, skills de pipeline, rules de fluxo de codificação ou hooks de enforcement), lançar subagentes após o commit (passo 9) para validar que os novos comportamentos são efetivamente aplicados. Um subagente executa na branch de desenvolvimento; outro executa na branch main (worktree isolado) com comando idêntico, ambos em paralelo. Comparar resultados para detectar regressões. Gate bloqueante: falha na branch dev bloqueia o pipeline (máximo 3 tentativas). Diferenças na regressão com main são reportadas no relatório final. Mudanças puramente documentais (glossário, wiki, ADRs) não ativam este comportamento.
+Ver `.claude/rules/governance-validation-pipeline.md` para a política completa. Ver `.claude/skills/governance-validation-pipeline/SKILL.md` para o workflow.
+
 ---
 
 ## Pipeline de Validação Pré-Commit (Obrigatório)
@@ -78,7 +82,7 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 | Escopo | Critério | Passos aplicáveis | Passos NÃO aplicáveis |
 |---|---|---|---|
 | **Código** | A tarefa altera arquivos `.cs`, `.csproj`, `Dockerfile`, `docker-compose.yml`, `appsettings.json`, workflows de CI ou qualquer artefato que afete build, execução ou comportamento da aplicação | Todos: 0 → 11 (incluindo 10.1) | Nenhum — todos os passos são obrigatórios |
-| **Governança** | A tarefa altera **exclusivamente** arquivos `.md`, `.sh`, scripts de governança, hooks ou documentação — sem impacto em build, execução ou comportamento da aplicação | Apenas: 0.1 → 9 → 10 → 10.1. O passo 10 (PR) aplica-se sempre que houver commits a serem integrados — mesmo para mudanças exclusivamente de governança. | Passos 0, 1–8 e 11 — não há build, execução, testes, Docker nem acompanhamento de CI |
+| **Governança** | A tarefa altera **exclusivamente** arquivos `.md`, `.sh`, scripts de governança, hooks ou documentação — sem impacto em build, execução ou comportamento da aplicação | Apenas: 0.1 → 9 → 9.1 (condicional) → 10 → 10.1. O passo 9.1 aplica-se apenas quando a mudança afeta o pipeline de codificação. O passo 10 (PR) aplica-se sempre que houver commits a serem integrados. | Passos 0, 1–8 e 11 — não há build, execução, testes, Docker nem acompanhamento de CI |
 | **Análise de PR** | A tarefa é análise de solicitações de mudança em PR existente (skill pr-analysis) | Ver skill pr-analysis — o branch atribuído pelo sistema externo é ignorado; usar head.ref do PR | Passo 10 (criação de PR) — o PR já existe |
 
 **Esta classificação é o primeiro ato obrigatório.** Executar passos inaplicáveis ao escopo é um erro — desperdiça tempo e gera ruído. Omitir passos aplicáveis ao escopo também é um erro.
@@ -96,6 +100,7 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 7. Exibir logs do container da aplicação — os logs de storytelling de cada requisição validada (passo 6) já devem ter sido apresentados no relatório de validação conforme `.claude/rules/endpoint-validation.md`. Se a tarefa não incluiu validação de endpoint (passo 6 não aplicável), exibir os logs gerais do container via `docker logs`.
 8. `docker compose down` — parar todos os containers
 9. Somente então realizar o commit
+9.1. **Validação de governança via subagentes** — lançar subagente na branch de desenvolvimento para validar que os novos comportamentos são aplicados; lançar subagente na branch main (worktree isolado) com comando idêntico para teste regressivo. **Gate obrigatório para escopo governança**: falha na dev bloqueia o PR (máximo 3 tentativas). Regressão com main é reportada no relatório final. Ver `.claude/rules/governance-validation-pipeline.md` para a política completa.
 10. **Exceção: quando a tarefa for análise de PR (skill pr-analysis), este passo NÃO se aplica — o PR já existe. Em vez disso, atualizar título e descrição do PR existente via ferramenta MCP `update_pull_request` se as mudanças alterarem o escopo. NÃO criar PR novo. NÃO usar o branch atribuído pelo sistema externo — usar exclusivamente o head.ref do PR sendo analisado.** Para todas as demais tarefas: verificar se já existe um PR aberto para o branch atual; se não existir, criar o PR seguindo as regras de `.claude/rules/pr-metadata-governance.md`. Se já existir, atualizar título e descrição para refletir o estado atual da implementação.
 10.1. **Perguntar ao usuário se deseja revisão automática de código** (skill `auto-pr-review`). Executar somente com confirmação positiva. Ver `.claude/rules/auto-pr-review-governance.md` para a política completa.
 11. **Checkpoint de encerramento** — a tarefa NÃO se encerra com a abertura ou atualização do PR. Executar obrigatoriamente as seguintes validações antes de considerar a tarefa concluída:
@@ -184,6 +189,7 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 @.claude/rules/execution-time-tracking.md
 @.claude/rules/governance-behavior-tracking.md
 @.claude/rules/auto-pr-review-governance.md
+@.claude/rules/governance-validation-pipeline.md
 
 ### Meta-governança
 

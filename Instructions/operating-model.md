@@ -43,6 +43,7 @@ As seguintes skills são invocadas como passos do pipeline pré-commit (definido
 | `manage-pr-lifecycle` | Passos 10-11 | Criação/atualização de PR e acompanhamento de CI |
 | `governance-behavior-tracking` | Início e fim da tarefa | Coleta, apresentação e verificação de comportamentos esperados |
 | `auto-pr-review` | Pós-passo 10 (trigger) | Revisão automática de PR com ciclo Revisor↔Codificador |
+| `governance-validation-pipeline` | Passo 9.1 | Validação de mudanças de governança via subagentes (dev + regressão main) |
 
 ---
 
@@ -125,3 +126,4 @@ O assistente pode lançar subagents especializados quando a tarefa beneficiar de
 | 2026-03-21 | Adicionado: 3 skills de pipeline extraídas das rules (validate-endpoints, verify-environment, manage-pr-lifecycle); rule governance-audit.md e script governance-audit.sh criados | Auditoria de governança |
 | 2026-03-21 | Adicionado: seção "Skills de Pipeline" distinguindo skills ativadas por tipo de mensagem (8) de skills de passos do pipeline (3) | Análise estrutural de governança |
 | 2026-03-21 | Adicionado: skill governance-behavior-tracking na tabela de Skills de Pipeline (coleta, apresentação e verificação de comportamentos esperados) | Instrução do usuário |
+| 2026-04-01 | Adicionado: skill governance-validation-pipeline na tabela de Skills de Pipeline (passo 9.1 — validação de governança via subagentes) | Instrução do usuário |
