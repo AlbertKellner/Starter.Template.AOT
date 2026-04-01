@@ -14,13 +14,14 @@ Esta pasta contém os hooks de enforcement do Claude Code para este repositório
 | `pre-commit-gate.sh` | Manual | — | Gate de validação: dotnet build + dotnet test antes de commit; paths resolvidos dinamicamente |
 | `branch-guard.sh` | PostToolUse | Bash | Detecta operações de branch incorretas durante pr-analysis; emite alerta se o branch não for o head.ref esperado |
 | `session-timer.sh` | PostToolUse | Bash | Auto-inicializa e rastreia tempo efetivo da sessão; cria `.claude/.session-timer` na primeira invocação; detecta segmentos de trabalho; exibe tempo acumulado periodicamente; informativo, nunca bloqueante |
+| `pre-planning-gate.sh` | PreToolUse | Edit\|Write | Verifica se a consulta pré-planejamento foi executada na sessão; emite lembrete do comportamento #12 se não; usa `.claude/.pre-planning-done` como estado; informativo |
 | `post-commit-pr-reminder.sh` | PostToolUse | Bash | Detecta `git commit`/`git push` e emite lembrete para executar passo 10 (criar/atualizar PR); informativo, nunca bloqueante |
 
 ---
 
 ## Configuração
 
-Os hooks são configurados em `.claude/settings.json` na seção `hooks`. Os hooks `instruction-change-detector.sh`, `branch-guard.sh`, `session-timer.sh` e `post-commit-pr-reminder.sh` são acionados automaticamente (PostToolUse). O `pre-commit-gate.sh` é referência para execução manual no pipeline pré-commit.
+Os hooks são configurados em `.claude/settings.json` na seção `hooks`. O hook `pre-planning-gate.sh` é acionado automaticamente (PreToolUse). Os hooks `instruction-change-detector.sh`, `branch-guard.sh`, `session-timer.sh` e `post-commit-pr-reminder.sh` são acionados automaticamente (PostToolUse). O `pre-commit-gate.sh` é referência para execução manual no pipeline pré-commit.
 
 ---
 
@@ -30,6 +31,7 @@ Os hooks são configurados em `.claude/settings.json` na seção `hooks`. Os hoo
 - `pre-commit-gate.sh` → implementa parte do pipeline de validação pré-commit definido em `CLAUDE.md`
 - `branch-guard.sh` → protege o branch correto durante pr-analysis; usa `.claude/.pr-analysis-context` como contexto; arquivo criado pela skill pr-analysis
 - `session-timer.sh` → implementa `.claude/rules/execution-time-tracking.md` → auto-inicializa, rastreia e exibe tempo efetivo acumulado; usa `.claude/.session-timer` como estado
+- `pre-planning-gate.sh` → implementa enforcement do comportamento #12 de `.claude/rules/pre-planning-consultation.md` → verifica consulta pré-planejamento antes de edições; usa `.claude/.pre-planning-done` como estado
 - `post-commit-pr-reminder.sh` → implementa enforcement do passo 10 de `.claude/rules/pr-metadata-governance.md` → lembra criação de PR após commit/push
 
 ---
@@ -43,3 +45,4 @@ Os hooks são configurados em `.claude/settings.json` na seção `hooks`. Os hoo
 | 2026-03-21 | Atualizado: documentação do instruction-change-detector.sh — emite lembrete mas não executa auditoria diretamente | Auditoria de governança |
 | 2026-03-21 | Corrigido: branch-guard.sh criado (estava configurado mas inexistente); pre-commit-gate.sh refatorado com paths dinâmicos (paths hardcoded estavam obsoletos) | Análise de causas-raiz |
 | 2026-03-30 | Adicionado: post-commit-pr-reminder.sh — enforcement informativo do passo 10 (criação de PR) após git commit/push | Verificação de conformidade de governança |
+| 2026-03-31 | Adicionado: pre-planning-gate.sh — enforcement do comportamento #12 (consulta pré-planejamento) via PreToolUse | Instrução do usuário |
