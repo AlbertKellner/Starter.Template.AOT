@@ -95,6 +95,10 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── bash-error-capture.sh       # PostToolUseFailure: captura automática de erros bash
 │   │   ├── compact-context.sh          # PreCompact/PostCompact: preserva estado durante compactação
 │   │   └── README.md
+│   │
+│   └── agents/                         # Agentes especializados com memória persistente
+│        ├── code-reviewer.md           # Revisor de código read-only contra governança
+│        └── governance-auditor.md      # Auditor de consistência de artefatos de governança
 │
 └── Instructions/
     ├── operating-model.md              # Modelo operacional consolidado
@@ -289,3 +293,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-31 | .claude/rules/pre-planning-consultation.md e .claude/hooks/pre-planning-gate.sh adicionados à estrutura de governança | Instrução do usuário |
 | 2026-04-01 | .claude/skills/governance-validation-pipeline/ adicionada à estrutura de governança | Instrução do usuário |
 | 2026-04-01 | 4 novos hooks adicionados: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) | Melhoria de governança com recursos avançados do Claude Code |
+| 2026-04-01 | .claude/agents/ adicionada: code-reviewer.md e governance-auditor.md — agentes especializados com memória persistente | Melhoria de governança com recursos avançados do Claude Code |

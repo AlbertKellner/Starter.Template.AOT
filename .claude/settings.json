@@ -32,6 +32,21 @@
             "command": "bash .claude/hooks/pre-planning-gate.sh \"$CLAUDE_TOOL_INPUT_FILE_PATH\" || true"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(rm -rf *)",
+            "command": "echo '[PreToolUse] BLOQUEADO: comando rm -rf detectado. Confirme com o usuário antes de executar.' >&2; exit 2"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push --force*)",
+            "command": "echo '[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -58,16 +73,6 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/post-commit-pr-reminder.sh || true"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "if": "Bash(git commit*)",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Verifique se esta mensagem de commit segue o formato Semantic Commit em português conforme pr-metadata-governance.md: <tipo>(<escopo>): <descrição imperativa em português>. Se não seguir, sugira a correção."
           }
         ]
       }
