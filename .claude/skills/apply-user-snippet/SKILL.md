@@ -1,3 +1,10 @@
+---
+name: apply-user-snippet
+description: Classificação e aplicação de trechos técnicos fornecidos pelo usuário
+paths:
+  - "Instructions/snippets/**"
+---
+
 # Skill: apply-user-snippet
 
 ## Nome

@@ -1,3 +1,13 @@
+---
+name: evolve-governance
+description: Consolidação e reorganização da base de governança do repositório
+paths:
+  - ".claude/**"
+  - "Instructions/**"
+  - "CLAUDE.md"
+  - "REVIEW.md"
+---
+
 # Skill: evolve-governance
 
 ## Nome

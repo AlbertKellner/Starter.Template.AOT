@@ -1,3 +1,16 @@
+---
+name: validate-endpoints
+description: Validação HTTP real de endpoints após implementação de feature
+paths:
+  - "**/Endpoint*/**"
+  - "**/*Controller*.cs"
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - WebFetch
+---
+
 # Skill: validate-endpoints
 
 ## Propósito

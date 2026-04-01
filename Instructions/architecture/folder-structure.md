@@ -90,6 +90,10 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── branch-guard.sh
 │   │   ├── session-timer.sh
 │   │   ├── post-commit-pr-reminder.sh
+│   │   ├── session-start.sh            # SessionStart: limpa estado stale, injeta contexto de branch
+│   │   ├── stop-verification.sh        # Stop: verificação final de governança
+│   │   ├── bash-error-capture.sh       # PostToolUseFailure: captura automática de erros bash
+│   │   ├── compact-context.sh          # PreCompact/PostCompact: preserva estado durante compactação
 │   │   └── README.md
 │
 └── Instructions/
@@ -284,3 +288,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-30 | Completude: scripts/ adicionado à estrutura raiz; 3 rules faltantes adicionadas (execution-time-tracking, governance-audit, governance-behavior-tracking); 4 skills faltantes adicionadas (manage-pr-lifecycle, pr-analysis, validate-endpoints, verify-environment) | Auditoria de governança |
 | 2026-03-31 | .claude/rules/pre-planning-consultation.md e .claude/hooks/pre-planning-gate.sh adicionados à estrutura de governança | Instrução do usuário |
 | 2026-04-01 | .claude/skills/governance-validation-pipeline/ adicionada à estrutura de governança | Instrução do usuário |
+| 2026-04-01 | 4 novos hooks adicionados: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) | Melhoria de governança com recursos avançados do Claude Code |

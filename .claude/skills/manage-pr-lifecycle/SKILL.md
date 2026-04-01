@@ -1,3 +1,13 @@
+---
+name: manage-pr-lifecycle
+description: Criação, atualização de PR e acompanhamento de GitHub Actions
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - mcp__github__*
+---
+
 # Skill: manage-pr-lifecycle
 
 ## Propósito

@@ -1,3 +1,16 @@
+---
+name: auto-pr-review
+description: Revisão automática de código em PRs com ciclo Revisor↔Codificador
+context: fork
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - mcp__github__*
+  - mcp__github-revisor__*
+---
+
 # Skill: auto-pr-review
 
 ## Propósito

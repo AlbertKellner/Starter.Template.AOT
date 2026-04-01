@@ -1,3 +1,18 @@
+---
+name: pr-analysis
+description: Análise de solicitações de mudança em Pull Request existente
+context: fork
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - Edit
+  - Write
+  - mcp__github__*
+  - mcp__github-revisor__*
+---
+
 # Skill: pr-analysis
 
 ## Nome
