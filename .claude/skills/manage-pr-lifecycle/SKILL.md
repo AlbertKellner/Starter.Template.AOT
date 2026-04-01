@@ -128,6 +128,17 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 
 **Nota**: Os logs detalhados de jobs falhados não estão disponíveis via MCP. O campo `html_url` do check run direciona ao GitHub para inspeção visual. O Datadog MCP complementa com logs da aplicação (env: `ci`).
 
+### Como carregar as ferramentas MCP (obrigatório)
+
+As ferramentas MCP do GitHub são **deferred tools** — existem mas não carregam automaticamente. Para torná-las disponíveis, usar `ToolSearch` com a sintaxe `select:` e nomes exatos:
+
+```
+ToolSearch("select:mcp__github__list_pull_requests,mcp__github__create_pull_request")
+ToolSearch("select:mcp__github__update_pull_request,mcp__github__pull_request_read")
+```
+
+**NUNCA** usar busca por keywords (`"mcp github create pull request"`) — keywords não casam com nomes de ferramentas MCP e retornam resultados irrelevantes. Sempre usar `select:` com o nome completo da ferramenta (`mcp__github__<nome>`).
+
 ---
 
 ## Workflow — Trigger de Revisão Automática (skill auto-pr-review)

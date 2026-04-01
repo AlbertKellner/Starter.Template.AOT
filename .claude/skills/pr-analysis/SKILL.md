@@ -229,6 +229,19 @@ Ativar esta skill **exclusivamente** quando o usuário solicitar explicitamente:
 - Relatório completo de status de aprovação
 - Merge realizado apenas quando solicitado explicitamente pelo usuário e todas as aprovações estiverem presentes
 
+## Como Carregar Ferramentas MCP (obrigatório)
+
+As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
+
+```
+ToolSearch("select:mcp__github__pull_request_read,mcp__github__update_pull_request")
+ToolSearch("select:mcp__github__add_reply_to_pull_request_comment,mcp__github__list_pull_requests")
+```
+
+**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
+
+---
+
 ## Arquivos de Governança Relacionados
 - `.claude/rules/governance-policies.md` — políticas de contexto (§2), propagação (§3), ambiguidade (§4)
 - `.claude/rules/source-of-truth-priority.md` — hierarquia de prioridade entre fontes de verdade
