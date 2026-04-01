@@ -12,7 +12,7 @@ Valida mudanças em arquivos de governança via subagentes que testam a branch d
 
 ## Quando Usar
 
-Esta skill é executada no **passo 9.1** do pipeline pré-commit, em toda tarefa de escopo governança, após o commit (passo 9) e antes da criação/atualização do PR (passo 10). É ativada automaticamente — não depende de classificação de tipo de mensagem.
+Esta skill é executada no **passo 9.1** do pipeline pré-commit, após o commit (passo 9) e antes da criação/atualização do PR (passo 10). É ativada **apenas quando a tarefa altera aspectos que afetam o pipeline de codificação**: passos do pipeline (0–11), comportamentos obrigatórios (1–13), skills de pipeline, rules de fluxo de codificação, ou hooks de enforcement. Mudanças puramente documentais não ativam esta skill.
 
 ---
 
@@ -62,23 +62,42 @@ FASE 1 — PREPARAÇÃO
      - Critérios de regressão:
        Quais comportamentos pré-existentes devem continuar funcionando em ambas as branches?
 
-FASE 2 — VALIDAÇÃO NA BRANCH DE DESENVOLVIMENTO
+FASE 2 — LANÇAMENTO PARALELO DOS SUBAGENTES
 
-  1. Lançar subagente na branch atual (sem isolamento):
-     - Tipo: general-purpose
+  1. Lançar AMBOS os subagentes em paralelo (mesma mensagem, dois Agent tool calls):
+
+     Subagente DEV:
+     - Tipo: general-purpose (sem isolamento)
      - Prompt: o comando de teste construído na Fase 1, passo 4
-     - O subagente executa na branch de desenvolvimento com o commit mais recente
+     - Executa na branch de desenvolvimento com o commit mais recente
 
-  2. Analisar o resultado do subagente:
+     Subagente MAIN:
+     - Tipo: general-purpose, isolation: "worktree"
+     - Prompt: o MESMO comando de teste (textualmente idêntico)
+     - Executa com a governança da branch main (sem o novo comportamento)
+
+  2. Aguardar conclusão de AMBOS os subagentes
+
+FASE 3 — ANÁLISE DOS RESULTADOS
+
+  1. Analisar resultado do subagente DEV:
      a. O novo comportamento de governança foi aplicado?
         - Verificar contra os critérios de sucesso da Fase 1, passo 5
         - Se SIM → registrar como APROVADO
-        - Se NÃO → ir para passo 3 (ciclo de correção)
+        - Se NÃO → ir para passo 4 (ciclo de correção)
      b. Os comportamentos pré-existentes foram preservados?
         - Verificar contra os critérios de regressão da Fase 1, passo 5
         - Se algum comportamento existente foi omitido → registrar regressão
 
-  3. Ciclo de correção (se novo comportamento NÃO aplicado):
+  2. Analisar resultado do subagente MAIN:
+     - Listar todos os passos/comportamentos de governança que o subagente identificou
+     - Comparar com a lista de passos da branch dev
+
+  3. Se regressão detectada na dev:
+     - Registrar cada comportamento omitido com detalhes
+     - Incluir no relatório final como item a investigar
+
+  4. Ciclo de correção (se novo comportamento NÃO aplicado no DEV):
      - Diagnosticar causa raiz:
        • Governança ambígua ou mal redigida?
        • Arquivo não importado no CLAUDE.md?
@@ -86,28 +105,12 @@ FASE 2 — VALIDAÇÃO NA BRANCH DE DESENVOLVIMENTO
        • Posicionamento incorreto do novo comportamento?
      - Corrigir os arquivos de governança
      - Criar novo commit com a correção
-     - Relançar o subagente (volta ao passo 1 desta fase)
+     - Relançar APENAS o subagente DEV (o resultado do main permanece válido)
      - Controle de tentativas:
        • Tentativa 1 → relançar
        • Tentativa 2 → relançar
        • Tentativa 3 → se ainda falhar, escalar ao usuário via AskUserQuestion
          com diagnóstico detalhado de cada tentativa
-
-  4. Se regressão detectada na dev:
-     - Registrar cada comportamento omitido com detalhes
-     - Incluir no relatório final como item a investigar
-
-FASE 3 — TESTE REGRESSIVO NA BRANCH MAIN
-
-  1. Lançar subagente na branch main:
-     - Tipo: general-purpose
-     - Isolamento: worktree (cópia temporária do repositório na branch main)
-     - Prompt: o MESMO comando de teste da Fase 2 (textualmente idêntico)
-     - O subagente executa com a governança da branch main (sem o novo comportamento)
-
-  2. Analisar o resultado do subagente:
-     - Listar todos os passos/comportamentos de governança que o subagente identificou
-     - Comparar com a lista de passos da branch dev
 
 FASE 4 — COMPARAÇÃO E RELATÓRIO
 
