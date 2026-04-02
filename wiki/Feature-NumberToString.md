@@ -25,13 +25,19 @@ Não requer autenticação.
 
 ## Comportamento
 
-- Se `number` for `1`, retorna `{ "value": "Um" }`
-- Se `number` for `2`, retorna `{ "value": "Dois" }`
-- Para qualquer outro valor inteiro, retorna HTTP 422
+| Entrada | Saída |
+|---|---|
+| `1` | `{ "value": "Um" }` |
+| `2` | `{ "value": "Dois" }` |
+| `3` | `{ "value": "Três" }` |
+| `4` | `{ "value": "Quatro" }` |
+| `5` | `{ "value": "Cinco" }` |
+
+Para qualquer outro valor inteiro, retorna HTTP 422.
 
 ## Testes Automatizados
 
-- `ExecuteAsync_DeveRetornarTextoCorreto_QuandoNumeroCadastrado` — valida 1 → "Um" e 2 → "Dois"
+- `ExecuteAsync_DeveRetornarTextoCorreto_QuandoNumeroCadastrado` — valida 1→"Um", 2→"Dois", 3→"Três", 4→"Quatro", 5→"Cinco"
 - `ExecuteAsync_DeveRetornarNull_QuandoNumeroNaoMapeado` — valida retorno null para número não mapeado
 - `ExecuteAsync_DeveRegistrarLogDeConversao_QuandoNumeroCadastrado` — valida log de entrada
 - `ExecuteAsync_DeveRegistrarLogDeRetorno_QuandoNumeroCadastrado` — valida log de saída

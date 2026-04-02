@@ -10,6 +10,9 @@ public sealed class NumberToStringUseCase(ILogger<NumberToStringUseCase> logger)
         {
             1 => "Um",
             2 => "Dois",
+            3 => "Três",
+            4 => "Quatro",
+            5 => "Cinco",
             _ => null
         };
 

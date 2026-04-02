@@ -9,6 +9,9 @@ public sealed class NumberToStringUseCaseTests
     [Theory]
     [InlineData(1, "Um")]
     [InlineData(2, "Dois")]
+    [InlineData(3, "Três")]
+    [InlineData(4, "Quatro")]
+    [InlineData(5, "Cinco")]
     public async Task ExecuteAsync_DeveRetornarTextoCorreto_QuandoNumeroCadastrado(int number, string expected)
     {
         var fakeLogger = new FakeLogger<NumberToStringUseCase>();
