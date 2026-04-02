@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Starter.Template.AOT.Api.Infra.ExceptionHandling;
 using Starter.Template.AOT.Api.Infra.Json;
 using Starter.Template.AOT.Api.Infra.ModelBinding;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Starter.Template.AOT.Api.Infra.HealthChecks;
 using Starter.Template.AOT.Api.Infra.Security;
 using Starter.Template.AOT.Api.Infra.Logging;
-using Starter.Template.AOT.Api.Features.Query.NumberStringGetByValue;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -83,10 +81,7 @@ builder.Services.AddControllers(options =>
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonContext.Default));
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = true;
-    options.SuppressInferBindingSourcesForParameters = true;
-});
+    options.SuppressModelStateInvalidFilter = true);
 builder.Services.AddSingleton<IObjectModelValidator, NoOpObjectModelValidator>();
 
 builder.Services.AddHttpClient("datadog-agent", c =>
@@ -103,7 +98,8 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-builder.Services.AddScoped<INumberStringGetByValueUseCase, NumberStringGetByValueUseCase>();
+// TODO: Registrar Use Cases das features aqui
+// Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -137,6 +133,9 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NumberStringGetByValueEndpoint))]
+    // TODO: Adicionar DynamicDependency para cada Controller implementado
+    // Requer: using System.Diagnostics.CodeAnalysis; no topo do arquivo
+    // Exemplo:
+    // [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NomeDaFeatureEndpoint))]
     internal static void PreserveControllers() { }
 }

@@ -688,7 +688,8 @@ echo "--- 17. Integridade dos hooks ---"
 if [ -f "$SETTINGS" ]; then
   MISSING_HOOKS=""
   INVALID_HOOKS=""
-  while IFS= read -r script_name; do
+  while IFS= read -r hook_script; do
+    script_name=$(echo "$hook_script" | grep -oP '\.claude/hooks/\S+\.sh' | head -1)
     if [ -n "$script_name" ]; then
       if [ ! -f "$REPO_ROOT/$script_name" ]; then
         MISSING_HOOKS="$MISSING_HOOKS $script_name"
@@ -696,7 +697,7 @@ if [ -f "$SETTINGS" ]; then
         INVALID_HOOKS="$INVALID_HOOKS $script_name(erro-de-sintaxe)"
       fi
     fi
-  done < <(grep -oP '\.claude/hooks/[a-zA-Z0-9_-]+\.sh' "$SETTINGS" | sort -u)
+  done < <(grep -oP '"command":\s*"[^"]*"' "$SETTINGS" | sed 's/"command":\s*"//;s/"$//')
 
   HOOK_ISSUES="$MISSING_HOOKS$INVALID_HOOKS"
   if [ -z "$HOOK_ISSUES" ]; then
