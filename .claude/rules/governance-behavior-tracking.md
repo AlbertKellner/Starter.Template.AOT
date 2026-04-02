@@ -29,7 +29,7 @@ Os comportamentos esperados são derivados de três fontes complementares:
 
 | Fonte | O que contém | Onde está |
 |---|---|---|
-| Pipeline pré-commit | Passos obrigatórios por escopo (0 a 11) | `CLAUDE.md` seção "Pipeline de Validação Pré-Commit" |
+| Pipeline pré-commit | Passos obrigatórios por escopo (0 a 12) | `CLAUDE.md` seção "Pipeline de Validação Pré-Commit" |
 | Comportamentos obrigatórios | Regras transversais de toda interação (itens 1–11) | `CLAUDE.md` seção "Comportamento Obrigatório" |
 | Skills ativados | Workflows procedurais específicos da tarefa | `.claude/skills/*/SKILL.md` |
 
@@ -41,8 +41,8 @@ Nem todos os comportamentos se aplicam a todos os escopos. A filtragem é obriga
 
 | Escopo | Passos do pipeline | Comportamentos obrigatórios |
 |---|---|---|
-| **Código** | Todos: 0 → 11 | Todos aplicáveis |
-| **Governança** | Apenas: 0.1, 9, 9.1 (condicional — apenas quando afeta pipeline de codificação), 10 | Todos exceto os vinculados a build/execução |
+| **Código** | Todos: 0 → 12 | Todos aplicáveis |
+| **Governança** | Apenas: 0.1, 9, 9.1 (condicional — apenas quando afeta pipeline de codificação), 10, 12 | Todos exceto os vinculados a build/execução |
 | **Análise de PR** | Conforme skill pr-analysis | Todos exceto criação de PR (passo 10) |
 
 ### Visibilidade Contínua

@@ -40,9 +40,9 @@ As seguintes skills são invocadas como passos do pipeline pré-commit (definido
 |---|---|---|
 | `validate-endpoints` | Passo 6 | Validação HTTP real de endpoints após implementação |
 | `verify-environment` | Passo 0 | Verificação de pré-requisitos de ambiente |
-| `manage-pr-lifecycle` | Passos 10-11 | Criação/atualização de PR e acompanhamento de CI |
+| `manage-pr-lifecycle` | Passos 10-12 | Criação/atualização de PR, acompanhamento de CI e trigger de revisão automática |
 | `governance-behavior-tracking` | Início e fim da tarefa | Coleta, apresentação e verificação de comportamentos esperados |
-| `auto-pr-review` | Pós-passo 10 (trigger) | Revisão automática de PR com ciclo Revisor↔Codificador |
+| `auto-pr-review` | Passo 12 (pós-CI) | Revisão automática de PR com ciclo Revisor↔Codificador |
 | `governance-validation-pipeline` | Passo 9.1 | Validação de mudanças de governança via subagentes (dev + regressão main) |
 
 ---

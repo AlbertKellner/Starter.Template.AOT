@@ -50,7 +50,7 @@ Esta rule define a política de revisão automática de código em Pull Requests
 
 ### Trigger
 
-Após criação ou atualização de PR (passo 10 do pipeline pré-commit), o assistente deve perguntar ao usuário se deseja revisão automática de código. A skill só prossegue com confirmação positiva.
+Após a conclusão do acompanhamento de GitHub Actions (passo 11 do pipeline pré-commit), como passo 12, o assistente deve perguntar ao usuário se deseja revisão automática de código. A skill só prossegue com confirmação positiva.
 
 ### Isolamento de MCP Tools
 
