@@ -136,8 +136,8 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Data** | 2026-04-02 |
 | **Comando executado** | `git fetch origin && git push origin claude/number-string-endpoint-gxGKO` |
 | **Erro retornado** | `error: RPC failed; HTTP 503 curl 22 The requested URL returned error: 503` |
-| **Causa** | Mesma causa do Erro 1 — fetch funciona, push bloqueado pelo servidor |
-| **Novo comando / solução** | Ver Erro 1 |
+| **Causa** | Mesma causa do Erro 9 — fetch funciona, push bloqueado pelo servidor |
+| **Novo comando / solução** | Ver Erro 9 |
 
 ## Erro 11 — Captura automática via hook
 
