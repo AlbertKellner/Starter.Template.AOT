@@ -29,22 +29,110 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 - `src/Starter.Template.AOT.Api/Dockerfile` — modificado para suporte a CA customizada e hash symlinks
 - `assumptions-log.md` — premissas de ambiente registradas
 
-## Erro 1 — git push HTTP 503
+## Erro 1 — dotnet não encontrado no PATH padrão
 
 | Campo | Valor |
 |---|---|
 | **Número** | 1 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `git checkout -B claude/number-string-endpoint-gxGKO 2>&1 && dotnet --version 2>&1 && docker --version 2>&1` |
+| **Erro retornado** | `/bin/bash: line 2: dotnet: command not found` |
+| **Causa** | dotnet SDK instalado em `/root/.dotnet` não está no PATH padrão do shell |
+| **Novo comando / solução** | `export PATH="/root/.dotnet:$PATH"` antes de qualquer comando dotnet |
+
+## Erro 2 — governance-audit.sh truncado no check 17
+
+| Campo | Valor |
+|---|---|
+| **Número** | 2 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `bash scripts/governance-audit.sh` |
+| **Erro retornado** | Exit code 1 — script trunca na verificação 17 (integridade dos hooks) |
+| **Causa** | Regex `"[^"]*"` no check 17 truncava em escaped quotes (`\"`), gerando input malformado para o loop `while read` |
+| **Novo comando / solução** | Substituir extração por `grep -oP '\.claude/hooks/[a-zA-Z0-9_-]+\.sh' "$SETTINGS" \| sort -u` — extração direta de paths |
+
+## Erro 3 — Health check antes da app estar pronta
+
+| Campo | Valor |
+|---|---|
+| **Número** | 3 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | `HTTP 000` (exit code 7 — connection refused) |
+| **Causa** | App em startup com `NotSupportedException` no `MapControllers()` por `IsEnhancedModelMetadataSupported` false ao processar parâmetro de rota |
+| **Novo comando / solução** | Adicionar `SuppressInferBindingSourcesForParameters = true` em `ApiBehaviorOptions` no Program.cs |
+
+## Erro 4 — Health check retry (duplicata do Erro 3)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 4 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | `HTTP 000` (exit code 7) |
+| **Causa** | Mesmo que Erro 3 — app ainda crashada antes do fix |
+| **Novo comando / solução** | Ver Erro 3 |
+
+## Erro 5 — Docker daemon não rodando
+
+| Campo | Valor |
+|---|---|
+| **Número** | 5 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `docker compose up -d --build` |
+| **Erro retornado** | `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?` |
+| **Causa** | Docker daemon não iniciado automaticamente no sandbox |
+| **Novo comando / solução** | `dockerd > /dev/null 2>&1 &` seguido de `sleep 3` |
+
+## Erro 6 — DNS failure no Docker build
+
+| Campo | Valor |
+|---|---|
+| **Número** | 6 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `docker compose up -d --build` |
+| **Erro retornado** | `Temporary failure resolving 'archive.ubuntu.com' / E: Unable to locate package clang` |
+| **Causa** | Resolução DNS indisponível dentro de containers Docker neste sandbox — problema de rede do ambiente, não da aplicação |
+| **Novo comando / solução** | Pendente — bloqueio de rede do sandbox. CI validará o Docker build |
+
+## Erro 7 — DNS failure no Docker build (retry com DNS config)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 7 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `docker compose up -d --build` (após configurar DNS 8.8.8.8 em daemon.json) |
+| **Erro retornado** | `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | DNS config em daemon.json não propagou para BuildKit. Limitação de rede do sandbox |
+| **Novo comando / solução** | Pendente — mesma causa que Erro 6 |
+
+## Erro 8 — Health check antes da app terminar compilação
+
+| Campo | Valor |
+|---|---|
+| **Número** | 8 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `sleep 6 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | `HTTP 000` (exit code 7 — connection refused) |
+| **Causa** | App ainda compilando (Roslyn) após 6 segundos de espera; precisa de ~15 segundos para iniciar |
+| **Novo comando / solução** | Aumentar sleep para 15 segundos ou usar polling loop |
+
+## Erro 9 — git push HTTP 503
+
+| Campo | Valor |
+|---|---|
+| **Número** | 9 |
 | **Data** | 2026-04-02 |
 | **Comando executado** | `git push -u origin claude/number-string-endpoint-gxGKO` |
 | **Erro retornado** | `error: RPC failed; HTTP 503 curl 22 The requested URL returned error: 503` |
 | **Causa** | Servidor git remoto retornando HTTP 503 (Service Unavailable) em todas as tentativas de push |
 | **Novo comando / solução** | Retry com backoff exponencial — todas falharam. Aguardar servidor restabelecer |
 
-## Erro 2 — git push HTTP 503 (retry com fetch)
+## Erro 10 — git push HTTP 503 (retry com fetch)
 
 | Campo | Valor |
 |---|---|
-| **Número** | 2 |
+| **Número** | 10 |
 | **Data** | 2026-04-02 |
 | **Comando executado** | `git fetch origin && git push origin claude/number-string-endpoint-gxGKO` |
 | **Erro retornado** | `error: RPC failed; HTTP 503 curl 22 The requested URL returned error: 503` |
