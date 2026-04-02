@@ -105,3 +105,14 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `Temporary failure resolving 'archive.ubuntu.com'` |
 | **Causa** | DNS config em daemon.json não propagou para BuildKit. Limitação de rede do sandbox |
 | **Novo comando / solução** | Pendente — mesma causa que Erro 6 |
+
+## Erro 8 — Health check antes da app terminar compilação
+
+| Campo | Valor |
+|---|---|
+| **Número** | 8 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `sleep 6 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | `HTTP 000` (exit code 7 — connection refused) |
+| **Causa** | App ainda compilando (Roslyn) após 6 segundos de espera; precisa de ~15 segundos para iniciar |
+| **Novo comando / solução** | Aumentar sleep para 15 segundos ou usar polling loop |
