@@ -34,7 +34,7 @@ Não requer autenticação.
 
 ### HTTP 404 — Número não mapeado
 
-Retorna Problem Details (RFC 7807) com status 404.
+Retorna HTTP 404 sem corpo.
 
 ## Comportamento
 
