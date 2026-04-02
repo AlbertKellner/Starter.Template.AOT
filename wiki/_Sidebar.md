@@ -31,3 +31,4 @@
 - [Skills](Claude-Skills)
 - [Hooks](Claude-Hooks)
 - [Convenções e Restrições](Claude-Conventions)
+- [Recursos Avançados](Claude-Advanced-Features)
