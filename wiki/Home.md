@@ -53,3 +53,4 @@ Documentação das capacidades, convenções e mecanismos do Claude neste reposi
 | [Skills](Claude-Skills) | Catálogo de skills disponíveis por tipo de ativação |
 | [Hooks](Claude-Hooks) | Hooks configurados e seus comportamentos |
 | [Convenções e Restrições](Claude-Conventions) | Comportamentos obrigatórios, linguagem, restrições |
+| [Recursos Avançados](Claude-Advanced-Features) | Frontmatter, agentes dedicados, contexto dinâmico, proteção |

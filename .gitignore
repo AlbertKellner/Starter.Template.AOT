@@ -5,3 +5,5 @@ obj/
 .env
 .claude/.pr-analysis-context
 .claude/.session-timer
+.claude/.pre-planning-done
+.claude/.compact-state

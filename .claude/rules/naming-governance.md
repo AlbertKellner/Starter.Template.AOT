@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.cs"
+  - "**/*.csproj"
+---
+
 # Regra: Governança de Nomenclatura
 
 ## Classificação
