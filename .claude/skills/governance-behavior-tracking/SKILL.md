@@ -40,6 +40,7 @@ FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
        [8]  docker compose down
        [9]  Commit
        [10] Criar/atualizar PR
+       [10.1] Perguntar sobre revisão automática de PR
        [11] Acompanhar CI + verificar logs Datadog
      - Escopo governança:
        [0.1] Executar auditoria de governança
@@ -97,6 +98,7 @@ FASE 2 — APRESENTAR VIA TODOWRITE
      GRUPO: Encerramento
        - [Passo 9] Commit
        - [Passo 10] PR
+       - [Passo 10.1] Perguntar sobre revisão automática de PR
        - [Passo 11] CI + Datadog
        - Verificação final de comportamentos (esta skill, Fase 4)
 
@@ -150,3 +152,4 @@ FASE 4 — VERIFICAÇÃO FINAL
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-21 | Criado: workflow de rastreamento de comportamentos esperados | Instrução do usuário |
+| 2026-04-02 | Corrigido: passo 10.1 (revisão automática de PR) adicionado em 3 locais — lista de passos escopo código, GRUPO Encerramento e exemplos. Causa raiz: omissão nos exemplos levou a não inclusão no TodoWrite | Análise de causa raiz — omissão de comportamento |
