@@ -92,7 +92,6 @@ docker compose down
 | Método | Rota | Autenticação | Descrição | Regra de Negócio |
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
-| `GET` | `/number-string/{value}` | Não | Conversão de número para texto (1→"Um", 2→"Dois") | — |
 
 ---
 
