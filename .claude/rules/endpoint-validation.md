@@ -97,6 +97,21 @@ Todas as chamadas de validação devem usar `http://localhost:8080` como base UR
 
 ---
 
+## Fallback para Modo Debug (quando Docker indisponível)
+
+Se o Docker não estiver disponível (erro de DNS, build, daemon não rodando) e a aplicação tiver sido validada em modo debug (passo 2):
+
+1. Reiniciar a aplicação em modo debug: `dotnet run --project <projeto> &`
+2. Aguardar health check em `http://localhost:5000/health`
+3. Validar endpoints contra `http://localhost:5000` (porta debug)
+4. Capturar e exibir logs de storytelling conforme política padrão (SNP-001)
+5. Encerrar o processo da aplicação após validação
+6. Registrar no relatório que a validação foi realizada em **modo debug** (não Docker)
+
+A validação em modo debug **não substitui** a validação via Docker — o CI validará via Docker. Porém, é **preferível a nenhuma validação**. O relatório deve indicar claramente qual modo foi utilizado.
+
+---
+
 ## Relação com Outras Rules
 
 - `environment-readiness.md` — a aplicação deve estar em execução antes desta rule ser ativada
@@ -110,6 +125,7 @@ Todas as chamadas de validação devem usar `http://localhost:8080` como base UR
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-17 | Criado: rule de validação obrigatória de endpoints após implementação de feature | Instrução do usuário |
+| 2026-04-02 | Adicionado: fallback para modo debug (porta 5000) quando Docker indisponível — validação complementar preferível a nenhuma validação | Análise de causa raiz — omissão de passo 6 |
 | 2026-03-20 | Adicionado: relatório de sucesso deve incluir status code, endpoint completo com parâmetros e JSON completo da resposta formatado em Markdown | Instrução do usuário |
 | 2026-03-20 | Adicionado: Passo 3.1 (captura de logs por requisição) e item 4 no Passo 5 (logs de storytelling obrigatórios no relatório, com verificação visual do padrão SNP-001) | Instrução do usuário |
 | 2026-03-21 | Adicionado: Passo 3.2 (validação de cache via segunda requisição consecutiva para endpoints com Memory Cache; validação de cache miss na primeira e cache hit na segunda) | Instrução do usuário |
