@@ -139,7 +139,7 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Causa** | Mesma causa do Erro 9 — fetch funciona, push bloqueado pelo servidor |
 | **Novo comando / solução** | Ver Erro 9 |
 
-## Erro 11 — Captura automática via hook
+## Erro 11 — Captura automática via hook (duplicata do Erro 8)
 
 | Campo | Valor |
 |---|---|
@@ -147,5 +147,27 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Data** | 2026-04-02 |
 | **Comando executado** | `sleep 15 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Causa** | Duplicata do Erro 8 — app ainda compilando após 15 segundos |
+| **Novo comando / solução** | Ver Erro 8 |
+
+## Erro 12 — MCP servers do GitHub não carregados no startup do Claude Code
+
+| Campo | Valor |
+|---|---|
+| **Número** | 12 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | ToolSearch para `mcp__github__*` no início da sessão |
+| **Erro retornado** | `No matching deferred tools found` — nenhuma ferramenta MCP do GitHub disponível |
+| **Causa** | Inicialização assíncrona dos MCP servers falhou ou excedeu timeout. Endpoint 100% acessível (6/6 testes OK via curl), tokens válidos (ClaudeCode-Bot e Claude-Revisor confirmados). Problema é client-side: Claude Code não completou handshake com os MCP servers no startup. `MCP_TIMEOUT` não estava configurado — timeout padrão insuficiente para payload pesado (20+ tools com ícones base64). |
+| **Novo comando / solução** | Adicionar `"MCP_TIMEOUT": "60000"` e `"MCP_TOOL_TIMEOUT": "300000"` em `.claude/settings.json` seção `env`. Adicionar verificação de conectividade MCP ao `session-start.sh` para diagnóstico imediato. |
+
+## Erro 13 — Falso positivo do hook PreToolUse:Bash em comandos com variáveis MCP
+
+| Campo | Valor |
+|---|---|
+| **Número** | 13 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `curl -s -X POST "https://api.githubcopilot.com/mcp/" -H "Authorization: Bearer ${GH_CLAUDE_CODE_MCP_CODIFICADOR}" ...` |
+| **Erro retornado** | `[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.` |
+| **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
+| **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |

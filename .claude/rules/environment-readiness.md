@@ -45,6 +45,12 @@ Em toda tarefa, antes de iniciar qualquer sequência de operações, avaliar ati
 - Existe etapa redundante que pode ser eliminada?
 - Existe abordagem mais rápida e reversível que produz o mesmo resultado?
 
+### Timeouts de MCP Servers
+
+O Claude Code inicializa MCP servers de forma assíncrona no startup da sessão. Se o handshake exceder o timeout padrão, as ferramentas MCP não ficam disponíveis. As variáveis `MCP_TIMEOUT` (handshake) e `MCP_TOOL_TIMEOUT` (chamadas individuais) devem ser configuradas em `.claude/settings.json` seção `env` para garantir inicialização confiável dos MCP servers do GitHub (payload pesado com 20+ tools).
+
+Valores recomendados: `MCP_TIMEOUT=60000` (60s), `MCP_TOOL_TIMEOUT=300000` (5min).
+
 ### Conversão de Problemas Recorrentes
 
 Todo problema recorrente de ambiente deve ser convertido em pré-requisito verificável:
@@ -75,3 +81,4 @@ O workflow completo (checklist de pré-requisitos, protocolo de ambiente não pr
 | 2026-03-18 | Criado: regra de prontidão de ambiente | Instrução do usuário |
 | 2026-03-19 | Expandido: eficiência de execução, evolução do script, conversão de problemas recorrentes | Instrução do usuário |
 | 2026-03-21 | Refatorado: workflows procedurais extraídos para skill verify-environment; rule simplificada para conter apenas política | Auditoria de governança |
+| 2026-04-02 | Adicionado: política de timeouts MCP (MCP_TIMEOUT, MCP_TOOL_TIMEOUT) para garantir inicialização confiável | Diagnóstico de MCP — Erro 12 |

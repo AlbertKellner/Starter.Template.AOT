@@ -9,7 +9,9 @@
   "autoMemoryEnabled": true,
   "env": {
     "GOVERNANCE_STRICT_MODE": "true",
-    "IDLE_THRESHOLD_MS": "120000"
+    "IDLE_THRESHOLD_MS": "120000",
+    "MCP_TIMEOUT": "60000",
+    "MCP_TOOL_TIMEOUT": "300000"
   },
   "hooks": {
     "SessionStart": [
@@ -43,8 +45,18 @@
           },
           {
             "type": "command",
-            "if": "Bash(git push --force*)",
+            "if": "Bash(git push --force)",
             "command": "echo '[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push --force *)",
+            "command": "echo '[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*--force-with-lease*)",
+            "command": "echo '[PreToolUse] BLOQUEADO: git push --force-with-lease detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
           }
         ]
       }

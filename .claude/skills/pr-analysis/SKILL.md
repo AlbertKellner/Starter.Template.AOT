@@ -229,9 +229,9 @@ Ativar esta skill **exclusivamente** quando o usuário solicitar explicitamente:
 - Relatório completo de status de aprovação
 - Merge realizado apenas quando solicitado explicitamente pelo usuário e todas as aprovações estiverem presentes
 
-## Como Carregar Ferramentas MCP (obrigatório)
+## Carregamento de Ferramentas MCP
 
-As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
+As ferramentas MCP carregam automaticamente via inicialização assíncrona do Claude Code. Para usá-las, carregar via `ToolSearch` com sintaxe `select:`:
 
 ```
 ToolSearch("select:mcp__github__pull_request_read,mcp__github__update_pull_request")
@@ -239,6 +239,8 @@ ToolSearch("select:mcp__github__add_reply_to_pull_request_comment,mcp__github__l
 ```
 
 **NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
+
+**Se ToolSearch não retornar as ferramentas**: não declarar "MCP indisponível" prematuramente — a inicialização assíncrona pode estar em andamento. Prosseguir com passos que não dependam de MCP e re-tentar `ToolSearch` nas interações seguintes (máximo 3 tentativas). Se persistir, reportar ao usuário e registrar em `bash-errors-log.md`.
 
 ---
 
