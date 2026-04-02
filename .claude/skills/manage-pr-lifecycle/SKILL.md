@@ -128,9 +128,9 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 
 **Nota**: Os logs detalhados de jobs falhados não estão disponíveis via MCP. O campo `html_url` do check run direciona ao GitHub para inspeção visual. O Datadog MCP complementa com logs da aplicação (env: `ci`).
 
-### Como usar as ferramentas MCP
+### Como carregar as ferramentas MCP (obrigatório)
 
-As ferramentas MCP do GitHub são **deferred tools** com **inicialização assíncrona**. Carregam automaticamente, mas podem demorar alguns minutos após o início da sessão. Para obter o schema de uma ferramenta e torná-la invocável, usar `ToolSearch` com a sintaxe `select:` e nomes exatos:
+As ferramentas MCP do GitHub são **deferred tools** — existem mas não carregam automaticamente. Para torná-las disponíveis, usar `ToolSearch` com a sintaxe `select:` e nomes exatos:
 
 ```
 ToolSearch("select:mcp__github__list_pull_requests,mcp__github__create_pull_request")
@@ -139,27 +139,16 @@ ToolSearch("select:mcp__github__update_pull_request,mcp__github__pull_request_re
 
 **NUNCA** usar busca por keywords (`"mcp github create pull request"`) — keywords não casam com nomes de ferramentas MCP e retornam resultados irrelevantes. Sempre usar `select:` com o nome completo da ferramenta (`mcp__github__<nome>`).
 
-### Comportamento de conexão dos MCP servers
-
-Os MCP servers HTTP **conectam e desconectam intermitentemente** durante a sessão. Isso é comportamento da plataforma Claude Code, não falha do endpoint (`api.githubcopilot.com/mcp/` é estável — 100% em testes exaustivos).
-
-**Padrão observado**:
-- Início da sessão → ferramentas podem não estar disponíveis ainda (inicialização assíncrona)
-- Após alguns minutos → `system-reminder` anuncia ferramentas disponíveis
-- Durante a sessão → podem desconectar e reconectar (anunciado via `system-reminder`)
-
-**IMPORTANTE**: Quando as ferramentas não aparecem no ToolSearch, **não declarar "MCP indisponível"**. A inicialização é assíncrona — prosseguir com outros passos do pipeline e tentar novamente depois.
-
-### Tratamento quando ferramentas MCP não estão disponíveis
+### Tratamento de Indisponibilidade de Ferramentas MCP
 
 Se `ToolSearch` com `select:` não retornar as ferramentas MCP do GitHub:
 
-1. Prosseguir com outros passos do pipeline que não dependem de MCP
-2. Tentar novamente após concluir passos independentes (máximo 3 tentativas)
-3. Se após 3 tentativas as ferramentas permanecem indisponíveis:
-   - Reportar ao usuário como bloqueio temporário (não permanente)
+1. Aguardar 30 segundos e tentar novamente (máximo 3 tentativas com backoff de 30s)
+2. Se após 3 tentativas as ferramentas permanecem indisponíveis:
+   - Reportar ao usuário como bloqueio explícito
+   - Registrar em `bash-errors-log.md`
    - Manter passos 10, 11 e 12 como `pending` no TodoWrite (NÃO remover)
-4. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
+3. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
    - Retomar IMEDIATAMENTE os passos pendentes (10, 11, 12)
    - Não aguardar próxima interação do usuário — retomar proativamente
 
@@ -216,4 +205,3 @@ Quando a tarefa é análise de PR:
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
 | 2026-04-02 | Adicionado: tratamento de indisponibilidade de ferramentas MCP (retry 3x, manter pending, retomar ao reconectar) e dependências explícitas entre passos 10→10.1→11 | Análise de causa raiz — omissões de pipeline |
 | 2026-04-02 | Adicionado: item 4 no trigger de revisão automática — atualizar descrição do PR após conclusão do auto-pr-review para refletir correções realizadas | Análise de omissões pós-review |
-| 2026-04-02 | Corrigido: seção MCP reescrita — ferramentas carregam automaticamente com inicialização assíncrona (não "não carregam automaticamente"); documentado comportamento de conexão intermitente da plataforma; não declarar "indisponível" prematuramente | Diagnóstico de MCP — testes exaustivos |
