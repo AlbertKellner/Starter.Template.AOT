@@ -1,3 +1,8 @@
+---
+paths:
+  - "bash-errors-log.md"
+---
+
 # Regra: Registro de Erros de Bash
 
 ## Propósito

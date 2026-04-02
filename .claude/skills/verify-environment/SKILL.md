@@ -1,3 +1,16 @@
+---
+name: verify-environment
+description: Verificação de pré-requisitos de ambiente antes da execução
+paths:
+  - "**/Dockerfile"
+  - "**/docker-compose*.yml"
+  - "**/*.csproj"
+allowed-tools:
+  - Bash
+  - Read
+  - Glob
+---
+
 # Skill: verify-environment
 
 ## Propósito

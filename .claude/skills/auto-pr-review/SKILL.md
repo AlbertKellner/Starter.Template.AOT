@@ -1,3 +1,16 @@
+---
+name: auto-pr-review
+description: Revisão automática de código em PRs com ciclo Revisor↔Codificador
+context: fork
+allowed-tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - mcp__github__*
+  - mcp__github-revisor__*
+---
+
 # Skill: auto-pr-review
 
 ## Propósito
@@ -198,6 +211,18 @@ Esta skill é ativada:
 | `pull_request_read` | `get` | Verificar status do PR |
 | `pull_request_read` | `get_review_comments` | Ler threads de review para identificar apontamentos |
 | `add_reply_to_pull_request_comment` | — | Responder a cada thread processada |
+
+### Como carregar as ferramentas MCP (obrigatório)
+
+As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
+
+```
+ToolSearch("select:mcp__github__pull_request_read,mcp__github__add_reply_to_pull_request_comment")
+ToolSearch("select:mcp__github-revisor__pull_request_read,mcp__github-revisor__pull_request_review_write")
+ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__github-revisor__add_reply_to_pull_request_comment")
+```
+
+**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
 
 ---
 

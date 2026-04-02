@@ -102,6 +102,17 @@ O assistente pode lançar subagents especializados quando a tarefa beneficiar de
 | Exploração de codebase | `subagent_type: Explore` | Antes de implementar, para entender a estrutura atual |
 | Revisão de alinhamento | `subagent_type: general-purpose` | Após mudanças significativas, verificar consistência |
 | Validação de testes | `subagent_type: general-purpose` | Executar testes em paralelo com outras tarefas |
+| Revisão de código | `subagent_type: code-reviewer` | Após mudanças de código, verificar conformidade com governança |
+| Auditoria de governança | `subagent_type: governance-auditor` | Após mudanças de governança, verificar consistência entre artefatos |
+
+### Agentes Dedicados (`.claude/agents/`)
+
+Agentes com configuração persistente, memória por projeto e ferramentas restritas:
+
+| Agente | Propósito | Ferramentas | Memória |
+|---|---|---|---|
+| `code-reviewer` | Revisão de código contra governança (read-only) | Read, Grep, Glob, Bash | Projeto |
+| `governance-auditor` | Auditoria de consistência de artefatos de governança (read-only) | Read, Grep, Glob, Bash | Projeto |
 
 ---
 
@@ -112,6 +123,7 @@ O assistente pode lançar subagents especializados quando a tarefa beneficiar de
 - `.claude/rules/` — políticas operacionais
 - `.claude/skills/` — workflows executáveis
 - `.claude/hooks/` — enforcement automatizado
+- `.claude/agents/` — agentes especializados com memória persistente
 - `.claude/settings.json` — permissões e configuração de hooks
 
 ---
@@ -127,3 +139,4 @@ O assistente pode lançar subagents especializados quando a tarefa beneficiar de
 | 2026-03-21 | Adicionado: seção "Skills de Pipeline" distinguindo skills ativadas por tipo de mensagem (8) de skills de passos do pipeline (3) | Análise estrutural de governança |
 | 2026-03-21 | Adicionado: skill governance-behavior-tracking na tabela de Skills de Pipeline (coleta, apresentação e verificação de comportamentos esperados) | Instrução do usuário |
 | 2026-04-01 | Adicionado: skill governance-validation-pipeline na tabela de Skills de Pipeline (passo 9.1 — validação de governança via subagentes) | Instrução do usuário |
+| 2026-04-01 | Adicionado: seção "Agentes Dedicados" com code-reviewer e governance-auditor; referência a .claude/agents/ nas referências cruzadas | Melhoria de governança com recursos avançados do Claude Code |
