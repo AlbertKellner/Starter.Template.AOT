@@ -128,27 +128,31 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 
 **Nota**: Os logs detalhados de jobs falhados não estão disponíveis via MCP. O campo `html_url` do check run direciona ao GitHub para inspeção visual. O Datadog MCP complementa com logs da aplicação (env: `ci`).
 
-### Como carregar as ferramentas MCP (obrigatório)
+### Carregamento de Ferramentas MCP
 
-As ferramentas MCP do GitHub são **deferred tools** — existem mas não carregam automaticamente. Para torná-las disponíveis, usar `ToolSearch` com a sintaxe `select:` e nomes exatos:
+As ferramentas MCP do GitHub carregam automaticamente via inicialização assíncrona do Claude Code. Porém, a inicialização pode demorar ou falhar intermitentemente. O endpoint é 100% estável — o problema, quando ocorre, é client-side.
+
+**Para carregar ferramentas**, usar `ToolSearch` com sintaxe `select:` e nomes exatos:
 
 ```
 ToolSearch("select:mcp__github__list_pull_requests,mcp__github__create_pull_request")
 ToolSearch("select:mcp__github__update_pull_request,mcp__github__pull_request_read")
 ```
 
-**NUNCA** usar busca por keywords (`"mcp github create pull request"`) — keywords não casam com nomes de ferramentas MCP e retornam resultados irrelevantes. Sempre usar `select:` com o nome completo da ferramenta (`mcp__github__<nome>`).
+**NUNCA** usar busca por keywords — sempre usar `select:` com o nome completo (`mcp__github__<nome>`).
 
-### Tratamento de Indisponibilidade de Ferramentas MCP
+### Protocolo de Retry quando MCP não Responde
 
-Se `ToolSearch` com `select:` não retornar as ferramentas MCP do GitHub:
+Se `ToolSearch` com `select:` não retornar as ferramentas MCP:
 
-1. Aguardar 30 segundos e tentar novamente (máximo 3 tentativas com backoff de 30s)
-2. Se após 3 tentativas as ferramentas permanecem indisponíveis:
+1. **Não declarar "MCP indisponível" prematuramente** — a inicialização assíncrona pode estar em andamento
+2. Prosseguir com outros passos da tarefa que não dependam de MCP
+3. Re-tentar `ToolSearch` a cada interação subsequente (máximo 3 tentativas explícitas)
+4. Se após 3 tentativas as ferramentas permanecem indisponíveis:
    - Reportar ao usuário como bloqueio explícito
    - Registrar em `bash-errors-log.md`
    - Manter passos 10, 11 e 12 como `pending` no TodoWrite (NÃO remover)
-3. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
+5. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
    - Retomar IMEDIATAMENTE os passos pendentes (10, 11, 12)
    - Não aguardar próxima interação do usuário — retomar proativamente
 
@@ -205,3 +209,4 @@ Quando a tarefa é análise de PR:
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
 | 2026-04-02 | Adicionado: tratamento de indisponibilidade de ferramentas MCP (retry 3x, manter pending, retomar ao reconectar) e dependências explícitas entre passos 10→10.1→11 | Análise de causa raiz — omissões de pipeline |
 | 2026-04-02 | Adicionado: item 4 no trigger de revisão automática — atualizar descrição do PR após conclusão do auto-pr-review para refletir correções realizadas | Análise de omissões pós-review |
+| 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry substituiu declaração prematura de indisponibilidade | Diagnóstico de MCP — Erro 12 |
