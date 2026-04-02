@@ -112,8 +112,16 @@ FASE 3 — ATUALIZAR DURANTE EXECUÇÃO
      - Adicionar ao TodoWrite como pending
   4. Se um comportamento se tornar inaplicável durante a execução:
      - Remover do TodoWrite (não manter como pendente)
+  5. Se um comportamento é bloqueado por erro de ferramenta (MCP indisponível, Docker DNS, rede):
+     - NÃO remover do TodoWrite — manter como pending com nota de bloqueio
+     - Se a ferramenta reconectar durante a sessão, retomar imediatamente os passos adiados
+     - Apenas na Fase 4, se não foi possível retomar, classificar como (iii)
 
-FASE 4 — VERIFICAÇÃO FINAL
+FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
+
+  ENFORCEMENT: A Fase 4 é OBRIGATÓRIA e não pode ser omitida. O relatório de
+  comportamentos deve ser o último ato antes de considerar a tarefa concluída.
+  A ausência do relatório é ela própria uma omissão de comportamento.
 
   1. Revisar o TodoWrite inteiro
   2. Para cada comportamento NÃO marcado como completed:
@@ -121,6 +129,9 @@ FASE 4 — VERIFICAÇÃO FINAL
         (i)   Inaplicável ao escopo — justificar
         (ii)  Omitido/esquecido — executar imediatamente
         (iii) Bloqueado por erro — registrar em bash-errors-log.md
+              Exemplo: passo 10 bloqueado por MCP indisponível → verificar se MCP
+              reconectou durante a sessão; se sim, executar agora; se não, registrar
+              como (iii) com justificativa
      b. Para (ii) e (iii), investigar causa raiz:
         - Por que o comportamento não foi executado?
         - O que na governança falhou em garantir a execução?
@@ -153,3 +164,4 @@ FASE 4 — VERIFICAÇÃO FINAL
 |---|---|---|
 | 2026-03-21 | Criado: workflow de rastreamento de comportamentos esperados | Instrução do usuário |
 | 2026-04-02 | Corrigido: passo 10.1 (revisão automática de PR) adicionado em 3 locais — lista de passos escopo código, GRUPO Encerramento e exemplos. Causa raiz: omissão nos exemplos levou a não inclusão no TodoWrite | Análise de causa raiz — omissão de comportamento |
+| 2026-04-02 | Adicionado: Fase 3 item 5 (comportamentos bloqueados por erro de ferramenta — manter pending, retomar ao reconectar); Fase 4 marcada como OBRIGATÓRIA com enforcement explícito; exemplo de MCP em categoria (iii) | Análise exaustiva de omissões |
