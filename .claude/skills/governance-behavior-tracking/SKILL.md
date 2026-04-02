@@ -56,8 +56,8 @@ FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
        [8]  docker compose down
        [9]  Commit
        [10] Criar/atualizar PR
-       [10.1] Perguntar sobre revisão automática de PR
        [11] Acompanhar CI + verificar logs Datadog
+       [12] Perguntar sobre revisão automática de PR
      - Escopo governança:
        [0.1] Executar auditoria de governança
        [9]   Commit
@@ -114,8 +114,8 @@ FASE 2 — APRESENTAR VIA TODOWRITE
      GRUPO: Encerramento
        - [Passo 9] Commit
        - [Passo 10] PR
-       - [Passo 10.1] Perguntar sobre revisão automática de PR
        - [Passo 11] CI + Datadog
+       - [Passo 12] Perguntar sobre revisão automática de PR
        - Verificação final de comportamentos (esta skill, Fase 4)
 
   2. Todos marcados como pending inicialmente

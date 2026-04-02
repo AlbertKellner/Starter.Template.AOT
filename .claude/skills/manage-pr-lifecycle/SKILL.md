@@ -23,7 +23,7 @@ Executar o workflow de criação, atualização e acompanhamento de Pull Request
 
 ## Quando Usar
 
-Esta skill é ativada pelos passos 10 e 11 do pipeline de validação pré-commit (CLAUDE.md), após o commit.
+Esta skill é ativada pelos passos 10, 11 e 12 do pipeline de validação pré-commit (CLAUDE.md), após o commit.
 
 ---
 
@@ -147,29 +147,29 @@ Se `ToolSearch` com `select:` não retornar as ferramentas MCP do GitHub:
 2. Se após 3 tentativas as ferramentas permanecem indisponíveis:
    - Reportar ao usuário como bloqueio explícito
    - Registrar em `bash-errors-log.md`
-   - Manter passos 10, 10.1 e 11 como `pending` no TodoWrite (NÃO remover)
+   - Manter passos 10, 11 e 12 como `pending` no TodoWrite (NÃO remover)
 3. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
-   - Retomar IMEDIATAMENTE os passos pendentes (10, 10.1, 11)
+   - Retomar IMEDIATAMENTE os passos pendentes (10, 11, 12)
    - Não aguardar próxima interação do usuário — retomar proativamente
 
 ### Dependências entre Passos
 
 | Passo | Depende de | Se bloqueado |
 |-------|-----------|--------------|
-| 10.1 | Passo 10 completo | Adiar (manter `pending` no TodoWrite) até passo 10 resolver |
 | 11 | Passo 10 completo (PR existe) | Adiar (manter `pending` no TodoWrite) até passo 10 resolver |
+| 12 | Passo 11 completo (CI validado) | Adiar (manter `pending` no TodoWrite) até passo 11 resolver |
 
 Passos adiados NÃO são removidos do TodoWrite. São retomados quando a dependência for resolvida.
 
 ---
 
-## Workflow — Trigger de Revisão Automática (skill auto-pr-review)
+## Workflow — Trigger de Revisão Automática (Passo 12 — skill auto-pr-review)
 
-Após a conclusão do Passo 2a (criação de novo PR) ou Passo 2b (atualização de PR existente), executar:
+Após a conclusão do Passo 11 (acompanhamento de GitHub Actions com CI validado), executar:
 
 1. Perguntar ao usuário: **"Deseja que a revisão automática de código seja realizada neste PR?"**
 2. Se a resposta for positiva → invocar a skill `auto-pr-review` com o número do PR
-3. Se a resposta for negativa → prosseguir normalmente (passo 11 se aplicável)
+3. Se a resposta for negativa → encerrar a tarefa normalmente
 4. **Após conclusão do auto-pr-review** (se executado): atualizar a descrição do PR para refletir as correções realizadas pela revisão (ex: FrozenDictionary, Stub de teste, reordenação de histórico). A política de `pr-metadata-governance.md` exige que a descrição seja atualizada a cada novo commit.
 
 **Este trigger não se aplica** durante tarefas de `pr-analysis` (o PR já está sendo analisado por outra skill).
