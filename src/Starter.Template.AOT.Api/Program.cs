@@ -81,7 +81,10 @@ builder.Services.AddControllers(options =>
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonContext.Default));
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
-    options.SuppressModelStateInvalidFilter = true);
+{
+    options.SuppressModelStateInvalidFilter = true;
+    options.SuppressInferBindingSourcesForParameters = true;
+});
 builder.Services.AddSingleton<IObjectModelValidator, NoOpObjectModelValidator>();
 
 builder.Services.AddHttpClient("datadog-agent", c =>

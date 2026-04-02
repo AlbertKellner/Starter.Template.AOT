@@ -103,6 +103,8 @@ O workflow de criação/atualização está em `.claude/skills/manage-pr-lifecyc
 
 **Não se aplica a tarefas exclusivamente de governança** (sem código, sem build, sem Docker).
 
+**Pré-condição**: o passo 11 depende da existência de PR (passo 10 completo). Se o passo 10 for bloqueado por indisponibilidade de ferramentas MCP, o passo 11 é adiado até resolução do bloqueio. Se a resolução ocorrer durante a sessão (MCP reconectar), retomar imediatamente.
+
 O workflow de acompanhamento está em `.claude/skills/manage-pr-lifecycle/SKILL.md`.
 
 ---
@@ -169,3 +171,4 @@ Todo merge deve utilizar **merge commit** (`merge_method: "merge"`).
 | 2026-03-21 | Refatorado: workflows procedurais extraídos para skill manage-pr-lifecycle; rule simplificada para conter apenas políticas | Auditoria de governança |
 | 2026-03-21 | Adicionado: referência explícita ao hook branch-guard.sh na Política de Branch | Análise estrutural de governança |
 | 2026-03-30 | Adicionado: referência ao hook post-commit-pr-reminder.sh na Política de Verificação e Criação Automática de PR | Verificação de conformidade de governança |
+| 2026-04-02 | Adicionado: pré-condição do passo 11 (depende de PR existente do passo 10; adiamento e retomada automática quando MCP reconectar) | Análise de causa raiz — omissão de passo 11 |

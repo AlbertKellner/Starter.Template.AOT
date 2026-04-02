@@ -93,8 +93,6 @@ docker compose down
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
 
-> **Nota**: Adicionar endpoints à medida que features forem implementadas. O endpoint `/health` é o único presente no template base.
-
 ---
 
 ## Problemas Recorrentes e Soluções
