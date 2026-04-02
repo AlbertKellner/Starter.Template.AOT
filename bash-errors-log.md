@@ -116,3 +116,14 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `HTTP 000` (exit code 7 — connection refused) |
 | **Causa** | App ainda compilando (Roslyn) após 6 segundos de espera; precisa de ~15 segundos para iniciar |
 | **Novo comando / solução** | Aumentar sleep para 15 segundos ou usar polling loop |
+
+## Erro 9 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 9 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `find /home/user/Starter.Template.AOT/src -name "*.json" -o -name "*.csproj" | xargs grep -l "NumberString" 2>/dev/null` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
