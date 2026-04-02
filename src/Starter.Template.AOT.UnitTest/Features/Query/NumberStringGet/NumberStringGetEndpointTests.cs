@@ -7,13 +7,18 @@ namespace Starter.Template.AOT.UnitTest.Features.Query.NumberStringGet;
 
 public sealed class NumberStringGetEndpointTests
 {
+    private sealed class StubNumberStringGetUseCase(NumberStringGetOutput output) : INumberStringGetUseCase
+    {
+        public NumberStringGetOutput Execute(int value) => output;
+    }
+
     [Fact]
     public void Get_DeveRetornarOkComOutputCorreto()
     {
-        var fakeUseCaseLogger = new FakeLogger<NumberStringGetUseCase>();
-        var useCase = new NumberStringGetUseCase(fakeUseCaseLogger);
+        var expectedOutput = new NumberStringGetOutput(1, "Um");
+        var stubUseCase = new StubNumberStringGetUseCase(expectedOutput);
         var fakeEndpointLogger = new FakeLogger<NumberStringGetEndpoint>();
-        var endpoint = new NumberStringGetEndpoint(useCase, fakeEndpointLogger);
+        var endpoint = new NumberStringGetEndpoint(stubUseCase, fakeEndpointLogger);
 
         var result = endpoint.Get(1);
 
@@ -26,10 +31,10 @@ public sealed class NumberStringGetEndpointTests
     [Fact]
     public void Get_DeveRegistrarLogDeRecebimentoDeRequisicao()
     {
-        var fakeUseCaseLogger = new FakeLogger<NumberStringGetUseCase>();
-        var useCase = new NumberStringGetUseCase(fakeUseCaseLogger);
+        var expectedOutput = new NumberStringGetOutput(1, "Um");
+        var stubUseCase = new StubNumberStringGetUseCase(expectedOutput);
         var fakeEndpointLogger = new FakeLogger<NumberStringGetEndpoint>();
-        var endpoint = new NumberStringGetEndpoint(useCase, fakeEndpointLogger);
+        var endpoint = new NumberStringGetEndpoint(stubUseCase, fakeEndpointLogger);
 
         endpoint.Get(1);
 
@@ -42,10 +47,10 @@ public sealed class NumberStringGetEndpointTests
     [Fact]
     public void Get_DeveRegistrarLogDeRetorno()
     {
-        var fakeUseCaseLogger = new FakeLogger<NumberStringGetUseCase>();
-        var useCase = new NumberStringGetUseCase(fakeUseCaseLogger);
+        var expectedOutput = new NumberStringGetOutput(2, "Dois");
+        var stubUseCase = new StubNumberStringGetUseCase(expectedOutput);
         var fakeEndpointLogger = new FakeLogger<NumberStringGetEndpoint>();
-        var endpoint = new NumberStringGetEndpoint(useCase, fakeEndpointLogger);
+        var endpoint = new NumberStringGetEndpoint(stubUseCase, fakeEndpointLogger);
 
         endpoint.Get(2);
 

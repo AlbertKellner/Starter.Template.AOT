@@ -1,12 +1,14 @@
+using System.Collections.Frozen;
+
 namespace Starter.Template.AOT.Api.Features.Query.NumberStringGet;
 
 public sealed class NumberStringGetUseCase(ILogger<NumberStringGetUseCase> logger) : INumberStringGetUseCase
 {
-    private static readonly Dictionary<int, string> NumberMap = new()
+    private static readonly FrozenDictionary<int, string> NumberMap = new Dictionary<int, string>
     {
         { 1, "Um" },
         { 2, "Dois" }
-    };
+    }.ToFrozenDictionary();
 
     public NumberStringGetOutput Execute(int value)
     {

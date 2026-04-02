@@ -125,9 +125,9 @@ A validação em modo debug **não substitui** a validação via Docker — o CI
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-17 | Criado: rule de validação obrigatória de endpoints após implementação de feature | Instrução do usuário |
-| 2026-04-02 | Adicionado: fallback para modo debug (porta 5000) quando Docker indisponível — validação complementar preferível a nenhuma validação | Análise de causa raiz — omissão de passo 6 |
 | 2026-03-20 | Adicionado: relatório de sucesso deve incluir status code, endpoint completo com parâmetros e JSON completo da resposta formatado em Markdown | Instrução do usuário |
 | 2026-03-20 | Adicionado: Passo 3.1 (captura de logs por requisição) e item 4 no Passo 5 (logs de storytelling obrigatórios no relatório, com verificação visual do padrão SNP-001) | Instrução do usuário |
 | 2026-03-21 | Adicionado: Passo 3.2 (validação de cache via segunda requisição consecutiva para endpoints com Memory Cache; validação de cache miss na primeira e cache hit na segunda) | Instrução do usuário |
 | 2026-03-21 | Refatorado: workflow procedural extraído para skill validate-endpoints; rule simplificada para conter apenas política | Auditoria de governança |
 | 2026-03-21 | Adicionado: Política de Exibição de Logs de Storytelling — exibição íntegra obrigatória; proibição explícita de resumir, parafrasear ou omitir logs | Instrução do usuário |
+| 2026-04-02 | Adicionado: fallback para modo debug (porta 5000) quando Docker indisponível — validação complementar preferível a nenhuma validação | Análise de causa raiz — omissão de passo 6 |
