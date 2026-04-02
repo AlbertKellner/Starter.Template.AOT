@@ -138,3 +138,14 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `error: RPC failed; HTTP 503 curl 22 The requested URL returned error: 503` |
 | **Causa** | Mesma causa do Erro 1 — fetch funciona, push bloqueado pelo servidor |
 | **Novo comando / solução** | Ver Erro 1 |
+
+## Erro 11 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 11 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `sleep 15 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
