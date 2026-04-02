@@ -23,6 +23,7 @@
 - [Visão Geral](Domain-Overview)
 - [Regras de Negócio](Domain-Business-Rules)
 - [Health Check](Feature-Health)
+- [NumberStringGet](Feature-NumberStringGet)
 
 ---
 
