@@ -68,7 +68,7 @@ Antes de planejar, executar código ou propor/revisar/alterar governança: verif
 Ver `.claude/rules/pre-planning-consultation.md` para a política completa.
 
 ### 13. Validar mudanças de governança que afetam o pipeline de codificação via subagentes
-Quando a tarefa alterar aspectos que afetam o pipeline de codificação (passos 0–11, comportamentos obrigatórios 1–13, skills de pipeline, rules de fluxo de codificação ou hooks de enforcement), lançar subagentes após o commit (passo 9) para validar que os novos comportamentos são efetivamente aplicados. Um subagente executa na branch de desenvolvimento; outro executa na branch main (worktree isolado) com comando idêntico, ambos em paralelo. Comparar resultados para detectar regressões. Gate bloqueante: falha na branch dev bloqueia o pipeline (máximo 3 tentativas). Diferenças na regressão com main são reportadas no relatório final. Mudanças puramente documentais (glossário, wiki, ADRs) não ativam este comportamento.
+Quando a tarefa alterar aspectos que afetam o pipeline de codificação (passos 0–12, comportamentos obrigatórios 1–13, skills de pipeline, rules de fluxo de codificação ou hooks de enforcement), lançar subagentes após o commit (passo 9) para validar que os novos comportamentos são efetivamente aplicados. Um subagente executa na branch de desenvolvimento; outro executa na branch main (worktree isolado) com comando idêntico, ambos em paralelo. Comparar resultados para detectar regressões. Gate bloqueante: falha na branch dev bloqueia o pipeline (máximo 3 tentativas). Diferenças na regressão com main são reportadas no relatório final. Mudanças puramente documentais (glossário, wiki, ADRs) não ativam este comportamento.
 Ver `.claude/rules/governance-validation-pipeline.md` para a política completa. Ver `.claude/skills/governance-validation-pipeline/SKILL.md` para o workflow.
 
 ---
@@ -81,8 +81,8 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 
 | Escopo | Critério | Passos aplicáveis | Passos NÃO aplicáveis |
 |---|---|---|---|
-| **Código** | A tarefa altera arquivos `.cs`, `.csproj`, `Dockerfile`, `docker-compose.yml`, `appsettings.json`, workflows de CI ou qualquer artefato que afete build, execução ou comportamento da aplicação | Todos: 0 → 11 (incluindo 10.1) | Nenhum — todos os passos são obrigatórios |
-| **Governança** | A tarefa altera **exclusivamente** arquivos `.md`, `.sh`, scripts de governança, hooks ou documentação — sem impacto em build, execução ou comportamento da aplicação | Apenas: 0.1 → 9 → 9.1 (condicional) → 10 → 10.1. O passo 9.1 aplica-se apenas quando a mudança afeta o pipeline de codificação. O passo 10 (PR) aplica-se sempre que houver commits a serem integrados. | Passos 0, 1–8 e 11 — não há build, execução, testes, Docker nem acompanhamento de CI |
+| **Código** | A tarefa altera arquivos `.cs`, `.csproj`, `Dockerfile`, `docker-compose.yml`, `appsettings.json`, workflows de CI ou qualquer artefato que afete build, execução ou comportamento da aplicação | Todos: 0 → 12 | Nenhum — todos os passos são obrigatórios |
+| **Governança** | A tarefa altera **exclusivamente** arquivos `.md`, `.sh`, scripts de governança, hooks ou documentação — sem impacto em build, execução ou comportamento da aplicação | Apenas: 0.1 → 9 → 9.1 (condicional) → 10 → 12. O passo 9.1 aplica-se apenas quando a mudança afeta o pipeline de codificação. O passo 10 (PR) aplica-se sempre que houver commits a serem integrados. O passo 12 aplica-se quando o usuário confirmar. | Passos 0, 1–8 e 11 — não há build, execução, testes, Docker nem acompanhamento de CI |
 | **Análise de PR** | A tarefa é análise de solicitações de mudança em PR existente (skill pr-analysis) | Ver skill pr-analysis — o branch atribuído pelo sistema externo é ignorado; usar head.ref do PR | Passo 10 (criação de PR) — o PR já existe |
 
 **Esta classificação é o primeiro ato obrigatório.** Executar passos inaplicáveis ao escopo é um erro — desperdiça tempo e gera ruído. Omitir passos aplicáveis ao escopo também é um erro.
@@ -102,14 +102,14 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 9. Somente então realizar o commit
 9.1. **Validação de governança via subagentes** — lançar subagente na branch de desenvolvimento para validar que os novos comportamentos são aplicados; lançar subagente na branch main (worktree isolado) com comando idêntico para teste regressivo. **Gate obrigatório para escopo governança**: falha na dev bloqueia o PR (máximo 3 tentativas). Regressão com main é reportada no relatório final. Ver `.claude/rules/governance-validation-pipeline.md` para a política completa.
 10. **Exceção: quando a tarefa for análise de PR (skill pr-analysis), este passo NÃO se aplica — o PR já existe. Em vez disso, atualizar título e descrição do PR existente via ferramenta MCP `update_pull_request` se as mudanças alterarem o escopo. NÃO criar PR novo. NÃO usar o branch atribuído pelo sistema externo — usar exclusivamente o head.ref do PR sendo analisado.** Para todas as demais tarefas: verificar se já existe um PR aberto para o branch atual; se não existir, criar o PR seguindo as regras de `.claude/rules/pr-metadata-governance.md`. Se já existir, atualizar título e descrição para refletir o estado atual da implementação.
-10.1. **Perguntar ao usuário se deseja revisão automática de código** (skill `auto-pr-review`). Executar somente com confirmação positiva. Ver `.claude/rules/auto-pr-review-governance.md` para a política completa.
 11. **Checkpoint de encerramento** — a tarefa NÃO se encerra com a abertura ou atualização do PR. Executar obrigatoriamente as seguintes validações antes de considerar a tarefa concluída:
     1. Acompanhar a execução das GitHub Actions até o término de todos os jobs do pipeline.
     2. Verificar os logs no Datadog usando os filtros referentes ao pipeline associado ao PR (env, service, timestamp da execução).
     3. Procurar por falhas, erros ou comportamentos anômalos nos logs.
-    4. Se todos os jobs passarem e não houver erros nos logs: reportar o resultado e encerrar a tarefa.
+    4. Se todos os jobs passarem e não houver erros nos logs: reportar o resultado e prosseguir para o passo 12.
     5. Se algum job falhar ou houver erros nos logs: diagnosticar a causa raiz, corrigir, e reiniciar o ciclo a partir do passo apropriado. Registrar o erro em `bash-errors-log.md`.
     Ver `.claude/rules/pr-metadata-governance.md` para a política completa.
+12. **Perguntar ao usuário se deseja revisão automática de código** (skill `auto-pr-review`). Executar somente após a conclusão do passo 11 (acompanhamento de CI) e com confirmação positiva do usuário. Se o usuário recusar, a tarefa é encerrada. Ver `.claude/rules/auto-pr-review-governance.md` para a política completa.
 
 ### Notas sobre os passos
 
@@ -117,7 +117,9 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 
 **O Passo 3 é um gate obrigatório.** O `docker compose up -d` (publish Release/AOT) só deve ser executado após todos os testes passarem em modo debug. Testes falhando bloqueiam o commit — corrigir antes de avançar.
 
-**O Passo 11 é obrigatório para escopo Código e encerra a tarefa.** A tarefa só está concluída quando todos os jobs do CI passarem **e** os logs no Datadog forem verificados sem erros. O agente não deve encerrar a interação, apresentar relatório final ou considerar a tarefa finalizada enquanto houver jobs em execução, jobs falhando ou logs não verificados. Ver `.claude/rules/pr-metadata-governance.md` para a política completa.
+**O Passo 11 é obrigatório para escopo Código.** A tarefa só pode avançar quando todos os jobs do CI passarem **e** os logs no Datadog forem verificados sem erros. O agente não deve considerar o CI validado enquanto houver jobs em execução, jobs falhando ou logs não verificados. Após a conclusão do passo 11, o passo 12 é oferecido ao usuário. Ver `.claude/rules/pr-metadata-governance.md` para a política completa.
+
+**O Passo 12 é opcional e requer confirmação do usuário.** Se o usuário recusar a revisão automática, a tarefa é encerrada após o passo 11. Se aceitar, a tarefa é encerrada após a conclusão do passo 12.
 
 **`scripts/setup-env.sh` é um modelo declarativo** copiado manualmente pelo usuário em ferramenta externa de configuração de container. O agente não executa esse script — o ambiente deve chegar já pronto. Se um pré-requisito estiver ausente, o agente atualiza o script e sinaliza ao usuário para sincronizar a ferramenta externa.
 

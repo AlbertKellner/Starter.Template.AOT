@@ -26,7 +26,7 @@ Revisão Automática de Pull Request
 ## Quando Usar
 
 Esta skill é ativada:
-- Automaticamente após a criação ou atualização de PR (passo 10 do pipeline) — o assistente pergunta ao usuário se deseja revisão automática
+- Automaticamente após a conclusão do acompanhamento de GitHub Actions (passo 12 do pipeline, após o passo 11) — o assistente pergunta ao usuário se deseja revisão automática
 - Explicitamente pelo usuário: "faça a revisão automática do PR", "execute o auto-pr-review do PR #N"
 
 **A skill NUNCA prossegue sem confirmação positiva do usuário.**
@@ -48,7 +48,7 @@ Esta skill é ativada:
 
 ```
 1. IDENTIFICAR PR
-   - Receber número do PR (do trigger pós-passo-10 ou indicação do usuário)
+   - Receber número do PR (do trigger pós-passo-11 ou indicação do usuário)
    - Obter head.ref, arquivos alterados via MCP (pull_request_read method: get + get_files)
 
 2. CONFIRMAR COM USUÁRIO
