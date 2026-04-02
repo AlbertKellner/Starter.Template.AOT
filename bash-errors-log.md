@@ -171,3 +171,47 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.` |
 | **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
 | **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |
+
+## Erro 14 — pkill retorna exit code 144 ao encerrar app (falso positivo)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 14 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `pkill -f "dotnet run" 2>/dev/null; echo "App encerrada"` |
+| **Erro retornado** | Exit code 144 — capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | `pkill` envia SIGTERM ao processo dotnet; o shell reporta exit code 128+16=144 (SIGTERM). Comportamento esperado ao encerrar processos em background — não é erro real. |
+| **Novo comando / solução** | Falso positivo — nenhuma ação necessária. O hook captura todos os exit codes não-zero indiscriminadamente. |
+
+## Erro 15 — pkill + cat de log vazio (falso positivo)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 15 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `sleep 2 && pkill -f "dotnet run" 2>/dev/null; sleep 1; cat /tmp/app.log 2>/dev/null` |
+| **Erro retornado** | Exit code 144 — capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | Mesmo que Erro 14 — pkill retorna 144 (SIGTERM). O arquivo /tmp/app.log estava vazio porque a app não foi redirecionada para ele nessa execução. |
+| **Novo comando / solução** | Falso positivo — ver Erro 14 |
+
+## Erro 16 — pkill de processos dotnet (falso positivo)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 16 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `pkill -f "dotnet" 2>/dev/null; sleep 2; echo "done"` |
+| **Erro retornado** | Exit code 144 — capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | Mesmo que Erro 14 — pkill retorna 144 ao encerrar processos dotnet |
+| **Novo comando / solução** | Falso positivo — ver Erro 14 |
+
+## Erro 17 — pkill ao encerrar app após validação (falso positivo)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 17 |
+| **Data** | 2026-04-02 |
+| **Comando executado** | `pkill -f "dotnet run" 2>/dev/null; sleep 1; echo "App encerrada"` |
+| **Erro retornado** | Exit code 144 — capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | Mesmo que Erro 14 — pkill retorna 144 ao encerrar app em background |
+| **Novo comando / solução** | Falso positivo — ver Erro 14 |
