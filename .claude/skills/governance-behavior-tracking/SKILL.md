@@ -19,6 +19,22 @@ Esta skill é ativada automaticamente no início de qualquer tarefa de implement
 ## Workflow Interno
 
 ```
+FASE 0 — DETECTAR NOVA TAREFA
+
+  Toda mensagem do usuário que constitui uma nova diretiva operacional (nova
+  implementação, remoção, refatoração, correção, alteração de governança) é
+  uma NOVA TAREFA — mesmo que chegue como interrupção mid-session.
+
+  O assistente DEVE:
+  1. Reconhecer a mudança de contexto
+  2. Classificar o escopo da nova tarefa (Fase 1)
+  3. Reiniciar o pipeline de comportamentos para a nova tarefa
+  4. Manter o TodoWrite anterior como referência histórica, mas criar nova
+     lista de comportamentos para a nova tarefa
+
+  Tratar uma nova diretiva como "continuação" da tarefa anterior — sem
+  classificação de escopo nem pipeline — é uma omissão de governança.
+
 FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
 
   1. Classificar o escopo da tarefa:
@@ -165,3 +181,4 @@ FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
 | 2026-03-21 | Criado: workflow de rastreamento de comportamentos esperados | Instrução do usuário |
 | 2026-04-02 | Corrigido: passo 10.1 (revisão automática de PR) adicionado em 3 locais — lista de passos escopo código, GRUPO Encerramento e exemplos. Causa raiz: omissão nos exemplos levou a não inclusão no TodoWrite | Análise de causa raiz — omissão de comportamento |
 | 2026-04-02 | Adicionado: Fase 3 item 5 (comportamentos bloqueados por erro de ferramenta — manter pending, retomar ao reconectar); Fase 4 marcada como OBRIGATÓRIA com enforcement explícito; exemplo de MCP em categoria (iii) | Análise exaustiva de omissões |
+| 2026-04-02 | Adicionado: Fase 0 (detectar nova tarefa) — toda nova diretiva do usuário requer reclassificação de escopo e reinício do pipeline; tratar como continuação sem classificação é omissão de governança | Análise de omissões na remoção de feature |
