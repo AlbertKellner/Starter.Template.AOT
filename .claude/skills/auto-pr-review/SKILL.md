@@ -212,9 +212,9 @@ Esta skill é ativada:
 | `pull_request_read` | `get_review_comments` | Ler threads de review para identificar apontamentos |
 | `add_reply_to_pull_request_comment` | — | Responder a cada thread processada |
 
-### Como carregar as ferramentas MCP (obrigatório)
+### Carregamento de Ferramentas MCP
 
-As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
+As ferramentas MCP carregam automaticamente via inicialização assíncrona do Claude Code. Para usá-las, carregar via `ToolSearch` com sintaxe `select:`:
 
 ```
 ToolSearch("select:mcp__github__pull_request_read,mcp__github__add_reply_to_pull_request_comment")
@@ -223,6 +223,8 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 ```
 
 **NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
+
+**Se ToolSearch não retornar as ferramentas**: não declarar "MCP indisponível" prematuramente — a inicialização assíncrona pode estar em andamento. Prosseguir com passos que não dependam de MCP e re-tentar `ToolSearch` nas interações seguintes (máximo 3 tentativas). Se persistir, reportar ao usuário e registrar em `bash-errors-log.md`.
 
 ---
 
@@ -250,3 +252,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-31 | Criado: skill de revisão automática de PR com ciclo Revisor↔Codificador | Instrução do usuário |
+| 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry adicionado | Diagnóstico de MCP — Erro 12 |

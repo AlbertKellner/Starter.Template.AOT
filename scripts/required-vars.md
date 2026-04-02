@@ -25,6 +25,8 @@ O script `scripts/setup-env.sh` assume que essas entradas já existem no ambient
 | `HTTP_PROXY` | Condicional¹ | `http://21.0.0.183:15004` (valor do ambiente) | Containers de build não acessam internet. `apt-get` e `dotnet restore` falham. |
 | `HTTPS_PROXY` | Condicional¹ | Igual ao `HTTP_PROXY` neste ambiente | Idem acima para tráfego HTTPS. |
 | `NO_PROXY` | Condicional¹ | `localhost,127.0.0.1` | Conexões locais podem ser roteadas incorretamente pelo proxy. |
+| `MCP_TIMEOUT` | Recomendado | `60000` (milissegundos) | Timeout padrão pode ser insuficiente para handshake com GitHub MCP (payload pesado com 20+ tools + ícones base64). MCP servers podem não inicializar no startup. |
+| `MCP_TOOL_TIMEOUT` | Recomendado | `300000` (milissegundos) | Timeout de chamadas individuais de ferramentas MCP. Valor padrão pode ser insuficiente para operações complexas. |
 
 > ¹ **Condicional**: obrigatório em ambientes com proxy de inspeção TLS (como este sandbox Claude Code). Em ambientes sem proxy intermediário, essas variáveis não são necessárias.
 
