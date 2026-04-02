@@ -128,11 +128,9 @@ FASE 3 — ATUALIZAR DURANTE EXECUÇÃO
      - Adicionar ao TodoWrite como pending
   4. Se um comportamento se tornar inaplicável durante a execução:
      - Remover do TodoWrite (não manter como pendente)
-  5. Se um comportamento é bloqueado por ferramenta temporariamente indisponível (MCP ainda não conectou, Docker DNS, rede):
+  5. Se um comportamento é bloqueado por erro de ferramenta (MCP indisponível, Docker DNS, rede):
      - NÃO remover do TodoWrite — manter como pending com nota de bloqueio
-     - NÃO declarar "indisponível" prematuramente — MCP servers têm inicialização assíncrona e podem demorar a conectar
-     - Prosseguir com outros passos do pipeline que não dependem da ferramenta
-     - Se a ferramenta reconectar durante a sessão (system-reminder com deferred tools), retomar imediatamente
+     - Se a ferramenta reconectar durante a sessão, retomar imediatamente os passos adiados
      - Apenas na Fase 4, se não foi possível retomar, classificar como (iii)
 
 FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
@@ -147,9 +145,9 @@ FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
         (i)   Inaplicável ao escopo — justificar
         (ii)  Omitido/esquecido — executar imediatamente
         (iii) Bloqueado por erro — registrar em bash-errors-log.md
-              Exemplo: passo 10 bloqueado por MCP ainda não conectado → verificar
-              se MCP conectou durante a sessão (system-reminder com deferred tools);
-              se sim, executar agora; se não, registrar como (iii) com justificativa
+              Exemplo: passo 10 bloqueado por MCP indisponível → verificar se MCP
+              reconectou durante a sessão; se sim, executar agora; se não, registrar
+              como (iii) com justificativa
      b. Para (ii) e (iii), investigar causa raiz:
         - Por que o comportamento não foi executado?
         - O que na governança falhou em garantir a execução?
@@ -184,4 +182,3 @@ FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
 | 2026-04-02 | Corrigido: passo 10.1 (revisão automática de PR) adicionado em 3 locais — lista de passos escopo código, GRUPO Encerramento e exemplos. Causa raiz: omissão nos exemplos levou a não inclusão no TodoWrite | Análise de causa raiz — omissão de comportamento |
 | 2026-04-02 | Adicionado: Fase 3 item 5 (comportamentos bloqueados por erro de ferramenta — manter pending, retomar ao reconectar); Fase 4 marcada como OBRIGATÓRIA com enforcement explícito; exemplo de MCP em categoria (iii) | Análise exaustiva de omissões |
 | 2026-04-02 | Adicionado: Fase 0 (detectar nova tarefa) — toda nova diretiva do usuário requer reclassificação de escopo e reinício do pipeline; tratar como continuação sem classificação é omissão de governança | Análise de omissões na remoção de feature |
-| 2026-04-02 | Corrigido: Fase 3 item 5 — "MCP indisponível" substituído por "MCP ainda não conectou" (inicialização assíncrona); adicionada instrução de não declarar indisponibilidade prematuramente | Diagnóstico de MCP — testes exaustivos |

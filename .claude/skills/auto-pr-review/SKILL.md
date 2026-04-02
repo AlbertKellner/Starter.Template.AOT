@@ -212,9 +212,9 @@ Esta skill é ativada:
 | `pull_request_read` | `get_review_comments` | Ler threads de review para identificar apontamentos |
 | `add_reply_to_pull_request_comment` | — | Responder a cada thread processada |
 
-### Como usar as ferramentas MCP
+### Como carregar as ferramentas MCP (obrigatório)
 
-As ferramentas MCP são **deferred tools** com **inicialização assíncrona** — carregam automaticamente, mas podem demorar alguns minutos após o início da sessão. Os MCP servers conectam e desconectam intermitentemente durante a sessão (comportamento da plataforma, não falha do endpoint). Para obter o schema e torná-las invocáveis, usar `ToolSearch` com sintaxe `select:`:
+As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
 
 ```
 ToolSearch("select:mcp__github__pull_request_read,mcp__github__add_reply_to_pull_request_comment")
@@ -222,7 +222,7 @@ ToolSearch("select:mcp__github-revisor__pull_request_read,mcp__github-revisor__p
 ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__github-revisor__add_reply_to_pull_request_comment")
 ```
 
-**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta. Se `ToolSearch` não encontrar, as ferramentas ainda não conectaram — prosseguir com outros passos e tentar novamente depois.
+**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
 
 ---
 
@@ -250,4 +250,3 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-31 | Criado: skill de revisão automática de PR com ciclo Revisor↔Codificador | Instrução do usuário |
-| 2026-04-02 | Corrigido: seção MCP reescrita — ferramentas carregam automaticamente com inicialização assíncrona; documentado comportamento intermitente da plataforma | Diagnóstico de MCP — testes exaustivos |
