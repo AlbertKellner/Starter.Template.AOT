@@ -229,16 +229,16 @@ Ativar esta skill **exclusivamente** quando o usuário solicitar explicitamente:
 - Relatório completo de status de aprovação
 - Merge realizado apenas quando solicitado explicitamente pelo usuário e todas as aprovações estiverem presentes
 
-## Como Carregar Ferramentas MCP (obrigatório)
+## Como Usar Ferramentas MCP
 
-As ferramentas MCP são **deferred tools** — precisam ser carregadas via `ToolSearch` com sintaxe `select:` antes do uso:
+As ferramentas MCP são **deferred tools** com **inicialização assíncrona** — carregam automaticamente, mas podem demorar alguns minutos após o início da sessão. Os MCP servers conectam e desconectam intermitentemente durante a sessão (comportamento da plataforma, não falha do endpoint). Para obter o schema e torná-las invocáveis, usar `ToolSearch` com sintaxe `select:`:
 
 ```
 ToolSearch("select:mcp__github__pull_request_read,mcp__github__update_pull_request")
 ToolSearch("select:mcp__github__add_reply_to_pull_request_comment,mcp__github__list_pull_requests")
 ```
 
-**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta.
+**NUNCA** usar busca por keywords — sempre usar `select:` com nome exato da ferramenta. Se `ToolSearch` não encontrar, as ferramentas ainda não conectaram — prosseguir com outros passos e tentar novamente depois.
 
 ---
 
