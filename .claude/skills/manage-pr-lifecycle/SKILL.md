@@ -139,6 +139,28 @@ ToolSearch("select:mcp__github__update_pull_request,mcp__github__pull_request_re
 
 **NUNCA** usar busca por keywords (`"mcp github create pull request"`) — keywords não casam com nomes de ferramentas MCP e retornam resultados irrelevantes. Sempre usar `select:` com o nome completo da ferramenta (`mcp__github__<nome>`).
 
+### Tratamento de Indisponibilidade de Ferramentas MCP
+
+Se `ToolSearch` com `select:` não retornar as ferramentas MCP do GitHub:
+
+1. Aguardar 30 segundos e tentar novamente (máximo 3 tentativas com backoff de 30s)
+2. Se após 3 tentativas as ferramentas permanecem indisponíveis:
+   - Reportar ao usuário como bloqueio explícito
+   - Registrar em `bash-errors-log.md`
+   - Manter passos 10, 10.1 e 11 como `pending` no TodoWrite (NÃO remover)
+3. Se durante a sessão as ferramentas reconectarem (system-reminder com deferred tools disponíveis):
+   - Retomar IMEDIATAMENTE os passos pendentes (10, 10.1, 11)
+   - Não aguardar próxima interação do usuário — retomar proativamente
+
+### Dependências entre Passos
+
+| Passo | Depende de | Se bloqueado |
+|-------|-----------|--------------|
+| 10.1 | Passo 10 completo | Adiar (manter `pending` no TodoWrite) até passo 10 resolver |
+| 11 | Passo 10 completo (PR existe) | Adiar (manter `pending` no TodoWrite) até passo 10 resolver |
+
+Passos adiados NÃO são removidos do TodoWrite. São retomados quando a dependência for resolvida.
+
 ---
 
 ## Workflow — Trigger de Revisão Automática (skill auto-pr-review)
@@ -148,6 +170,7 @@ Após a conclusão do Passo 2a (criação de novo PR) ou Passo 2b (atualização
 1. Perguntar ao usuário: **"Deseja que a revisão automática de código seja realizada neste PR?"**
 2. Se a resposta for positiva → invocar a skill `auto-pr-review` com o número do PR
 3. Se a resposta for negativa → prosseguir normalmente (passo 11 se aplicável)
+4. **Após conclusão do auto-pr-review** (se executado): atualizar a descrição do PR para refletir as correções realizadas pela revisão (ex: FrozenDictionary, Stub de teste, reordenação de histórico). A política de `pr-metadata-governance.md` exige que a descrição seja atualizada a cada novo commit.
 
 **Este trigger não se aplica** durante tarefas de `pr-analysis` (o PR já está sendo analisado por outra skill).
 
@@ -180,3 +203,5 @@ Quando a tarefa é análise de PR:
 | 2026-03-21 | Criado: workflow extraído de pr-metadata-governance.md (separação rules/skills) | Auditoria de governança |
 | 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (usuário ClaudeCode-Bot) | Migração API → MCP |
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
+| 2026-04-02 | Adicionado: tratamento de indisponibilidade de ferramentas MCP (retry 3x, manter pending, retomar ao reconectar) e dependências explícitas entre passos 10→10.1→11 | Análise de causa raiz — omissões de pipeline |
+| 2026-04-02 | Adicionado: item 4 no trigger de revisão automática — atualizar descrição do PR após conclusão do auto-pr-review para refletir correções realizadas | Análise de omissões pós-review |
