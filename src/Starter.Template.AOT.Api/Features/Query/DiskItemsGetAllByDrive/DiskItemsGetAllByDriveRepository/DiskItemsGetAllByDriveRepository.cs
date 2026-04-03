@@ -43,13 +43,15 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
         return Directory.Exists(candidate) ? candidate : null;
     }
 
-    private static async Task ScanDirectoryAsync(DiskItemEntity folder)
+    private async Task ScanDirectoryAsync(DiskItemEntity folder)
     {
         var tasks = new List<Task>();
 
         try
         {
             var subDirectories = Directory.GetDirectories(folder.FullPath);
+
+            logger.LogInformation("[DiskItemsGetAllByDriveRepository][ScanDirectoryAsync] Varrer {Count} subdiretórios em {Path}", subDirectories.Length, folder.FullPath);
 
             foreach (var dir in subDirectories)
             {
@@ -67,7 +69,11 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
                 tasks.Add(Task.Run(async () => await ScanDirectoryAsync(subFolder)));
             }
 
+            logger.LogInformation("[DiskItemsGetAllByDriveRepository][ScanDirectoryAsync] Subdiretórios iterados. {Count} filhos adicionados em {Path}", subDirectories.Length, folder.FullPath);
+
             var files = Directory.GetFiles(folder.FullPath);
+
+            logger.LogInformation("[DiskItemsGetAllByDriveRepository][ScanDirectoryAsync] Varrer {Count} arquivos em {Path}", files.Length, folder.FullPath);
 
             foreach (var file in files)
             {
@@ -88,6 +94,8 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
                     // Skip inaccessible files
                 }
             }
+
+            logger.LogInformation("[DiskItemsGetAllByDriveRepository][ScanDirectoryAsync] Arquivos iterados. {Count} arquivos processados em {Path}", files.Length, folder.FullPath);
 
             await Task.WhenAll(tasks);
         }
