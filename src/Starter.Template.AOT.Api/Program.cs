@@ -1,5 +1,8 @@
 using Starter.Template.AOT.Api.Infra.ExceptionHandling;
 using Starter.Template.AOT.Api.Infra.Json;
+using Starter.Template.AOT.Api.Features.Query.DrivesGetAll;
+using Starter.Template.AOT.Api.Features.Query.DiskItemsGetAllByDrive;
+using Starter.Template.AOT.Api.Features.Query.DiskItemGetByFolder;
 using Starter.Template.AOT.Api.Infra.ModelBinding;
 using Starter.Template.AOT.Api.Infra.ModelValidation;
 using Starter.Template.AOT.Api.Infra.Middlewares;
@@ -101,8 +104,14 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-// TODO: Registrar Use Cases das features aqui
-// Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
+builder.Services.AddScoped<IDrivesGetAllRepository, DrivesGetAllRepository>();
+builder.Services.AddScoped<DrivesGetAllUseCase>();
+
+builder.Services.AddScoped<IDiskItemsGetAllByDriveRepository, DiskItemsGetAllByDriveRepository>();
+builder.Services.AddScoped<DiskItemsGetAllByDriveUseCase>();
+
+builder.Services.AddScoped<IDiskItemGetByFolderRepository, DiskItemGetByFolderRepository>();
+builder.Services.AddScoped<DiskItemGetByFolderUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -136,9 +145,14 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
-    // TODO: Adicionar DynamicDependency para cada Controller implementado
-    // Requer: using System.Diagnostics.CodeAnalysis; no topo do arquivo
-    // Exemplo:
-    // [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NomeDaFeatureEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All,
+        typeof(Starter.Template.AOT.Api.Features.Query.DrivesGetAll.DrivesGetAllEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All,
+        typeof(Starter.Template.AOT.Api.Features.Query.DiskItemsGetAllByDrive.DiskItemsGetAllByDriveEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All,
+        typeof(Starter.Template.AOT.Api.Features.Query.DiskItemGetByFolder.DiskItemGetByFolderEndpoint))]
     internal static void PreserveControllers() { }
 }

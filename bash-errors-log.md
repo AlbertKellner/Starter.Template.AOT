@@ -171,3 +171,54 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.` |
 | **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
 | **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |
+
+## Erro 14 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 14 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s "https://api.github.com/repos/albertkellner/GeminiClone/contents/ArquivosDoDisco/UseCase/DriverFind.cs" | python3 -c "import json,sys,base64; d=json.load(sys.stdin); print(base64.b64decode(d['content']).decode())"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 15 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 15 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s --max-time 5 "http://localhost:5000/drives/root/folder?path=home" -w "\nHTTP %{http_code}"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 16 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 16 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `pkill -f "dotnet run --project src/Starter" 2>/dev/null; sleep 2
+export PATH="/root/.dotnet:$PATH" && dotnet run --project src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj > /tmp/app_run2.log 2>&1 &
+echo "PID: $!"
+sleep 20 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 17 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 17 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `pkill -f "dotnet exec" 2>/dev/null; pkill -f "Starter.Template" 2>/dev/null
+sleep 3
+ps aux | grep dotnet | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null
+sleep 2
+echo "Processes killed"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
