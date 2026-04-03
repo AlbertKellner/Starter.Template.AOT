@@ -171,3 +171,36 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.` |
 | **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
 | **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |
+
+## Erro 14 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 14 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH" && dotnet build src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj --nologo -q 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 15 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 15 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH" && dotnet build src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj --nologo -q 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 16 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 16 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH" && rm -f src/Starter.Template.AOT.Api/obj/Debug/net10.0/Starter.Template.AOT.Api.AssemblyInfoInputs.cache && dotnet build src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj --nologo -q 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
