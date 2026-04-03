@@ -10,7 +10,7 @@ public class DrivesGetAllUseCase(IDrivesGetAllRepository repository, ILogger<Dri
 
         var entities = repository.GetAllDrives();
 
-        var drives = entities.Select(e => new DriveOutput
+        var drives = entities.Select(e => new DrivesGetAllDriveOutput
         {
             Id = e.Id,
             Name = e.Name,

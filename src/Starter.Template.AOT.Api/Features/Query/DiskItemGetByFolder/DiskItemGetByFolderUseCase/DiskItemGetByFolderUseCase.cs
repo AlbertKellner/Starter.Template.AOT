@@ -29,9 +29,9 @@ public class DiskItemGetByFolderUseCase(IDiskItemGetByFolderRepository repositor
         return output;
     }
 
-    private static DiskItemFolderOutput MapToOutput(DiskItemGetByFolderEntity entity)
+    private static DiskItemGetByFolderItemOutput MapToOutput(DiskItemGetByFolderEntity entity)
     {
-        return new DiskItemFolderOutput
+        return new DiskItemGetByFolderItemOutput
         {
             Name = entity.Name,
             SizeBytes = entity.SizeBytes,

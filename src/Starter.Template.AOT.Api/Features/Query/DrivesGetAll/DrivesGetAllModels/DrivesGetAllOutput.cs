@@ -2,10 +2,10 @@ namespace Starter.Template.AOT.Api.Features.Query.DrivesGetAll;
 
 public class DrivesGetAllOutput
 {
-    public List<DriveOutput> Drives { get; init; } = [];
+    public List<DrivesGetAllDriveOutput> Drives { get; init; } = [];
 }
 
-public class DriveOutput
+public class DrivesGetAllDriveOutput
 {
     public string Id { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;

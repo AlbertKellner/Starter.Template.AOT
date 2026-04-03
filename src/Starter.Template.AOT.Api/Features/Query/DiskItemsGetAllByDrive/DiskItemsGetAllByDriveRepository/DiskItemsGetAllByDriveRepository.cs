@@ -109,26 +109,40 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
         }
     }
 
-    private static void UpdateFolderSize(DiskItemEntity folder)
+    private void UpdateFolderSize(DiskItemEntity folder)
     {
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][UpdateFolderSize] Calcular tamanho acumulado da pasta. Path={Path}", folder.FullPath);
+
         if (!folder.IsFolder)
             return;
+
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][UpdateFolderSize] Iterar {Count} filhos de {Path}", folder.Children.Count, folder.FullPath);
 
         foreach (var child in folder.Children)
         {
             UpdateFolderSize(child);
         }
 
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][UpdateFolderSize] Iteração concluída. Calcular soma dos filhos de {Path}", folder.FullPath);
+
         folder.SizeBytes = folder.Children.Sum(c => c.SizeBytes);
+
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][UpdateFolderSize] Tamanho calculado. Path={Path}, SizeBytes={Size}", folder.FullPath, folder.SizeBytes);
     }
 
-    private static void SortChildrenBySize(DiskItemEntity folder)
+    private void SortChildrenBySize(DiskItemEntity folder)
     {
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][SortChildrenBySize] Ordenar filhos por tamanho. Path={Path}, Count={Count}", folder.FullPath, folder.Children.Count);
+
         folder.Children.Sort((a, b) => b.SizeBytes.CompareTo(a.SizeBytes));
+
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][SortChildrenBySize] Iterar {Count} filhos para ordenação recursiva. Path={Path}", folder.Children.Count, folder.FullPath);
 
         foreach (var child in folder.Children)
         {
             SortChildrenBySize(child);
         }
+
+        logger.LogInformation("[DiskItemsGetAllByDriveRepository][SortChildrenBySize] Ordenação recursiva concluída. Path={Path}", folder.FullPath);
     }
 }

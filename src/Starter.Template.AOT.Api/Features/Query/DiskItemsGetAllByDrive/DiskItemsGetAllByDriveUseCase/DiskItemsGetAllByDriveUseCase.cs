@@ -28,9 +28,9 @@ public class DiskItemsGetAllByDriveUseCase(IDiskItemsGetAllByDriveRepository rep
         return output;
     }
 
-    private static DiskItemOutput MapToOutput(DiskItemEntity entity)
+    private static DiskItemsGetAllByDriveItemOutput MapToOutput(DiskItemEntity entity)
     {
-        return new DiskItemOutput
+        return new DiskItemsGetAllByDriveItemOutput
         {
             Name = entity.Name,
             SizeBytes = entity.SizeBytes,
