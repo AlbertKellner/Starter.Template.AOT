@@ -1,7 +1,23 @@
 {
   "permissions": {
     "defaultMode": "bypassPermissions",
-    "allow": ["*"],
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Agent",
+      "WebFetch",
+      "WebSearch",
+      "ToolSearch",
+      "Skill",
+      "NotebookEdit",
+      "mcp__github__*",
+      "mcp__github-revisor__*",
+      "mcp__datadog__*"
+    ],
     "deny": []
   },
   "autoMemoryEnabled": true,
@@ -53,7 +69,7 @@
           },
           {
             "type": "command",
-            "if": "Bash(*--force-with-lease*)",
+            "if": "Bash(git push *--force-with-lease*)",
             "command": "echo '[PreToolUse] BLOQUEADO: git push --force-with-lease detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
           }
         ]
