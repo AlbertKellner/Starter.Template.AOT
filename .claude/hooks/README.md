@@ -27,7 +27,7 @@ Esta pasta contém os hooks de enforcement do Claude Code para este repositório
 
 Os hooks são configurados em `.claude/settings.json` na seção `hooks`:
 - **SessionStart**: `session-start.sh` — inicialização de sessão
-- **PreToolUse**: `pre-planning-gate.sh` — gate pré-planejamento (Edit|Write); bloqueio inline de `rm -rf` e `git push --force` via `if:` com exit 1 (nunca aciona prompt de permissão)
+- **PreToolUse**: `pre-planning-gate.sh` — gate pré-planejamento (Edit|Write); bloqueio inline de `rm -rf` e `git push --force` via `if:` com exit 2 (bloqueia operação, envia stderr ao Claude — não aciona prompt de permissão ao usuário)
 - **PostToolUse**: `instruction-change-detector.sh` (Write|Edit), `branch-guard.sh` + `session-timer.sh` + `post-commit-pr-reminder.sh` (Bash), hook `type: prompt` para mensagens de commit (Bash com filtro `git commit*`)
 - **PostToolUseFailure**: `bash-error-capture.sh` — captura automática de erros (Bash)
 - **PreCompact/PostCompact**: `compact-context.sh` — preservação de estado durante compactação
@@ -64,3 +64,4 @@ Os hooks são configurados em `.claude/settings.json` na seção `hooks`:
 | 2026-04-01 | Adicionado: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) — novos tipos de hook para automação de governança | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-01 | Adicionado: hook type:prompt para validação semântica de mensagens de commit (PostToolUse Bash com filtro git commit*) | Melhoria de governança |
 | 2026-04-01 | Atualizado: settings.json com autoMemoryEnabled, env, limpeza de permissões redundantes, 5 novos event types | Melhoria de governança |
+| 2026-04-03 | Corrigido: exit codes dos hooks bloqueantes — exit 1 revertido para exit 2 (exit 1 é não-bloqueante; exit 2 é bloqueante segundo docs oficiais) | Pesquisa de documentação oficial |
