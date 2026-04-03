@@ -25,8 +25,8 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
 
         await ScanDirectoryAsync(root);
 
-        root.UpdateFolderSize();
-        root.SortChildrenBySize();
+        UpdateFolderSize(root);
+        SortChildrenBySize(root);
 
         logger.LogInformation("[DiskItemsGetAllByDriveRepository][ScanDriveAsync] Retornar árvore de itens do drive. DriveId={DriveId}, TotalSizeBytes={Size}", driveId, root.SizeBytes);
 
@@ -98,6 +98,29 @@ public class DiskItemsGetAllByDriveRepository(ILogger<DiskItemsGetAllByDriveRepo
         catch (IOException)
         {
             // Skip directories with I/O errors
+        }
+    }
+
+    private static void UpdateFolderSize(DiskItemEntity folder)
+    {
+        if (!folder.IsFolder)
+            return;
+
+        foreach (var child in folder.Children)
+        {
+            UpdateFolderSize(child);
+        }
+
+        folder.SizeBytes = folder.Children.Sum(c => c.SizeBytes);
+    }
+
+    private static void SortChildrenBySize(DiskItemEntity folder)
+    {
+        folder.Children.Sort((a, b) => b.SizeBytes.CompareTo(a.SizeBytes));
+
+        foreach (var child in folder.Children)
+        {
+            SortChildrenBySize(child);
         }
     }
 }

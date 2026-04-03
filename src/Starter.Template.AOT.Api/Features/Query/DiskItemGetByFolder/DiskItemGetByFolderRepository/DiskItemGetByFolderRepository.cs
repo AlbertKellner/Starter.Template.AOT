@@ -26,8 +26,8 @@ public class DiskItemGetByFolderRepository(ILogger<DiskItemGetByFolderRepository
 
         await ScanDirectoryAsync(root);
 
-        root.UpdateFolderSize();
-        root.SortChildrenBySize();
+        UpdateFolderSize(root);
+        SortChildrenBySize(root);
 
         logger.LogInformation("[DiskItemGetByFolderRepository][ScanFolderAsync] Retornar árvore da pasta. DriveId={DriveId}, FolderPath={FolderPath}, TotalSizeBytes={Size}", driveId, folderPath, root.SizeBytes);
 
@@ -115,6 +115,29 @@ public class DiskItemGetByFolderRepository(ILogger<DiskItemGetByFolderRepository
         catch (IOException)
         {
             // Skip directories with I/O errors
+        }
+    }
+
+    private static void UpdateFolderSize(DiskItemGetByFolderEntity folder)
+    {
+        if (!folder.IsFolder)
+            return;
+
+        foreach (var child in folder.Children)
+        {
+            UpdateFolderSize(child);
+        }
+
+        folder.SizeBytes = folder.Children.Sum(c => c.SizeBytes);
+    }
+
+    private static void SortChildrenBySize(DiskItemGetByFolderEntity folder)
+    {
+        folder.Children.Sort((a, b) => b.SizeBytes.CompareTo(a.SizeBytes));
+
+        foreach (var child in folder.Children)
+        {
+            SortChildrenBySize(child);
         }
     }
 }

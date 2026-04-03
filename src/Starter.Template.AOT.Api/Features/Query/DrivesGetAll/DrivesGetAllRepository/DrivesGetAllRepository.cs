@@ -40,6 +40,8 @@ public class DrivesGetAllRepository(ILogger<DrivesGetAllRepository> logger) : ID
             });
         }
 
+        logger.LogInformation("[DrivesGetAllRepository][GetAllDrives] Iteração concluída. {Count} drives processados", result.Count);
+
         logger.LogInformation("[DrivesGetAllRepository][GetAllDrives] Retornar {Count} drives mapeados", result.Count);
 
         return result;
