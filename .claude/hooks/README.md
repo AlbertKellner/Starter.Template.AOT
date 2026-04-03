@@ -27,7 +27,7 @@ Esta pasta contém os hooks de enforcement do Claude Code para este repositório
 
 Os hooks são configurados em `.claude/settings.json` na seção `hooks`:
 - **SessionStart**: `session-start.sh` — inicialização de sessão
-- **PreToolUse**: `pre-planning-gate.sh` — gate pré-planejamento (Edit|Write); bloqueio inline de `rm -rf` e `git push --force` via `if:` com exit 2
+- **PreToolUse**: `pre-planning-gate.sh` — gate pré-planejamento (Edit|Write); bloqueio inline de `rm -rf` e `git push --force` via `if:` com exit 1 (nunca aciona prompt de permissão)
 - **PostToolUse**: `instruction-change-detector.sh` (Write|Edit), `branch-guard.sh` + `session-timer.sh` + `post-commit-pr-reminder.sh` (Bash), hook `type: prompt` para mensagens de commit (Bash com filtro `git commit*`)
 - **PostToolUseFailure**: `bash-error-capture.sh` — captura automática de erros (Bash)
 - **PreCompact/PostCompact**: `compact-context.sh` — preservação de estado durante compactação
