@@ -6,6 +6,8 @@
       "Read",
       "Edit",
       "Write",
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
       "Glob",
       "Grep",
       "Agent",
