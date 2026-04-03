@@ -342,3 +342,83 @@ echo "PID=$!"` |
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
+
+## Erro 25 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 25 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH"
+pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2
+dotnet run --project src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj > /tmp/app_integration.log 2>&1 &
+echo "PID=$!"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 26 — Health check antes da app terminar compilação (segunda instância)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 26 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `sleep 18 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | `HTTP 000` (exit code 7 — connection refused) |
+| **Causa** | App ainda compilando (Roslyn) após 18 segundos. Compilação de nova instância demorou mais que o esperado. Retry com sleep adicional de 10s resolveu. |
+| **Novo comando / solução** | `sleep 10 && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:5000/health` (após os 18s iniciais) |
+
+## Erro 27 — Scan root/items esgota thread pool, app para de responder
+
+| Campo | Valor |
+|---|---|
+| **Número** | 27 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s --max-time 5 http://localhost:5000/drives/root/items -o /tmp/items.json -w "HTTP %{http_code}"` |
+| **Erro retornado** | Timeout (exit code 28) — app parou de responder a requisições subsequentes |
+| **Causa** | GET /drives/root/items varre 251 GB recursivamente. O scan com Task.Run paralelo esgotou o thread pool do .NET, tornando a app incapaz de processar outras requisições. Comportamento esperado em ambiente de sandbox com filesystem gigante. |
+| **Novo comando / solução** | Evitar GET /drives/root/items no sandbox. Usar GET /drives/{id}/folder?path=... para validar comportamento do endpoint de pasta, que é limitado a uma subárvore menor. Reiniciar a app após o teste. |
+
+## Erro 28 — Folder endpoint timeout (app sem thread pool após Erro 27)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 28 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s --max-time 10 "http://localhost:5000/drives/root/folder?path=home/user" -w "\nHTTP %{http_code}"` |
+| **Erro retornado** | `HTTP 000` (exit code 28 — timeout) |
+| **Causa** | Consequência do Erro 27 — app com thread pool esgotado não conseguia processar novas requisições. Não é falha do endpoint em si. |
+| **Novo comando / solução** | Reiniciar a app (`fuser -k 5000/tcp`) e repetir. Endpoint funcionou corretamente após restart. |
+
+## Erro 29 — Folder endpoint timeout (mesma causa do Erro 28)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 29 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `sleep 5 && curl -s --max-time 10 "http://localhost:5000/drives/root/folder?path=home" -w "\nHTTP %{http_code}"` |
+| **Erro retornado** | `HTTP 000` (exit code 28 — timeout) |
+| **Causa** | Mesma causa do Erro 28 — app com thread pool esgotado pelo scan de Erro 27. |
+| **Novo comando / solução** | Ver Erro 27. Reiniciar app antes de continuar testes. |
+
+## Erro 30 — Health check timeout (app sem thread pool após Erro 27)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 30 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s --max-time 5 http://localhost:5000/health -w "HTTP %{http_code}"` |
+| **Erro retornado** | `HTTP 000` (exit code 28 — timeout) |
+| **Causa** | Confirmação de que o app estava totalmente sem resposta após o scan de Erro 27 esgotar o thread pool. Nem o health check respondia. |
+| **Novo comando / solução** | `fuser -k 5000/tcp` para encerrar o processo e reiniciar. |
+
+## Erro 31 — Drive não-root com path-based ID retorna 404
+
+| Campo | Valor |
+|---|---|
+| **Número** | 31 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s --max-time 15 "http://localhost:5000/drives/%2Fopt%2Fenv-runner/items"` |
+| **Erro retornado** | `HTTP 404 Not Found` — drive não encontrado |
+| **Causa** | `BuildDriveId` no `DrivesGetAllRepository` mapeia `/` → `root` mas mantém outros mount points Linux com seus paths originais (ex: `/opt/env-runner`). Quando URL-encoded como `%2Fopt%2Fenv-runner` e passado na rota, o ASP.NET Core não decodifica `%2F` para `/`, então o lookup falha. O drive ID registrado é `/opt/env-runner` mas o parâmetro recebido é `%2Fopt%2Fenv-runner`. |
+| **Novo comando / solução** | Limitação de design: drives não-root em Linux com path-based IDs não funcionam como segmentos de URL. Mitigação: o frontend só exibirá drives cujo ID não contém `/` (ou seja, apenas `root` e drives Windows-style). Melhoria futura: mapear todos os IDs para slugs sem barras. |
