@@ -23,6 +23,10 @@
 - [Visão Geral](Domain-Overview)
 - [Regras de Negócio](Domain-Business-Rules)
 - [Health Check](Feature-Health)
+- [Drives — Listar Todos](Feature-DrivesGetAll)
+- [Itens do Drive — Listar Todos](Feature-DiskItemsGetAllByDrive)
+- [Itens da Pasta](Feature-DiskItemGetByFolder)
+- [Disk Explorer UI](Feature-DiskExplorerUI)
 
 ---
 

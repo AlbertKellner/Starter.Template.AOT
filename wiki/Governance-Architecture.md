@@ -26,6 +26,14 @@ A classificação é baseada na **intenção da operação**, não no verbo HTTP
 
 ```
 src/Starter.Template.AOT.Api/
+├── wwwroot/                  # Frontend estático (servido por UseDefaultFiles + UseStaticFiles)
+│   ├── index.html            # SPA — Disk Explorer UI (sunburst chart + tabela de itens)
+│   ├── css/
+│   │   └── site.css          # Tema escuro (Catppuccin)
+│   └── js/
+│       ├── app.js            # Lógica principal: fetchDrives, getStructure, displayFolderItems
+│       └── colors.js         # Algoritmo de coloração do sunburst (HSL + interpolação)
+│
 ├── Features/
 │   ├── Query/
 │   │   └── <NomeDaFeature>/
@@ -120,6 +128,7 @@ O enrichment do Serilog é transversal:
 | DrivesGetAll | Query | `GET /drives` | Não | Lista todos os drives disponíveis no sistema com tamanho total e disponível |
 | DiskItemsGetAllByDrive | Query | `GET /drives/{driveId}/items` | Não | Varre recursivamente todos os arquivos e pastas de um drive, retornando a árvore completa com tamanhos |
 | DiskItemGetByFolder | Query | `GET /drives/{driveId}/folder?path=...` | Não | Varre recursivamente os itens de uma pasta específica dentro de um drive, retornando a árvore com tamanhos |
+| DiskExplorerUI | Frontend | `GET /` | Não | Interface web estática de exploração de disco: sunburst chart interativo + tabela de itens por pasta |
 
 ---
 

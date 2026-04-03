@@ -40,6 +40,10 @@ Regras de negócio, funcionalidades implementadas e conceitos de domínio.
 | Página | Endpoint | Descrição |
 |--------|----------|-----------|
 | [Health Check](Feature-Health) | `GET /health` | Verificação de disponibilidade da aplicação |
+| [Drives — Listar Todos](Feature-DrivesGetAll) | `GET /drives` | Lista todos os drives disponíveis com tamanho total e disponível |
+| [Itens do Drive — Listar Todos](Feature-DiskItemsGetAllByDrive) | `GET /drives/{driveId}/items` | Árvore recursiva de arquivos e pastas de um drive |
+| [Itens da Pasta](Feature-DiskItemGetByFolder) | `GET /drives/{driveId}/folder?path=...` | Árvore recursiva de uma pasta específica |
+| [Disk Explorer UI](Feature-DiskExplorerUI) | `GET /` | Interface web de exploração de disco — sunburst chart interativo |
 
 ---
 

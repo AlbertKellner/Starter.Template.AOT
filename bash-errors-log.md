@@ -222,3 +222,123 @@ echo "Processes killed"` |
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
+
+## Erro 18 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 18 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `curl -s "https://api.github.com/repos/AlbertKellner/GeminiClone/contents/ArquivosDoDisco.Web/Controllers" | python3 -c "import json,sys; d=json.load(sys.stdin); [print(x['name'], x['download_url']) for x in d]" 2>&1
+
+curl -s "https://api.github.com/repos/AlbertKellner/GeminiClone/contents/ArquivosDoDisco" | python3 -c "import json,sys; d=json.load(sys.stdin); [print(x['name'], x.get('download_url','dir')) for x in d]" 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 19 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 19 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH"
+pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2
+dotnet run --project src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj > /tmp/app_frontend.log 2>&1 &
+echo "PID=$!"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 20 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 20 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `# Validate static file serving (index.html)
+curl -s -o /dev/null -w "HTTP %{http_code} Content-Type: %{content_type}\n" http://localhost:5000/
+echo ""
+
+# Validate GET /drives
+curl -s http://localhost:5000/drives | python3 -c "import json,sys; d=json.load(sys.stdin); print('drives count:', len(d['drives'])); [print(' -', x['id'], x['name'], x['formattedTotalSize']) for x in d['drives']]"
+echo ""
+
+# Validate GET /drives/root/items (small path only)
+curl -s "http://localhost:5000/drives/root/items" -o /tmp/items_resp.json -w "HTTP %{http_code}" --max-time 5
+echo ""
+python3 -c "import json; d=json.load(open('/tmp/items_resp.json')); print('driveId:', d.get('driveId')); root=d.get('root'); print('root name:', root['name'] if root else None); print('root children count:', len(root['children']) if root else 0)"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 21 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 21 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `# Test folder endpoint with a manageable path
+curl -s --max-time 15 "http://localhost:5000/drives/root/folder?path=home/user/Starter.Template.AOT/src" -w "\nHTTP %{http_code}" | python3 -c "
+import json,sys
+raw = sys.stdin.read()
+lines = raw.split('\n')
+http_line = [l for l in lines if l.startswith('HTTP')]
+json_str = '\n'.join([l for l in lines if not l.startswith('HTTP')])
+d = json.load(__import__('io').StringIO(json_str))
+print('HTTP:', http_line[0] if http_line else '?')
+print('driveId:', d.get('driveId'))
+print('folderPath:', d.get('folderPath'))
+folder = d.get('folder')
+if folder:
+    print('folder name:', folder['name'])
+    print('folder formattedSize:', folder['formattedSize'])
+    print('children count:', len(folder.get('children', [])))
+    for c in folder.get('children', [])[:5]:
+        print(' -', c['name'], c['formattedSize'])
+"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 22 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 22 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; pkill -f "dotnet exec" 2>/dev/null
+sleep 3
+fuser -k 5000/tcp 2>/dev/null; sleep 2
+
+# Restart
+bash /tmp/start_app.sh > /tmp/app_frontend2.log 2>&1 &
+echo "PID=$!"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 23 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 23 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `pkill -9 -f "dotnet" 2>/dev/null; sleep 2
+fuser -k 5000/tcp 2>/dev/null; sleep 1
+bash /tmp/start_app.sh > /tmp/app_frontend2.log 2>&1 &
+echo "PID=$!"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 24 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 24 |
+| **Data** | 2026-04-03 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; pkill -9 -f "dotnet" 2>/dev/null; echo "app stopped"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |

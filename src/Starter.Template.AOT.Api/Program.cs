@@ -127,6 +127,8 @@ Log.Information("[Program] Configurar pipeline de middlewares");
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.MapControllers();
 app.MapHealthChecks("/health");
 

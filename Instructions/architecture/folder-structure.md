@@ -152,6 +152,14 @@ src/
 │   └── (espelha estrutura do projeto principal: Features/, Infra/, Shared/, TestHelpers/)
 │
 └── <NomeDoProjeto>/
+    ├── wwwroot/                              # Frontend estático (servido por UseDefaultFiles + UseStaticFiles)
+    │   ├── index.html                        # SPA — interface principal (ex: Disk Explorer)
+    │   ├── css/
+    │   │   └── site.css                      # Estilos globais
+    │   └── js/
+    │       ├── app.js                        # Lógica principal da aplicação frontend
+    │       └── colors.js                     # Algoritmo de coloração (HSL + interpolação)
+    │
     ├── Features/
     │   ├── Query/
     │   │   └── <NomeDaFeature>/
@@ -294,3 +302,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-04-01 | .claude/skills/governance-validation-pipeline/ adicionada à estrutura de governança | Instrução do usuário |
 | 2026-04-01 | 4 novos hooks adicionados: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-01 | .claude/agents/ adicionada: code-reviewer.md e governance-auditor.md — agentes especializados com memória persistente | Melhoria de governança com recursos avançados do Claude Code |
+| 2026-04-03 | wwwroot/ adicionada ao projeto de API: frontend estático com index.html, css/site.css, js/app.js, js/colors.js — Disk Explorer UI portado do GeminiClone | Instrução do usuário |
