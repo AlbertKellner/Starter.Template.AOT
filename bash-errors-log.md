@@ -237,3 +237,14 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `DynamicMethod falhou: Dynamic code generation is not supported on this platform.` / `FieldInfo.SetValue falhou: Cannot set initonly static field after its owning type is initialized.` / `IsEnhancedModelMetadataSupported não pôde ser ativado — model binding pode falhar` |
 | **Causa** | `EnhancedModelMetadataActivator` tenta definir `ModelMetadata.IsEnhancedModelMetadataSupported = true` via `DynamicMethod` (não suportado em AOT) e `FieldInfo.SetValue` (bloqueado para campos initonly após inicialização do tipo). Em Native AOT, nenhuma das duas abordagens funciona. O warning era enganoso: o model binding NÃO falha pois `FallbackSimpleTypeModelBinderProvider` e `NullModelBinderProvider` já substituem todos os providers que dependem desse flag. |
 | **Novo comando / solução** | Corrigido em `EnhancedModelMetadataActivator.cs`: verificação de `RuntimeFeature.IsDynamicCodeSupported` antes de tentar reflection. Em modo AOT, log é emitido em nível `Debug` (não `Warning`) e activator retorna imediatamente. |
+
+## Erro 20 — gh CLI indisponível durante auto-pr-review (graphql de review threads)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 20 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `gh api graphql -f query='{ repository(...) { pullRequest(number: 30) { reviewThreads ... } } }'` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh — `gh: command not found` ou exit code não-zero por ausência do CLI |
+| **Causa** | A skill `auto-pr-review` tentou usar `gh api graphql` para listar review threads, mas o CLI `gh` não está instalado/autenticado neste ambiente. A skill usa MCP GitHub para todas as interações com a API do GitHub — o uso de `gh` foi uma tentativa de fallback desnecessária. |
+| **Novo comando / solução** | Não bloqueante — a revisão foi concluída com sucesso via ferramentas MCP. Usar exclusivamente `mcp__github__*` e `mcp__github-revisor__*` para interações GitHub; não depender do CLI `gh`. |
