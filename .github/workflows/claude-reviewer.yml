@@ -2,12 +2,16 @@ name: Revisão Automática de Pull Request
 
 on:
   pull_request:
-    types: [review_requested]
+    types: [review_requested, synchronize]
+
+concurrency:
+  group: claude-reviewer-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   auto-review:
     name: Revisão Automática (Claude-Revisor)
-    if: github.event.requested_reviewer.login == 'Claude-Revisor'
+    if: github.event.action == 'review_requested' && github.event.requested_reviewer.login == 'Claude-Revisor'
     runs-on: ubuntu-latest
     environment: ClaudeCode
     permissions:
