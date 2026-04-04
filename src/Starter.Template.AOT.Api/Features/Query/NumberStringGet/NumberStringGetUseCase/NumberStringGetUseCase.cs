@@ -4,6 +4,7 @@ public sealed class NumberStringGetUseCase(ILogger<NumberStringGetUseCase> logge
 {
     public NumberStringGetOutput? Execute(int value)
     {
+
         logger.LogInformation("[NumberStringGetUseCase][Execute] Converter número para string. Value={Value}", value);
 
         var result = value switch
@@ -15,6 +16,7 @@ public sealed class NumberStringGetUseCase(ILogger<NumberStringGetUseCase> logge
 
         if (result is null)
         {
+
             logger.LogWarning("[NumberStringGetUseCase][Execute] Retornar nulo — valor não mapeado. Value={Value}", value);
 
             return null;

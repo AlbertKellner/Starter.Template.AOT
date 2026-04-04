@@ -9,12 +9,14 @@ public sealed class NumberStringGetEndpoint(INumberStringGetUseCase useCase, ILo
     [HttpGet("{value:int}")]
     public IActionResult Get([FromRoute] int value)
     {
+
         logger.LogInformation("[NumberStringGetEndpoint][Get] Receber requisição de conversão de número para string. Value={Value}", value);
 
         var output = useCase.Execute(value);
 
         if (output is null)
         {
+
             logger.LogWarning("[NumberStringGetEndpoint][Get] Retornar 400 — valor não suportado. Value={Value}", value);
 
             return BadRequest(new ProblemDetails
