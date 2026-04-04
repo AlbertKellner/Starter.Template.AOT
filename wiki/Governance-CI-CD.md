@@ -91,6 +91,36 @@ Os dois últimos jobs são executados em paralelo após a aprovação no gate de
 
 ---
 
+## Pipeline "Revisão Automática de Pull Request" (`claude-reviewer.yml`)
+
+### Gatilho
+
+- Pull Request com evento `review_requested`, filtrando apenas quando o revisor adicionado é `Claude-Revisor`
+
+### Comportamento
+
+- Executa `anthropics/claude-code-action@v1` em modo automação (com `prompt` definido)
+- Carrega a skill `.claude/skills/auto-pr-review/SKILL.md` e inicia o ciclo iterativo Revisor↔Codificador
+- A confirmação do usuário é implícita: o ato de adicionar `Claude-Revisor` como revisor equivale à aprovação
+- O ciclo pode realizar até 10 iterações de revisão e correção antes de aprovar o PR
+
+### Ambiente e Secrets Necessários
+
+| Secret | Propósito |
+|--------|-----------|
+| `ANTHROPIC_API_KEY` | Autenticação com a API Anthropic para o `claude-code-action` |
+| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Token MCP do papel Codificador (`ClaudeCode-Bot`) |
+| `GH_CLAUDE_CODE_MCP_REVISOR` | Token MCP do papel Revisor (`Claude-Revisor`) |
+| `GITHUB_TOKEN` | Token padrão do GitHub Actions (gerado automaticamente) |
+
+Os três primeiros secrets devem estar configurados no GitHub Environment `ClaudeCode`.
+
+### Configuração MCP
+
+A action reutiliza o arquivo `.mcp.json` do repositório, que define os dois servidores MCP do GitHub (`github` e `github-revisor`). Os tokens são injetados via variáveis de ambiente no step da action.
+
+---
+
 ## Referências
 
 - [Operação](Governance-Operation) — pré-requisitos e configuração do ambiente
