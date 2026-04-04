@@ -1,20 +1,13 @@
 name: Revisão Automática após Request Changes Humano
 
 on:
-  pull_request:
-    types: [synchronize]
   pull_request_review:
     types: [submitted]
-
-concurrency:
-  group: claude-reviewer-changes-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
 
 jobs:
   auto-review:
     name: Revisão Automática (Request Changes por humano)
     if: |
-      github.event_name == 'pull_request_review' &&
       github.event.review.state == 'changes_requested' &&
       github.event.review.user.login != 'ClaudeCode-Bot' &&
       github.event.review.user.login != 'Claude-Revisor'
