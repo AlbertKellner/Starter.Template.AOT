@@ -3,21 +3,11 @@ name: Revisão Automática de Pull Request
 on:
   pull_request:
     types: [review_requested]
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'Número do Pull Request'
-        required: true
-        type: string
-      pr_branch:
-        description: 'Branch do Pull Request (head.ref)'
-        required: true
-        type: string
 
 jobs:
   auto-review:
     name: Revisão Automática (Claude-Revisor)
-    if: github.event_name == 'workflow_dispatch' || github.event.requested_reviewer.login == 'Claude-Revisor'
+    if: github.event.requested_reviewer.login == 'Claude-Revisor'
     runs-on: ubuntu-latest
     environment: ClaudeCode
     permissions:
@@ -39,7 +29,7 @@ jobs:
           prompt: |
             Execute a skill de revisão automática de código definida em
             `.claude/skills/auto-pr-review/SKILL.md` para o Pull Request
-            #${{ github.event_name == 'workflow_dispatch' && inputs.pr_number || github.event.pull_request.number }} (branch: ${{ github.event_name == 'workflow_dispatch' && inputs.pr_branch || github.event.pull_request.head.ref }}).
+            #${{ github.event.pull_request.number }} (branch: ${{ github.event.pull_request.head.ref }}).
 
             CONTEXTO: Este workflow foi disparado automaticamente porque Claude-Revisor
             foi adicionado como revisor ao PR. O ato de adicionar o revisor é a
