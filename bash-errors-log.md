@@ -171,3 +171,80 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | `[PreToolUse] BLOQUEADO: git push --force detectado. Force push é proibido sem autorização explícita.` |
 | **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
 | **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |
+
+## Erro 14 — docker build falha por DNS indisponível no BuildKit (tentativa 1)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 14 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `docker build -t starter-template-debug -f src/Starter.Template.AOT.Api/Dockerfile src/ 2>&1` |
+| **Erro retornado** | `E: Unable to locate package clang / E: Unable to locate package zlib1g-dev` — `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | DNS não funciona dentro de containers BuildKit neste sandbox. O `apt-get update` dentro do Dockerfile falha ao resolver `archive.ubuntu.com`. Ver Erro 16 para análise completa com `--network=host`. |
+| **Novo comando / solução** | Ver Erro 16: workaround via `dotnet publish` no host (que tem clang instalado) + imagem runtime-only sem `apt-get`. CI/CD com GitHub Actions funciona normalmente pois tem DNS. |
+
+## Erro 15 — docker build falha por DNS indisponível no BuildKit (tentativa 2)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 15 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `docker build -t starter-template-debug -f src/Starter.Template.AOT.Api/Dockerfile src/ 2>&1` |
+| **Erro retornado** | `E: Unable to locate package clang / E: Unable to locate package zlib1g-dev` — `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | Mesma causa do Erro 14: DNS não funciona dentro de containers BuildKit neste sandbox. Segunda tentativa com o mesmo comando, mesma falha. |
+| **Novo comando / solução** | Ver Erro 16: workaround via `dotnet publish` no host + imagem runtime-only sem `apt-get`. CI/CD com GitHub Actions funciona normalmente pois tem DNS. |
+
+## Erro 16 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 16 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `docker build --network=host -t starter-template-debug -f src/Starter.Template.AOT.Api/Dockerfile src/` |
+| **Erro retornado** | `E: Unable to locate package clang / E: Unable to locate package zlib1g-dev` — `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | Mesma causa dos Erros 6 e 7: DNS não funciona dentro de containers BuildKit neste sandbox. `--network=host` não resolve porque o problema é no namespace de rede do BuildKit, não do Docker em si. |
+| **Novo comando / solução** | Workaround para sandbox: (1) `dotnet publish` no host (que tem clang instalado); (2) `docker build -f Dockerfile.runtime /tmp/aot-publish/` usando imagem runtime-only sem apt-get. CI com GitHub Actions funciona normalmente pois tem DNS. |
+
+## Erro 17 — ls de .deb inexistentes (erro esperado de diagnóstico)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 17 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `dpkg -l zlib1g-dev 2>&1 \| grep ^ii; ls /var/cache/apt/archives/clang*.deb /var/cache/apt/archives/zlib1g*.deb 2>&1` |
+| **Erro retornado** | `ls: cannot access '/var/cache/apt/archives/clang*.deb': No such file or directory` |
+| **Causa** | Diagnóstico de ambiente: verificação se os pacotes estavam cacheados no host. `clang` e `zlib1g-dev` estão instalados mas os `.deb` não estão em `/var/cache/apt/archives`. |
+| **Novo comando / solução** | Não bloqueante — usado apenas para diagnóstico. |
+
+## Erro 18 — docker stop em container já removido
+
+| Campo | Valor |
+|---|---|
+| **Número** | 18 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `docker stop funny_ptolemy 2>&1; docker rm funny_ptolemy 2>&1` |
+| **Erro retornado** | `Error response from daemon: No such container: funny_ptolemy` |
+| **Causa** | Container criado com `--rm` já se auto-removeu ao terminar. A tentativa de stop chegou após a remoção automática. |
+| **Novo comando / solução** | Não bloqueante — uso de `--rm` é correto para containers de diagnóstico temporários.  |
+
+## Erro 19 — EnhancedModelMetadataActivator falha silenciosamente em Native AOT
+
+| Campo | Valor |
+|---|---|
+| **Número** | 19 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | Inicialização da aplicação via `./Starter.Template.AOT.Api` (binário AOT publicado) |
+| **Erro retornado** | `DynamicMethod falhou: Dynamic code generation is not supported on this platform.` / `FieldInfo.SetValue falhou: Cannot set initonly static field after its owning type is initialized.` / `IsEnhancedModelMetadataSupported não pôde ser ativado — model binding pode falhar` |
+| **Causa** | `EnhancedModelMetadataActivator` tenta definir `ModelMetadata.IsEnhancedModelMetadataSupported = true` via `DynamicMethod` (não suportado em AOT) e `FieldInfo.SetValue` (bloqueado para campos initonly após inicialização do tipo). Em Native AOT, nenhuma das duas abordagens funciona. O warning era enganoso: o model binding NÃO falha pois `FallbackSimpleTypeModelBinderProvider` e `NullModelBinderProvider` já substituem todos os providers que dependem desse flag. |
+| **Novo comando / solução** | Corrigido em `EnhancedModelMetadataActivator.cs`: verificação de `RuntimeFeature.IsDynamicCodeSupported` antes de tentar reflection. Em modo AOT, log é emitido em nível `Debug` (não `Warning`) e activator retorna imediatamente. |
+
+## Erro 20 — gh CLI indisponível durante auto-pr-review (graphql de review threads)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 20 |
+| **Data** | 2026-04-04 |
+| **Comando executado** | `gh api graphql -f query='{ repository(...) { pullRequest(number: 30) { reviewThreads ... } } }'` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh — `gh: command not found` ou exit code não-zero por ausência do CLI |
+| **Causa** | A skill `auto-pr-review` tentou usar `gh api graphql` para listar review threads, mas o CLI `gh` não está instalado/autenticado neste ambiente. A skill usa MCP GitHub para todas as interações com a API do GitHub — o uso de `gh` foi uma tentativa de fallback desnecessária. |
+| **Novo comando / solução** | Não bloqueante — a revisão foi concluída com sucesso via ferramentas MCP. Usar exclusivamente `mcp__github__*` e `mcp__github-revisor__*` para interações GitHub; não depender do CLI `gh`. |
