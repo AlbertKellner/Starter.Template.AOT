@@ -10,7 +10,7 @@ public sealed class NumberStringGetEndpoint(INumberStringGetUseCase useCase, ILo
     public IActionResult Get([FromRoute] int value)
     {
 
-        logger.LogInformation("[NumberStringGetEndpoint][Get] Receber requisição de conversão de número para string. Value={Value}", value);
+        logger.LogInformation("[NumberStringGetEndpoint][Get] Converter número para string. Value={Value}", value);
 
         var output = useCase.Execute(value);
 
