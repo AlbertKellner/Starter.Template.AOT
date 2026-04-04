@@ -1,0 +1,51 @@
+name: Revisão Automática após Request Changes Humano
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  auto-review:
+    name: Revisão Automática (Request Changes por humano)
+    if: |
+      github.event.review.state == 'changes_requested' &&
+      github.event.review.user.login != 'ClaudeCode-Bot' &&
+      github.event.review.user.login != 'Claude-Revisor'
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Executar revisão automática de código
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_CLAUDE_CODE_MCP_CODIFICADOR: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
+          GH_CLAUDE_CODE_MCP_REVISOR: ${{ secrets.GH_CLAUDE_CODE_MCP_REVISOR }}
+        with:
+          anthropic_api_key: ${{ secrets.AT_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Execute a skill de revisão automática de código definida em
+            `.claude/skills/auto-pr-review/SKILL.md` para o Pull Request
+            #${{ github.event.pull_request.number }} (branch: ${{ github.event.pull_request.head.ref }}).
+
+            CONTEXTO: Este workflow foi disparado automaticamente porque o usuário
+            `${{ github.event.review.user.login }}` submeteu um Request Changes no PR.
+            Este é um revisor humano (não é ClaudeCode-Bot nem Claude-Revisor).
+            O ato de solicitar mudanças é a confirmação do usuário — pule a etapa 2
+            (CONFIRMAR COM USUÁRIO) e inicie diretamente o CICLO DE REVISÃO (etapa 3).
+
+            IMPORTANTE: Os comentários do revisor humano `${{ github.event.review.user.login }}`
+            devem ser tratados pelo Revisor (Claude-Revisor) conforme a política de
+            "Tratamento de Comentários de Terceiros pelo Revisor" definida na skill:
+            se aderentes à governança, responder com "concordo"; se não aderentes,
+            explicar e sugerir alternativa alinhada à governança.
+          claude_args: |
+            --max-turns 100

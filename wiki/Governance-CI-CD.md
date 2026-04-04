@@ -6,7 +6,7 @@ Documenta os pipelines de CI/CD configurados no GitHub Actions. Deve ser consult
 
 ## Contexto
 
-O projeto utiliza GitHub Actions como plataforma de CI/CD, com dois pipelines principais: um para validação de execução (build, testes e health checks) e outro para publicação automática da Wiki. Todos os jobs de validação utilizam o GitHub Environment `ClaudeCode`, que fornece secrets como `DD_API_KEY` para integração com o Datadog.
+O projeto utiliza GitHub Actions como plataforma de CI/CD, com três pipelines: um para validação de execução (build, testes e health checks), um para publicação automática da Wiki e um para revisão automática de Pull Requests via Claude-Revisor. Todos os jobs de validação utilizam o GitHub Environment `ClaudeCode`, que fornece secrets como `DD_API_KEY` para integração com o Datadog.
 
 ---
 
@@ -88,6 +88,36 @@ Os dois últimos jobs são executados em paralelo após a aprovação no gate de
 - A configuração do Datadog Agent no CI difere do Docker Compose local:
   - No CI, o Agent usa `DD_ENV=ci` e coleta logs via file tailing (`app-logs/run.log`) em vez de Docker log collection
   - No Docker Compose, o Agent coleta logs de todos os containers via Docker socket (`DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true`)
+
+---
+
+## Pipeline "Revisão Automática de Pull Request" (`claude-reviewer.yml`)
+
+### Gatilho
+
+- Pull Request com evento `review_requested`, filtrando apenas quando o revisor adicionado é `Claude-Revisor`
+
+### Comportamento
+
+- Executa `anthropics/claude-code-action@v1` em modo automação (com `prompt` definido)
+- Carrega a skill `.claude/skills/auto-pr-review/SKILL.md` e inicia o ciclo iterativo Revisor↔Codificador
+- A confirmação do usuário é implícita: o ato de adicionar `Claude-Revisor` como revisor equivale à aprovação
+- O ciclo pode realizar até 10 iterações de revisão e correção antes de aprovar o PR
+
+### Ambiente e Secrets Necessários
+
+| Secret | Propósito |
+|--------|-----------|
+| `ANTHROPIC_API_KEY` | Autenticação com a API Anthropic para o `claude-code-action` |
+| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Token MCP do papel Codificador (`ClaudeCode-Bot`) |
+| `GH_CLAUDE_CODE_MCP_REVISOR` | Token MCP do papel Revisor (`Claude-Revisor`) |
+| `GITHUB_TOKEN` | Token padrão do GitHub Actions (gerado automaticamente) |
+
+Os três primeiros secrets devem estar configurados no GitHub Environment `ClaudeCode`.
+
+### Configuração MCP
+
+A action reutiliza o arquivo `.mcp.json` do repositório, que define os dois servidores MCP do GitHub (`github` e `github-revisor`). Os tokens são injetados via variáveis de ambiente no step da action.
 
 ---
 
