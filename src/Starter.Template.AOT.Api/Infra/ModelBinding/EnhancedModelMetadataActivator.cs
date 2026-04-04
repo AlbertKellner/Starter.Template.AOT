@@ -18,13 +18,15 @@ internal static class EnhancedModelMetadataActivator
 {
     internal static void Activate(ILogger logger)
     {
-        // Em Native AOT, DynamicMethod e FieldInfo.SetValue em campos initonly não funcionam.
-        // Os providers AOT-compatíveis (FallbackSimpleTypeModelBinder, NullModelBinder) já
-        // cobrem todos os casos onde IsEnhancedModelMetadataSupported seria necessário.
+        // In Native AOT, DynamicMethod and FieldInfo.SetValue on initonly fields do not work.
+        // AOT-compatible providers (FallbackSimpleTypeModelBinder, NullModelBinder) already
+        // cover all cases where IsEnhancedModelMetadataSupported would be required.
         if (!RuntimeFeature.IsDynamicCodeSupported)
         {
+
             logger.LogDebug(
                 "[EnhancedModelMetadataActivator][Activate] Modo Native AOT — activator ignorado. Providers AOT-compatíveis garantem o model binding.");
+
             return;
         }
 
@@ -55,13 +57,16 @@ internal static class EnhancedModelMetadataActivator
                 logger.LogInformation(
                     "[EnhancedModelMetadataActivator][Activate] IsEnhancedModelMetadataSupported definido via DynamicMethod em {Type}",
                     modelMetadataType.FullName);
+
                 return;
             }
             catch (Exception ex)
             {
+
                 logger.LogWarning(
                     "[EnhancedModelMetadataActivator][Activate] DynamicMethod falhou: {Message}",
                     ex.Message);
+
             }
 
             try
@@ -71,17 +76,21 @@ internal static class EnhancedModelMetadataActivator
                 logger.LogInformation(
                     "[EnhancedModelMetadataActivator][Activate] IsEnhancedModelMetadataSupported definido via FieldInfo.SetValue em {Type}",
                     modelMetadataType.FullName);
+
                 return;
             }
             catch (Exception ex)
             {
+
                 logger.LogWarning(
                     "[EnhancedModelMetadataActivator][Activate] FieldInfo.SetValue falhou: {Message}",
                     ex.Message);
+
             }
         }
 
         logger.LogWarning(
             "[EnhancedModelMetadataActivator][Activate] IsEnhancedModelMetadataSupported não pôde ser ativado — model binding pode falhar em modo JIT");
+
     }
 }
