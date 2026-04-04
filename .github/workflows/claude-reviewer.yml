@@ -24,7 +24,7 @@ jobs:
           GH_CLAUDE_CODE_MCP_CODIFICADOR: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
           GH_CLAUDE_CODE_MCP_REVISOR: ${{ secrets.GH_CLAUDE_CODE_MCP_REVISOR }}
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.AT_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Execute a skill de revisão automática de código definida em
