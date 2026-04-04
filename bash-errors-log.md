@@ -172,27 +172,27 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Causa** | O pattern glob `"if": "Bash(git push --force*)"` no hook PreToolUse:Bash casava incorretamente com comandos que expandem variáveis de ambiente. O `*` no final do pattern permitia matching amplo demais quando o conteúdo expandido das variáveis era avaliado. |
 | **Novo comando / solução** | Substituir pattern `Bash(git push --force*)` por dois patterns específicos: `Bash(git push --force)` (exato) e `Bash(git push --force *)` (com espaço antes do `*`). Também adicionado pattern separado para `--force-with-lease`. |
 
-## Erro 14 — Captura automática via hook
+## Erro 14 — docker build falha por DNS indisponível no BuildKit (tentativa 1)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 14 |
 | **Data** | 2026-04-04 |
 | **Comando executado** | `docker build -t starter-template-debug -f src/Starter.Template.AOT.Api/Dockerfile src/ 2>&1` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | `E: Unable to locate package clang / E: Unable to locate package zlib1g-dev` — `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | DNS não funciona dentro de containers BuildKit neste sandbox. O `apt-get update` dentro do Dockerfile falha ao resolver `archive.ubuntu.com`. Ver Erro 16 para análise completa com `--network=host`. |
+| **Novo comando / solução** | Ver Erro 16: workaround via `dotnet publish` no host (que tem clang instalado) + imagem runtime-only sem `apt-get`. CI/CD com GitHub Actions funciona normalmente pois tem DNS. |
 
-## Erro 15 — Captura automática via hook
+## Erro 15 — docker build falha por DNS indisponível no BuildKit (tentativa 2)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 15 |
 | **Data** | 2026-04-04 |
 | **Comando executado** | `docker build -t starter-template-debug -f src/Starter.Template.AOT.Api/Dockerfile src/ 2>&1` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | `E: Unable to locate package clang / E: Unable to locate package zlib1g-dev` — `Temporary failure resolving 'archive.ubuntu.com'` |
+| **Causa** | Mesma causa do Erro 14: DNS não funciona dentro de containers BuildKit neste sandbox. Segunda tentativa com o mesmo comando, mesma falha. |
+| **Novo comando / solução** | Ver Erro 16: workaround via `dotnet publish` no host + imagem runtime-only sem `apt-get`. CI/CD com GitHub Actions funciona normalmente pois tem DNS. |
 
 ## Erro 16 — Captura automática via hook
 
