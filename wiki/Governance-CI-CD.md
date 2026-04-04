@@ -6,7 +6,7 @@ Documenta os pipelines de CI/CD configurados no GitHub Actions. Deve ser consult
 
 ## Contexto
 
-O projeto utiliza GitHub Actions como plataforma de CI/CD, com dois pipelines principais: um para validação de execução (build, testes e health checks) e outro para publicação automática da Wiki. Todos os jobs de validação utilizam o GitHub Environment `ClaudeCode`, que fornece secrets como `DD_API_KEY` para integração com o Datadog.
+O projeto utiliza GitHub Actions como plataforma de CI/CD, com três pipelines: um para validação de execução (build, testes e health checks), um para publicação automática da Wiki e um para revisão automática de Pull Requests via Claude-Revisor. Todos os jobs de validação utilizam o GitHub Environment `ClaudeCode`, que fornece secrets como `DD_API_KEY` para integração com o Datadog.
 
 ---
 
