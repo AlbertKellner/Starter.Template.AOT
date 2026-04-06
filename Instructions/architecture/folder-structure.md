@@ -59,6 +59,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── folder-governance.md
 │   │   ├── governance-policies.md       # Consolidação: normalização, contexto, propagação, ambiguidade, snippets
 │   │   ├── instruction-review.md        # Meta-regra: revisão obrigatória via REVIEW.md
+│   │   ├── mandatory-process-enforcement.md  # Meta-regra: precedência de processo de workspace sobre instruções genéricas
 │   │   ├── execution-time-tracking.md   # Rastreamento de tempo efetivo de sessão e métricas de pipeline
 │   │   ├── governance-audit.md          # Auditoria automatizada de consistência de governança
 │   │   ├── governance-behavior-tracking.md # Rastreamento de comportamentos esperados
@@ -294,3 +295,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-04-01 | .claude/skills/governance-validation-pipeline/ adicionada à estrutura de governança | Instrução do usuário |
 | 2026-04-01 | 4 novos hooks adicionados: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-01 | .claude/agents/ adicionada: code-reviewer.md e governance-auditor.md — agentes especializados com memória persistente | Melhoria de governança com recursos avançados do Claude Code |
+| 2026-04-06 | .claude/rules/mandatory-process-enforcement.md adicionada: meta-regra de precedência de processo de workspace; .kiro/proposals/ criada com proposta de mudança sistêmica | Análise de causa-raiz de violação de processo |
