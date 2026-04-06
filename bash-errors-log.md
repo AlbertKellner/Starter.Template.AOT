@@ -248,3 +248,45 @@ Este arquivo documenta todos os erros de Bash encontrados durante sessões de tr
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh — `gh: command not found` ou exit code não-zero por ausência do CLI |
 | **Causa** | A skill `auto-pr-review` tentou usar `gh api graphql` para listar review threads, mas o CLI `gh` não está instalado/autenticado neste ambiente. A skill usa MCP GitHub para todas as interações com a API do GitHub — o uso de `gh` foi uma tentativa de fallback desnecessária. |
 | **Novo comando / solução** | Não bloqueante — a revisão foi concluída com sucesso via ferramentas MCP. Usar exclusivamente `mcp__github__*` e `mcp__github-revisor__*` para interações GitHub; não depender do CLI `gh`. |
+
+## Erro 21 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 21 |
+| **Data** | 2026-04-06 |
+| **Comando executado** | `GH_TOKEN=$(printenv GH_CLAUDE_CODE_MCP_CODIFICADOR) gh pr create \
+  --repo "albertkellner/starter.template.aot" \
+  --base main \
+  --head claude/github-actions-workflow-QA9Ke \
+  --title "ci(workflows): adicionar workflow de desenvolvimento e transição pós-refinamento" \
+  --body "$(cat <<'EOF'
+## Motivos da alteração
+
+O repositório já possuía workflow de refinamento automático de issues, mas faltava o workflow que executa o desenvolvimento após o plano estar aprovado. Também faltava a transição automática de labels ao final do refinamento.
+
+## Plano de execução
+
+1. Criar workflow `claude-development.yml` com ciclo completo: desenvolvimento → review automático → review humano
+2. Adicionar job `post-refinement` ao workflow de refinamento existente
+3. Estabelecer fluxo de labels: `em-refinamento` → `refinado` → `iniciar-desenvolvimento` → `em desenvolvimento` → `review-automatico` → `review-humano`
+
+## O que foi realizado
+
+### Novo workflow: `claude-development.yml`
+- **Job `prepare`**: remove todas as labels, adiciona `em desenvolvimento`, comenta na issue
+- **Job `development`**: executa `claude-code-action@v1` com modelo Sonnet, baseado no último plano do Codificador. Inclui restrições de segurança (secrets bloqueados, governança protegida)
+- **Job `post-development`**: busca PR via `gh pr list`, comenta conclusão, troca label para `review-automatico`, adiciona Claude-Revisor como reviewer (dispara `claude-reviewer.yml` existente). Se PR não encontrado, troca para `falha-desenvolvimento`
+- **Job `wait-review`**: polling a cada 60s verificando aprovação do Claude-Revisor (timeout 30min)
+- **Job `post-review`**: comenta aprovação, troca label para `review-humano`, inclui link do PR
+
+### Alteração: `claude-refinement.yml`
+- Novo job `post-refinement` após o refinamento: remove labels, adiciona `refinado`, comenta instruindo o usuário a adicionar `iniciar-desenvolvimento`
+
+### Labels necessárias no repositório
+- `refinado`, `iniciar-desenvolvimento`, `em desenvolvimento`, `review-automatico`, `review-humano`, `falha-desenvolvimento`
+EOF
+)" 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
