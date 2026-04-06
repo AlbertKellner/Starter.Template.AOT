@@ -1,20 +1,24 @@
 name: Refinamento Automatico via Kanban
 
 on:
-  projects_v2_item:
-    types: [edited]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Numero da issue para refinar'
+        required: true
+        type: number
   issue_comment:
     types: [created]
 
 concurrency:
-  group: refinement-${{ github.event.issue.number || github.event.projects_v2_item.content_node_id }}
+  group: refinement-${{ github.event.inputs.issue_number || github.event.issue.number }}
   cancel-in-progress: true
 
 jobs:
   prepare:
     name: Verificar coluna e preparar refinamento
     if: >-
-      github.event_name == 'projects_v2_item' ||
+      github.event_name == 'workflow_dispatch' ||
       (
         github.event_name == 'issue_comment' &&
         github.event.comment.user.login != 'ClaudeCode-Bot' &&
@@ -34,39 +38,13 @@ jobs:
     steps:
       - name: Resolver issue number
         id: resolve-issue
-        env:
-          GH_TOKEN: ${{ secrets.GH_PROJECT_PAT }}
         run: |
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             echo "issue_number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
-            echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
           else
-            CONTENT_NODE_ID="${{ github.event.projects_v2_item.content_node_id }}"
-            RESULT=$(gh api graphql -f query='
-              query($nodeId: ID!) {
-                node(id: $nodeId) {
-                  ... on Issue {
-                    number
-                    repository {
-                      nameWithOwner
-                    }
-                  }
-                }
-              }
-            ' -f nodeId="$CONTENT_NODE_ID" --jq '.data.node')
-
-            ISSUE_NUMBER=$(echo "$RESULT" | jq -r '.number // empty')
-            REPO=$(echo "$RESULT" | jq -r '.repository.nameWithOwner // empty')
-
-            if [ -z "$ISSUE_NUMBER" ] || [ "$ISSUE_NUMBER" = "null" ]; then
-              echo "Content node is not an Issue (possibly a Draft Issue). Skipping."
-              echo "issue_number=" >> "$GITHUB_OUTPUT"
-              echo "repo=" >> "$GITHUB_OUTPUT"
-            else
-              echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-              echo "repo=$REPO" >> "$GITHUB_OUTPUT"
-            fi
+            echo "issue_number=${{ github.event.inputs.issue_number }}" >> "$GITHUB_OUTPUT"
           fi
+          echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
 
       - name: Verificar coluna Em Refinamento
         if: steps.resolve-issue.outputs.issue_number != ''
@@ -110,33 +88,10 @@ jobs:
             echo "in_refinement=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Guard de bot (projects_v2_item)
-        if: >-
-          github.event_name == 'projects_v2_item' &&
-          steps.resolve-issue.outputs.issue_number != '' &&
-          steps.check-column.outputs.in_refinement == 'true'
-        id: bot-guard
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          REPO="${{ steps.resolve-issue.outputs.repo }}"
-          ISSUE_NUMBER=${{ steps.resolve-issue.outputs.issue_number }}
-
-          LAST_AUTHOR=$(gh api "repos/$REPO/issues/$ISSUE_NUMBER/comments?per_page=1&direction=desc" \
-            --jq '.[0].user.login // empty')
-
-          if [ "$LAST_AUTHOR" = "ClaudeCode-Bot" ] || [ "$LAST_AUTHOR" = "Claude-Revisor" ]; then
-            echo "Last comment is from bot ($LAST_AUTHOR). Skipping to avoid loop."
-            echo "bot_detected=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "bot_detected=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Postar feedback imediato
         if: >-
           steps.resolve-issue.outputs.issue_number != '' &&
-          steps.check-column.outputs.in_refinement == 'true' &&
-          (github.event_name == 'issue_comment' || steps.bot-guard.outputs.bot_detected != 'true')
+          steps.check-column.outputs.in_refinement == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -154,14 +109,10 @@ jobs:
         run: |
           ISSUE_NUMBER="${{ steps.resolve-issue.outputs.issue_number }}"
           IN_REFINEMENT="${{ steps.check-column.outputs.in_refinement }}"
-          BOT_DETECTED="${{ steps.bot-guard.outputs.bot_detected }}"
-          EVENT_NAME="${{ github.event_name }}"
 
           echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
 
           if [ -z "$ISSUE_NUMBER" ] || [ "$IN_REFINEMENT" != "true" ]; then
-            echo "should_proceed=false" >> "$GITHUB_OUTPUT"
-          elif [ "$EVENT_NAME" = "projects_v2_item" ] && [ "$BOT_DETECTED" = "true" ]; then
             echo "should_proceed=false" >> "$GITHUB_OUTPUT"
           else
             echo "should_proceed=true" >> "$GITHUB_OUTPUT"

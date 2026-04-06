@@ -1,0 +1,100 @@
+name: Polling de Refinamento via Kanban
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  poll:
+    name: Verificar issues em refinamento
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      actions: write
+
+    steps:
+      - name: Consultar projeto e disparar refinamento
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_PAT }}
+        run: |
+          echo "=== Consultando projeto Claude Code (number: 5) ==="
+
+          ITEMS_JSON=$(gh api graphql -f query='
+            query {
+              user(login: "AlbertKellner") {
+                projectV2(number: 5) {
+                  items(first: 50) {
+                    nodes {
+                      fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          name
+                        }
+                      }
+                      content {
+                        ... on Issue {
+                          number
+                          repository {
+                            nameWithOwner
+                          }
+                          comments(last: 1) {
+                            nodes {
+                              author {
+                                login
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' --jq '.data.user.projectV2.items.nodes')
+
+          echo "=== Filtrando issues em 'Em Refinamento' ==="
+
+          ISSUES=$(echo "$ITEMS_JSON" | jq -c '[
+            .[] |
+            select(
+              .fieldValueByName.name == "Em Refinamento" and
+              .content.number != null and
+              .content.repository != null
+            ) |
+            {
+              number: .content.number,
+              repo: .content.repository.nameWithOwner,
+              last_author: (.content.comments.nodes[0].author.login // "none")
+            }
+          ]')
+
+          COUNT=$(echo "$ISSUES" | jq 'length')
+          echo "Issues em refinamento: $COUNT"
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "Nenhuma issue em refinamento. Encerrando."
+            exit 0
+          fi
+
+          echo "=== Verificando quais precisam de refinamento ==="
+
+          echo "$ISSUES" | jq -c '.[]' | while read -r ITEM; do
+            NUMBER=$(echo "$ITEM" | jq -r '.number')
+            REPO=$(echo "$ITEM" | jq -r '.repo')
+            LAST_AUTHOR=$(echo "$ITEM" | jq -r '.last_author')
+
+            echo "Issue #$NUMBER (repo: $REPO, ultimo autor: $LAST_AUTHOR)"
+
+            if [ "$LAST_AUTHOR" = "ClaudeCode-Bot" ] || [ "$LAST_AUTHOR" = "Claude-Revisor" ] || [ "$LAST_AUTHOR" = "github-actions[bot]" ]; then
+              echo "  -> Ja processada (ultimo comentario de bot). Pulando."
+              continue
+            fi
+
+            echo "  -> Disparando workflow de refinamento para issue #$NUMBER"
+            gh workflow run claude-refinement.yml \
+              --repo "$REPO" \
+              -f issue_number="$NUMBER"
+          done
+
+          echo "=== Polling concluido ==="
