@@ -8,7 +8,7 @@
         "DD-APPLICATION-KEY": "${DD_APP_KEY}"
       }
     },
-    "github": {
+    "github-codificador": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
