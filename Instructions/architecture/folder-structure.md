@@ -49,6 +49,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── folder-governance.md
 │   │   ├── governance-policies.md       # Consolidação: normalização, contexto, propagação, ambiguidade, snippets
 │   │   ├── instruction-review.md        # Meta-regra: revisão obrigatória via REVIEW.md
+│   │   ├── mandatory-process-enforcement.md  # Meta-regra: precedência de processo de workspace sobre instruções genéricas
 │   │   ├── naming-governance.md
 │   │   ├── pr-metadata-governance.md
 │   │   └── source-of-truth-priority.md
@@ -67,6 +68,10 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── instruction-change-detector.sh
 │   │   ├── pre-commit-gate.sh
 │   │   └── README.md
+│
+├── .kiro/
+│   └── proposals/                      # Propostas de melhorias para o sistema Kiro
+│       └── workspace-governance-precedence.md  # Proposta de precedência de governança de workspace
 │
 └── Instructions/
     ├── operating-model.md              # Modelo operacional consolidado
@@ -257,3 +262,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-03-21 | .claude/skills/governance-behavior-tracking/ adicionada à estrutura de governança | Instrução do usuário |
 | 2026-03-22 | wiki/ reorganizada: estrutura por agrupamentos (Governance-*, Domain-*, Feature-*, Claude-*); páginas Infra-* e estruturais antigas substituídas por páginas com prefixo de grupo | Instrução do usuário |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
+| 2026-04-06 | .claude/rules/mandatory-process-enforcement.md adicionada: meta-regra de precedência de processo de workspace; .kiro/proposals/ criada com proposta de mudança sistêmica | Análise de causa-raiz de violação de processo |

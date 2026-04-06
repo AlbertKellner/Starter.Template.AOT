@@ -155,6 +155,7 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 
 ### Rules operacionais ativas — meta-governança (ponte técnico + negócio)
 
+@.claude/rules/mandatory-process-enforcement.md
 @.claude/rules/governance-policies.md
 @.claude/rules/source-of-truth-priority.md
 @.claude/rules/architecture-governance.md
