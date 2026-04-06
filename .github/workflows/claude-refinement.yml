@@ -122,3 +122,42 @@ jobs:
             ### Testes
             ### Validacao
             ### Riscos e Dependencias
+
+  post-refinement:
+    name: Pos-refinamento
+    needs: refinement
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+
+    steps:
+      - name: Remover todas as labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+
+          for LABEL in $LABELS; do
+            echo "Removendo label: $LABEL"
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          done
+
+      - name: Adicionar label refinado
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --add-label "refinado"
+
+      - name: Comentar conclusao do refinamento
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Refinamento concluido. Adicione a label \`iniciar-desenvolvimento\` para iniciar a implementacao."
