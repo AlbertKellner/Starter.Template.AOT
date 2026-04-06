@@ -143,9 +143,7 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 @Instructions/architecture/naming-conventions.md
 @Instructions/architecture/patterns.md
 @Instructions/architecture/technical-overview.md
-@.claude/rules/architecture-governance.md
 @.claude/rules/folder-governance.md
-@.claude/rules/naming-governance.md
 
 ### Governança de negócio
 
