@@ -71,7 +71,7 @@
           },
           {
             "type": "command",
-            "if": "Bash(git push *--force-with-lease*)",
+            "if": "Bash(git push --force-with-lease *)",
             "command": "echo '[PreToolUse] BLOQUEADO: git push --force-with-lease detectado. Force push é proibido sem autorização explícita.' >&2; exit 2"
           }
         ]
