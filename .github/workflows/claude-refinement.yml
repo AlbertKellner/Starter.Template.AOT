@@ -35,6 +35,23 @@ jobs:
       issues: write
 
     steps:
+      - name: Remover outras labels
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+
+          for LABEL in $LABELS; do
+            if [ "$LABEL" != "em-refinamento" ]; then
+              echo "Removendo label: $LABEL"
+              gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+            fi
+          done
+
       - name: Postar feedback imediato
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
