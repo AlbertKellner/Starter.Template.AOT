@@ -11,7 +11,10 @@
 #   - Acumula tempo efetivo e exibe periodicamente
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-TIMER_FILE="$REPO_ROOT/.claude/.session-timer"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
+mkdir -p "$STATE_DIR" 2>/dev/null || true
+TIMER_FILE="$STATE_DIR/.session-timer"
 
 # Constantes configuráveis
 IDLE_THRESHOLD_MS=120000        # 120 segundos — gap maior que isso = novo segmento

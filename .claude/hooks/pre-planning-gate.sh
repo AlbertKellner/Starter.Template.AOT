@@ -11,7 +11,10 @@
 # O assistente o cria após completar o ciclo de consulta pré-planejamento.
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-STATE_FILE="$REPO_ROOT/.claude/.pre-planning-done"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
+mkdir -p "$STATE_DIR" 2>/dev/null || true
+STATE_FILE="$STATE_DIR/.pre-planning-done"
 FILE_PATH="${1:-}"
 
 # Ignorar edições em arquivos transientes e no próprio arquivo de estado
@@ -47,7 +50,7 @@ echo "[Pre-planning gate] Existem dúvidas, definições pendentes ou fluxos/cen
 echo "Verifique open-questions.md e os arquivos de governança pertinentes antes de prosseguir."
 echo "Comportamento obrigatório #12 — ver .claude/rules/pre-planning-consultation.md"
 echo ""
-echo "Após completar a consulta pré-planejamento, crie o arquivo .claude/.pre-planning-done"
-echo "para sinalizar que o gate foi satisfeito: touch .claude/.pre-planning-done"
+echo "Após completar a consulta pré-planejamento, crie o arquivo de estado para sinalizar que"
+echo "o gate foi satisfeito: touch $STATE_FILE"
 
 exit 0
