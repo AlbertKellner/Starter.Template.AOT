@@ -170,6 +170,16 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 
 @Instructions/wiki/wiki-governance.md
 
+### Rules operacionais ativas — meta-governança (ponte técnico + negócio)
+
+@.claude/rules/architecture-governance.md
+@.claude/rules/governance-policies.md
+@.claude/rules/governance-validation-pipeline.md
+@.claude/rules/mandatory-process-enforcement.md
+@.claude/rules/naming-governance.md
+@.claude/rules/pre-planning-consultation.md
+@.claude/rules/source-of-truth-priority.md
+
 ### Rules operacionais ativas — técnicas
 
 @.claude/rules/auto-pr-review-governance.md
@@ -179,13 +189,8 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 @.claude/rules/execution-time-tracking.md
 @.claude/rules/governance-audit.md
 @.claude/rules/governance-behavior-tracking.md
-@.claude/rules/governance-policies.md
-@.claude/rules/governance-validation-pipeline.md
 @.claude/rules/instruction-review.md
-@.claude/rules/mandatory-process-enforcement.md
 @.claude/rules/pr-metadata-governance.md
-@.claude/rules/pre-planning-consultation.md
-@.claude/rules/source-of-truth-priority.md
 
 
 ---
