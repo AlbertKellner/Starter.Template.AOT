@@ -14,6 +14,7 @@ O script `scripts/setup-env.sh` assume que essas entradas já existem no ambient
 | `DD_APP_KEY` | **Sim** | Datadog → Organization Settings → Application Keys | Conexão MCP do Datadog não autentica. O servidor MCP fica inacessível para o Claude Code. |
 | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | **Sim** | Gerado na conta GitHub do usuário ClaudeCode-Bot → Settings → Developer Settings → Personal Access Tokens (Fine-grained) | Servidor MCP do GitHub (Codificador) fica inacessível. Assistente não consegue criar, atualizar ou consultar Pull Requests via MCP. Pipeline pré-commit (passo 10) falha. |
 | `GH_CLAUDE_CODE_MCP_REVISOR` | **Sim** | Gerado na conta GitHub do usuário Claude-Revisor → Settings → Developer Settings → Personal Access Tokens (Fine-grained) | Servidor MCP do GitHub (Revisor) fica inacessível. Revisão automática de PR não funciona. |
+| `GH_PROJECT_PAT` | **Sim** (para workflow kanban) | GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate new token → scopes: `read:project`, `repo` | Workflow de refinamento via kanban não consegue verificar coluna do projeto. Trigger `projects_v2_item` e consulta GraphQL de status falham. |
 
 ---
 
@@ -96,6 +97,18 @@ Ou execute `scripts/setup-env.sh` — ele valida todas as entradas e emite erros
 | **Quem pode fornecer** | O administrador da conta `Claude-Revisor` (proprietário do repositório). |
 | **Onde armazenar** | Secrets do Claude Code, variável `GH_CLAUDE_CODE_MCP_REVISOR`. |
 
+### GH_PROJECT_PAT (GitHub Classic PAT para Projects V2 API)
+
+| Campo | Valor |
+|---|---|
+| **Validade** | Classic PAT: não expira (ou expira na data configurada). Recomendado: configurar expiração de 90 dias. |
+| **Como obter** | GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate new token. Scopes: `read:project` (ler dados de Projects V2), `repo` (traversar issue → projectItems no GraphQL). |
+| **Sintoma quando ausente** | Workflow `Refinamento Automatico via Kanban` falha no step de verificação de coluna. |
+| **Sintoma quando inválido/expirado** | GraphQL retorna HTTP 401. Steps de consulta de projeto falham. |
+| **Como renovar** | GitHub → Settings → Developer Settings → Personal Access Tokens → regenerar ou criar novo. Atualizar no GitHub Environment `ClaudeCode`. |
+| **Quem pode fornecer** | Proprietário do repositório (`albertkellner`). |
+| **Onde armazenar** | GitHub Environment `ClaudeCode` → secrets → `GH_PROJECT_PAT`. |
+
 ---
 
 ## Mapa de Erros por Variável
@@ -108,6 +121,7 @@ Esta tabela mapeia cada variável ao erro exato que aparece quando está ausente
 | `DD_APP_KEY` | MCP Datadog inacessível; ferramentas MCP não respondem | HTTP 403 do servidor MCP | Ferramentas MCP do Claude Code |
 | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Servidor MCP do GitHub (Codificador) inacessível; ferramentas MCP não respondem | HTTP 401 do servidor MCP do GitHub | Ferramentas MCP do Claude Code (PRs, Actions) |
 | `GH_CLAUDE_CODE_MCP_REVISOR` | Servidor MCP do GitHub (Revisor) inacessível; revisão automática de PR não funciona | HTTP 401 do servidor MCP do GitHub | Ferramentas MCP do Claude Code (revisão de PRs) |
+| `GH_PROJECT_PAT` | Workflow de refinamento falha: `Error: Resource not accessible by integration` | HTTP 401 no GraphQL do GitHub | Steps de verificação de coluna no workflow `claude-refinement.yml` |
 | `EXTRA_CA_CERT` | `UntrustedRoot` em `dotnet restore` dentro do Docker build | CA inválida; mesmo erro `UntrustedRoot` | `docker compose build` |
 | `HTTP_PROXY` | `Temporary failure resolving 'archive.ubuntu.com'` em `apt-get` | Proxy inacessível; timeout de conexão | `docker compose build`, `apt-get`, `dotnet restore` |
 
@@ -134,3 +148,4 @@ Esta tabela mapeia cada variável ao erro exato que aparece quando está ausente
 | 2026-03-21 | Adicionado: GITHUB_PAT documentada como variável condicional para a aplicação .NET consultar API GitHub; diferenciação entre GH_TOKEN (CLI) e GITHUB_PAT (aplicação) | Auditoria de governança |
 | 2026-03-21 | Migração: GH_TOKEN substituído por GH_CLAUDE_CODE_MCP; acesso ao GitHub via MCP (usuário ClaudeCode-Bot) em vez de CLI gh; ciclo de vida atualizado com instruções de token Fine-grained | Migração API → MCP |
 | 2026-03-31 | Migração: GH_CLAUDE_CODE_MCP substituído por GH_CLAUDE_CODE_MCP_CODIFICADOR e GH_CLAUDE_CODE_MCP_REVISOR; dois papéis distintos para revisão automática de PR | Instrução do usuário |
+| 2026-04-06 | Adicionado: GH_PROJECT_PAT — Classic PAT para Projects V2 API; ciclo de vida e mapa de erros documentados | Workflow de refinamento via kanban |
