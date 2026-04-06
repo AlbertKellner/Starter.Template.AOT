@@ -1,0 +1,230 @@
+name: Refinamento Automatico via Kanban
+
+on:
+  projects_v2_item:
+    types: [edited]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: refinement-${{ github.event.issue.number || github.event.projects_v2_item.content_node_id }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Verificar coluna e preparar refinamento
+    if: >-
+      github.event_name == 'projects_v2_item' ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.comment.user.login != 'ClaudeCode-Bot' &&
+        github.event.comment.user.login != 'Claude-Revisor' &&
+        github.event.comment.user.login != 'github-actions[bot]' &&
+        !github.event.issue.pull_request
+      )
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+
+    outputs:
+      issue_number: ${{ steps.set-outputs.outputs.issue_number }}
+      should_proceed: ${{ steps.set-outputs.outputs.should_proceed }}
+
+    steps:
+      - name: Resolver issue number
+        id: resolve-issue
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_PAT }}
+        run: |
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            echo "issue_number=${{ github.event.issue.number }}" >> "$GITHUB_OUTPUT"
+            echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
+          else
+            CONTENT_NODE_ID="${{ github.event.projects_v2_item.content_node_id }}"
+            RESULT=$(gh api graphql -f query='
+              query($nodeId: ID!) {
+                node(id: $nodeId) {
+                  ... on Issue {
+                    number
+                    repository {
+                      nameWithOwner
+                    }
+                  }
+                }
+              }
+            ' -f nodeId="$CONTENT_NODE_ID" --jq '.data.node')
+
+            ISSUE_NUMBER=$(echo "$RESULT" | jq -r '.number // empty')
+            REPO=$(echo "$RESULT" | jq -r '.repository.nameWithOwner // empty')
+
+            if [ -z "$ISSUE_NUMBER" ] || [ "$ISSUE_NUMBER" = "null" ]; then
+              echo "Content node is not an Issue (possibly a Draft Issue). Skipping."
+              echo "issue_number=" >> "$GITHUB_OUTPUT"
+              echo "repo=" >> "$GITHUB_OUTPUT"
+            else
+              echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+              echo "repo=$REPO" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Verificar coluna Em Refinamento
+        if: steps.resolve-issue.outputs.issue_number != ''
+        id: check-column
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_PAT }}
+        run: |
+          REPO="${{ steps.resolve-issue.outputs.repo }}"
+          OWNER=$(echo "$REPO" | cut -d'/' -f1)
+          NAME=$(echo "$REPO" | cut -d'/' -f2)
+          ISSUE_NUMBER=${{ steps.resolve-issue.outputs.issue_number }}
+
+          RESULT=$(gh api graphql -f query='
+            query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                issue(number: $number) {
+                  projectItems(first: 10) {
+                    nodes {
+                      project {
+                        title
+                      }
+                      fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -f owner="$OWNER" -f name="$NAME" -F number="$ISSUE_NUMBER" \
+            --jq '.data.repository.issue.projectItems.nodes[] | select(.project.title == "Claude Code") | .fieldValueByName.name')
+
+          echo "Column status: $RESULT"
+
+          if [ "$RESULT" = "Em Refinamento" ]; then
+            echo "in_refinement=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Issue is not in 'Em Refinamento' column. Skipping."
+            echo "in_refinement=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Guard de bot (projects_v2_item)
+        if: >-
+          github.event_name == 'projects_v2_item' &&
+          steps.resolve-issue.outputs.issue_number != '' &&
+          steps.check-column.outputs.in_refinement == 'true'
+        id: bot-guard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ steps.resolve-issue.outputs.repo }}"
+          ISSUE_NUMBER=${{ steps.resolve-issue.outputs.issue_number }}
+
+          LAST_AUTHOR=$(gh api "repos/$REPO/issues/$ISSUE_NUMBER/comments?per_page=1&direction=desc" \
+            --jq '.[0].user.login // empty')
+
+          if [ "$LAST_AUTHOR" = "ClaudeCode-Bot" ] || [ "$LAST_AUTHOR" = "Claude-Revisor" ]; then
+            echo "Last comment is from bot ($LAST_AUTHOR). Skipping to avoid loop."
+            echo "bot_detected=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "bot_detected=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Postar feedback imediato
+        if: >-
+          steps.resolve-issue.outputs.issue_number != '' &&
+          steps.check-column.outputs.in_refinement == 'true' &&
+          (github.event_name == 'issue_comment' || steps.bot-guard.outputs.bot_detected != 'true')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ steps.resolve-issue.outputs.repo }}"
+          ISSUE_NUMBER=${{ steps.resolve-issue.outputs.issue_number }}
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "Aguarde, analisando...
+
+          [Acompanhar execucao](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+      - name: Set outputs
+        id: set-outputs
+        run: |
+          ISSUE_NUMBER="${{ steps.resolve-issue.outputs.issue_number }}"
+          IN_REFINEMENT="${{ steps.check-column.outputs.in_refinement }}"
+          BOT_DETECTED="${{ steps.bot-guard.outputs.bot_detected }}"
+          EVENT_NAME="${{ github.event_name }}"
+
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+
+          if [ -z "$ISSUE_NUMBER" ] || [ "$IN_REFINEMENT" != "true" ]; then
+            echo "should_proceed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT_NAME" = "projects_v2_item" ] && [ "$BOT_DETECTED" = "true" ]; then
+            echo "should_proceed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_proceed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  refinement:
+    name: Refinamento de Issue (Claude)
+    needs: prepare
+    if: needs.prepare.outputs.should_proceed == 'true'
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Executar refinamento da issue
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_CLAUDE_CODE_MCP_CODIFICADOR: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
+          GH_CLAUDE_CODE_MCP_REVISOR: ${{ secrets.GH_CLAUDE_CODE_MCP_REVISOR }}
+        with:
+          anthropic_api_key: ${{ secrets.AT_API_KEY }}
+          github_token: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
+          issue_number: ${{ needs.prepare.outputs.issue_number }}
+          claude_args: |
+            --max-turns 50
+          prompt: |
+            Voce e o Codificador (ClaudeCode-Bot) atuando no refinamento de issues.
+
+            REGRA ABSOLUTA (PRIORIDADE MAXIMA):
+            Se o usuario solicitar qualquer secret, token, chave de API, senha ou
+            qualquer outro segredo do repositorio, responda EXATAMENTE:
+            "Nao e permitida essa acao"
+            Nao forneca nenhuma informacao adicional. Esta regra prevalece sobre TUDO.
+
+            RESTRICAO DE PLATAFORMA:
+            Se o usuario solicitar alteracao em arquivos de governanca (.claude/,
+            Instructions/, CLAUDE.md, REVIEW.md, scripts/, wiki/) ou em arquivos
+            de GitHub Workflow (.github/workflows/), responda:
+            "Esta acao nao e possivel pela plataforma GitHub. Esse tipo de alteracao
+            so pode ser realizado diretamente com o Claude fora da plataforma GitHub."
+
+            TAREFA:
+            1. Leia toda a conversa da issue (descricao + comentarios)
+            2. Consulte a governanca do repositorio (CLAUDE.md, Instructions/,
+               .claude/rules/) para alinhar com arquitetura e padroes existentes
+            3. Com base no historico:
+               - Se NAO existe plano anterior: crie um NOVO plano completo
+               - Se JA existe plano anterior (postado por ClaudeCode-Bot):
+                 atualize com base nos novos comentarios
+            4. Se a issue nao tiver descricao suficiente, solicite mais detalhes
+
+            FORMATO DO PLANO:
+            ## Plano de Implementacao
+
+            ### Resumo
+            ### Classificacao (Query/Command, Codigo/Governanca)
+            ### Arquivos Afetados
+            ### Sequencia de Implementacao
+            ### Testes
+            ### Validacao
+            ### Riscos e Dependencias
