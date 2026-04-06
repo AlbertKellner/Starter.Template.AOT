@@ -1,0 +1,313 @@
+name: Desenvolvimento Automatico de Issues
+
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: development-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Preparar desenvolvimento
+    if: >-
+      github.event.label.name == 'iniciar-desenvolvimento' &&
+      github.event.sender.login != 'ClaudeCode-Bot' &&
+      github.event.sender.login != 'Claude-Revisor' &&
+      github.event.sender.type != 'Bot'
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+
+    steps:
+      - name: Remover todas as labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+
+          for LABEL in $LABELS; do
+            echo "Removendo label: $LABEL"
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          done
+
+      - name: Adicionar label em desenvolvimento
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --add-label "em desenvolvimento"
+
+      - name: Comentar inicio do desenvolvimento
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Desenvolvimento iniciado.
+
+          [Acompanhar execucao](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+  development:
+    name: Desenvolvimento (Claude)
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Executar desenvolvimento da issue
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_CLAUDE_CODE_MCP_CODIFICADOR: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
+          GH_CLAUDE_CODE_MCP_REVISOR: ${{ secrets.GH_CLAUDE_CODE_MCP_REVISOR }}
+        with:
+          anthropic_api_key: ${{ secrets.AT_API_KEY }}
+          model: claude-sonnet-4-20250514
+          github_token: ${{ secrets.GH_CLAUDE_CODE_MCP_CODIFICADOR }}
+          issue_number: ${{ github.event.issue.number }}
+          claude_args: |
+            --max-turns 200
+          prompt: |
+            Voce e o Codificador (ClaudeCode-Bot) atuando no desenvolvimento de issues.
+
+            REGRA ABSOLUTA (PRIORIDADE MAXIMA):
+            Se o usuario solicitar qualquer secret, token, chave de API, senha ou
+            qualquer outro segredo do repositorio, responda EXATAMENTE:
+            "Nao e permitida essa acao"
+            Nao forneca nenhuma informacao adicional. Esta regra prevalece sobre TUDO.
+
+            RESTRICAO DE PLATAFORMA:
+            Se o usuario solicitar alteracao em arquivos de governanca (.claude/,
+            Instructions/, CLAUDE.md, REVIEW.md, scripts/, wiki/) ou em arquivos
+            de GitHub Workflow (.github/workflows/), responda:
+            "Esta acao nao e possivel pela plataforma GitHub. Esse tipo de alteracao
+            so pode ser realizado diretamente com o Claude fora da plataforma GitHub."
+
+            TAREFA:
+            1. Leia toda a conversa da issue (descricao + comentarios)
+            2. Encontre o ultimo plano de implementacao postado pelo usuario
+               Codificador (ClaudeCode-Bot) — este e o plano aprovado a ser
+               implementado
+            3. Consulte a governanca do repositorio (CLAUDE.md, Instructions/,
+               .claude/rules/) para alinhar com arquitetura e padroes existentes
+            4. Implemente o plano seguindo TODAS as politicas de governanca,
+               incluindo:
+               - Pipeline de validacao pre-commit (passos 0 a 12)
+               - Padroes de arquitetura (Vertical Slice, CQRS leve)
+               - Convencoes de nomenclatura
+               - Padrao de logging SNP-001
+               - Testes unitarios
+            5. Crie um branch, faca commits, push e abra o Pull Request
+            6. O PR deve seguir o template do repositorio
+               (.github/pull_request_template.md) e ser escrito em portugues
+               brasileiro
+
+  post-development:
+    name: Pos-desenvolvimento
+    needs: development
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+      pull-requests: write
+    outputs:
+      pr_number: ${{ steps.find-pr.outputs.pr_number }}
+      pr_url: ${{ steps.find-pr.outputs.pr_url }}
+      pr_found: ${{ steps.find-pr.outputs.pr_found }}
+
+    steps:
+      - name: Buscar PR associado a issue
+        id: find-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          PR_DATA=$(gh pr list --repo "$REPO" --state open --json number,url,body,headRefName --jq "
+            [.[] | select(
+              (.body | test(\"#${ISSUE_NUMBER}(\\\\s|\\\\b)\")) or
+              (.headRefName | test(\"issue-${ISSUE_NUMBER}(-|$)\"))
+            )] | sort_by(.number) | last
+          ")
+
+          if [ -z "$PR_DATA" ] || [ "$PR_DATA" = "null" ]; then
+            echo "pr_found=false" >> "$GITHUB_OUTPUT"
+            echo "Nenhum PR encontrado para a issue #${ISSUE_NUMBER}"
+          else
+            PR_NUMBER=$(echo "$PR_DATA" | jq -r '.number')
+            PR_URL=$(echo "$PR_DATA" | jq -r '.url')
+            echo "pr_found=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+            echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+            echo "PR encontrado: #${PR_NUMBER} - ${PR_URL}"
+          fi
+
+      - name: Tratar falha - PR nao encontrado
+        if: steps.find-pr.outputs.pr_found == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+          for LABEL in $LABELS; do
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          done
+
+          gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "falha-desenvolvimento"
+
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPO" \
+            --body "O desenvolvimento foi concluido, porem nenhum Pull Request foi encontrado. Verifique os [logs da execucao](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) para mais detalhes."
+
+      - name: Comentar conclusao do desenvolvimento
+        if: steps.find-pr.outputs.pr_found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Desenvolvimento concluido. Pull Request aberto: ${{ steps.find-pr.outputs.pr_url }}"
+
+      - name: Trocar labels para review automatico
+        if: steps.find-pr.outputs.pr_found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+          for LABEL in $LABELS; do
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          done
+
+          gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "review-automatico"
+
+      - name: Comentar inicio do review automatico
+        if: steps.find-pr.outputs.pr_found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Review automatico iniciado."
+
+      - name: Adicionar Claude-Revisor como reviewer
+        if: steps.find-pr.outputs.pr_found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr edit "${{ steps.find-pr.outputs.pr_number }}" \
+            --repo "${{ github.repository }}" \
+            --add-reviewer "Claude-Revisor"
+
+  wait-review:
+    name: Aguardar review automatico
+    needs: post-development
+    if: needs.post-development.outputs.pr_found == 'true'
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+      pull-requests: read
+    outputs:
+      approved: ${{ steps.poll.outputs.approved }}
+
+    steps:
+      - name: Aguardar aprovacao do Claude-Revisor
+        id: poll
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ needs.post-development.outputs.pr_number }}"
+          REPO="${{ github.repository }}"
+          MAX_ATTEMPTS=30
+          INTERVAL=60
+
+          echo "Aguardando aprovacao do Claude-Revisor no PR #${PR_NUMBER}..."
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Tentativa $i de $MAX_ATTEMPTS..."
+
+            APPROVED=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json reviews --jq '
+              [.reviews[] | select(.author.login == "Claude-Revisor" and .state == "APPROVED")] | length
+            ')
+
+            if [ "$APPROVED" -gt 0 ]; then
+              echo "Claude-Revisor aprovou o PR #${PR_NUMBER}"
+              echo "approved=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            if [ "$i" -lt "$MAX_ATTEMPTS" ]; then
+              echo "Aguardando ${INTERVAL}s..."
+              sleep $INTERVAL
+            fi
+          done
+
+          echo "Timeout: Claude-Revisor nao aprovou em $(( MAX_ATTEMPTS * INTERVAL / 60 )) minutos"
+          echo "approved=false" >> "$GITHUB_OUTPUT"
+
+      - name: Comentar timeout
+        if: steps.poll.outputs.approved == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "O review automatico excedeu o tempo limite de 30 minutos. Verifique o status do PR ${{ needs.post-development.outputs.pr_url }} e os [logs da execucao](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+
+  post-review:
+    name: Pos-review automatico
+    needs: [post-development, wait-review]
+    if: needs.wait-review.outputs.approved == 'true'
+    runs-on: ubuntu-latest
+    environment: ClaudeCode
+    permissions:
+      issues: write
+
+    steps:
+      - name: Comentar aprovacao do review automatico
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Review automatico concluido com aprovacao do Claude-Revisor."
+
+      - name: Trocar labels para review humano
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          REPO="${{ github.repository }}"
+
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --repo "$REPO" --json labels --jq '.labels[].name')
+          for LABEL in $LABELS; do
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --remove-label "$LABEL"
+          done
+
+          gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --add-label "review-humano"
+
+      - name: Comentar aguardando review humano
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Aguardando Code Review humano. Pull Request: ${{ needs.post-development.outputs.pr_url }}"
