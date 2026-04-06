@@ -133,85 +133,59 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 
 ### Modelo operacional
 
+@Instructions/operating-model.md
 
 ### Governança técnica
 
+@Instructions/architecture/architecture-decisions.md
+@Instructions/architecture/engineering-principles.md
+@Instructions/architecture/folder-structure.md
+@Instructions/architecture/naming-conventions.md
+@Instructions/architecture/patterns.md
+@Instructions/architecture/technical-overview.md
+@.claude/rules/architecture-governance.md
+@.claude/rules/folder-governance.md
+@.claude/rules/naming-governance.md
 
 ### Governança de negócio
 
+@Instructions/business/assumptions.md
+@Instructions/business/business-rules.md
+@Instructions/business/domain-model.md
+@Instructions/business/invariants.md
+@Instructions/business/workflows.md
+@Instructions/glossary/ubiquitous-language.md
 
 ### Camadas-ponte (técnico + negócio)
 
+@Instructions/bdd/README.md
+@Instructions/bdd/conventions.md
+@Instructions/contracts/README.md
+@Instructions/decisions/README.md
+@Instructions/decisions/adr-template.md
+@Instructions/snippets/README.md
+@Instructions/snippets/canonical-snippets.md
 
 ### Artefatos operacionais
 
-
-@Instructions/architecture/architecture-decisions.md
-@Instructions/architecture/engineering-principles.md
-@Instructions/architecture/folder-structure.md
-@Instructions/architecture/naming-conventions.md
-@Instructions/architecture/patterns.md
-@Instructions/architecture/technical-overview.md
-@Instructions/bdd/README.md
-@Instructions/bdd/conventions.md
-@Instructions/business/assumptions.md
-@Instructions/business/business-rules.md
-@Instructions/business/domain-model.md
-@Instructions/business/invariants.md
-@Instructions/business/workflows.md
-@Instructions/contracts/README.md
-@Instructions/decisions/README.md
-@Instructions/decisions/adr-template.md
-@Instructions/glossary/ubiquitous-language.md
-@Instructions/operating-model.md
-@Instructions/snippets/README.md
-@Instructions/snippets/canonical-snippets.md
 @Instructions/wiki/wiki-governance.md
-### Rules operacionais ativas — meta-governança (ponte técnico + negócio)
 
-
-@Instructions/architecture/architecture-decisions.md
-@Instructions/architecture/engineering-principles.md
-@Instructions/architecture/folder-structure.md
-@Instructions/architecture/naming-conventions.md
-@Instructions/architecture/patterns.md
-@Instructions/architecture/technical-overview.md
-@Instructions/bdd/README.md
-@Instructions/bdd/conventions.md
-@Instructions/business/assumptions.md
-@Instructions/business/business-rules.md
-@Instructions/business/domain-model.md
-@Instructions/business/invariants.md
-@Instructions/business/workflows.md
-@Instructions/contracts/README.md
-@Instructions/decisions/README.md
-@Instructions/decisions/adr-template.md
-@Instructions/glossary/ubiquitous-language.md
-@Instructions/operating-model.md
-@Instructions/snippets/README.md
-@Instructions/snippets/canonical-snippets.md
-@Instructions/wiki/wiki-governance.md
 ### Rules operacionais ativas — técnicas
 
-
-@.claude/rules/architecture-governance.md
 @.claude/rules/auto-pr-review-governance.md
 @.claude/rules/bash-error-logging.md
 @.claude/rules/endpoint-validation.md
 @.claude/rules/environment-readiness.md
 @.claude/rules/execution-time-tracking.md
-@.claude/rules/folder-governance.md
 @.claude/rules/governance-audit.md
 @.claude/rules/governance-behavior-tracking.md
 @.claude/rules/governance-policies.md
 @.claude/rules/governance-validation-pipeline.md
 @.claude/rules/instruction-review.md
 @.claude/rules/mandatory-process-enforcement.md
-@.claude/rules/naming-governance.md
 @.claude/rules/pr-metadata-governance.md
 @.claude/rules/pre-planning-consultation.md
 @.claude/rules/source-of-truth-priority.md
-### Meta-governança
 
 
 ---
