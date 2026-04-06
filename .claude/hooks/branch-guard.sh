@@ -10,7 +10,9 @@
 # Fora de contexto de pr-analysis, este hook não faz nada.
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-CONTEXT_FILE="$REPO_ROOT/.claude/.pr-analysis-context"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
+CONTEXT_FILE="$STATE_DIR/.pr-analysis-context"
 
 # Só ativar durante pr-analysis
 if [ ! -f "$CONTEXT_FILE" ]; then

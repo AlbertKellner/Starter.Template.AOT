@@ -8,11 +8,13 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
 
 reminders=()
 
 # Check if pre-planning was done
-if [[ ! -f "$REPO_ROOT/.claude/.pre-planning-done" ]]; then
+if [[ ! -f "$STATE_DIR/.pre-planning-done" ]]; then
   reminders+=("Consulta pré-planejamento (comportamento #12) não foi registrada nesta sessão.")
 fi
 

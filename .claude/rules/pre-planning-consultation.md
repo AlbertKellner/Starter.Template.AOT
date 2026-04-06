@@ -80,9 +80,9 @@ O comportamento #3 ("verificar ambiguidades, prosseguir com premissa conservador
 
 ## Enforcement
 
-O hook `.claude/hooks/pre-planning-gate.sh` é acionado automaticamente antes de Edit/Write (via `PreToolUse` em `.claude/settings.json`). Verifica se a consulta pré-planejamento foi registrada na sessão atual via arquivo de estado `.claude/.pre-planning-done`. Se não foi, emite lembrete.
+O hook `.claude/hooks/pre-planning-gate.sh` é acionado automaticamente antes de Edit/Write (via `PreToolUse` em `.claude/settings.json`). Verifica se a consulta pré-planejamento foi registrada na sessão atual via arquivo de estado em `/tmp/.claude-state-<hash>/`. Se não foi, emite lembrete com o comando `touch` exato a executar.
 
-O arquivo `.claude/.pre-planning-done` é transiente (não versionado) e deve ser criado pelo assistente após completar o ciclo de consulta pré-planejamento, sinalizando que o gate foi satisfeito para a sessão.
+O arquivo de estado é transiente (não versionado, em `/tmp/`) e deve ser criado pelo assistente após completar o ciclo de consulta pré-planejamento, sinalizando que o gate foi satisfeito para a sessão. O hook exibe o caminho exato na mensagem de lembrete — basta executar o comando `touch` exibido.
 
 ---
 

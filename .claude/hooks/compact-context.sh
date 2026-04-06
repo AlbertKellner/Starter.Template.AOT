@@ -1,14 +1,17 @@
 #!/bin/bash
 # Hook: PreCompact/PostCompact — Preserve governance context during compaction
 # Usage: bash compact-context.sh pre|post
-# - PreCompact: saves pipeline state to .claude/.compact-state
+# - PreCompact: saves pipeline state to /tmp/.claude-state-<hash>/.compact-state
 # - PostCompact: emits saved state for context re-injection
 # Exit 0 always (informative, never blocking)
 
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
-STATE_FILE="$REPO_ROOT/.claude/.compact-state"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
+mkdir -p "$STATE_DIR" 2>/dev/null || true
+STATE_FILE="$STATE_DIR/.compact-state"
 
 mode="${1:-}"
 
@@ -20,28 +23,28 @@ case "$mode" in
       echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')"
 
       # Check if pre-planning was done
-      if [[ -f "$REPO_ROOT/.claude/.pre-planning-done" ]]; then
+      if [[ -f "$STATE_DIR/.pre-planning-done" ]]; then
         echo "PRE_PLANNING_DONE=true"
       else
         echo "PRE_PLANNING_DONE=false"
       fi
 
       # Check if in pr-analysis mode
-      if [[ -f "$REPO_ROOT/.claude/.pr-analysis-context" ]]; then
+      if [[ -f "$STATE_DIR/.pr-analysis-context" ]]; then
         echo "PR_ANALYSIS_ACTIVE=true"
-        head_ref=$(grep 'head_ref=' "$REPO_ROOT/.claude/.pr-analysis-context" | cut -d= -f2 || echo "")
+        head_ref=$(grep 'head_ref=' "$STATE_DIR/.pr-analysis-context" | cut -d= -f2 || echo "")
         echo "PR_HEAD_REF=$head_ref"
       else
         echo "PR_ANALYSIS_ACTIVE=false"
       fi
 
       # Session timer state
-      if [[ -f "$REPO_ROOT/.claude/.session-timer" ]]; then
+      if [[ -f "$STATE_DIR/.session-timer" ]]; then
         echo "SESSION_TIMER_EXISTS=true"
       fi
     } > "$STATE_FILE"
 
-    echo "[PreCompact] Estado do pipeline salvo em .claude/.compact-state"
+    echo "[PreCompact] Estado do pipeline salvo em $STATE_FILE"
     ;;
 
   post)
