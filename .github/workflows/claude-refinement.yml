@@ -16,7 +16,10 @@ jobs:
     if: >-
       (
         github.event_name == 'issues' &&
-        github.event.label.name == 'em-refinamento'
+        github.event.label.name == 'em-refinamento' &&
+        github.event.sender.login != 'ClaudeCode-Bot' &&
+        github.event.sender.login != 'Claude-Revisor' &&
+        github.event.sender.type != 'Bot'
       ) ||
       (
         github.event_name == 'issue_comment' &&
