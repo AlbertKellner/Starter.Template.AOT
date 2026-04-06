@@ -9,10 +9,12 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo ".")"
+_PROJECT_ID="$(echo "$REPO_ROOT" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+STATE_DIR="/tmp/.claude-state-${_PROJECT_ID}"
 STALE_THRESHOLD_SEC=14400 # 4 hours
 
 # --- Clean stale session state files ---
-for state_file in "$REPO_ROOT/.claude/.pre-planning-done" "$REPO_ROOT/.claude/.pr-analysis-context" "$REPO_ROOT/.claude/.compact-state"; do
+for state_file in "$STATE_DIR/.pre-planning-done" "$STATE_DIR/.pr-analysis-context" "$STATE_DIR/.compact-state"; do
   if [[ -f "$state_file" ]]; then
     file_age=$(( $(date +%s) - $(stat -c %Y "$state_file" 2>/dev/null || echo 0) ))
     if (( file_age > STALE_THRESHOLD_SEC )); then

@@ -61,8 +61,11 @@ Ativar esta skill **exclusivamente** quando o usuário solicitar explicitamente:
     - Verificar que o checkout foi bem-sucedido:
         CURRENT=$(git branch --show-current)
         Se $CURRENT != $HEAD_REF → reportar erro e PARAR.
-    - Criar contexto para enforcement por hook:
-        echo "$HEAD_REF" > .claude/.pr-analysis-context
+    - Criar contexto para enforcement por hook (em /tmp/ para evitar prompt de permissão):
+        _PR_ID="$(echo "$(git rev-parse --show-toplevel)" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+        _STATE_DIR="/tmp/.claude-state-${_PR_ID}"
+        mkdir -p "$_STATE_DIR"
+        echo "head_ref=$HEAD_REF" > "$_STATE_DIR/.pr-analysis-context"
     - Este passo é PRÉ-REQUISITO para todos os passos subsequentes.
       Nenhuma leitura de arquivo, consulta de governança ou implementação
       deve ocorrer antes da confirmação de que o branch correto está ativo.
@@ -218,7 +221,8 @@ Ativar esta skill **exclusivamente** quando o usuário solicitar explicitamente:
     - Status de aprovação atual
     - Se merge foi realizado ou por que não foi
     - Remover arquivo de contexto de pr-analysis:
-        rm -f .claude/.pr-analysis-context
+        _PR_ID="$(echo "$(git rev-parse --show-toplevel)" | md5sum 2>/dev/null | head -c 8 || echo "default")"
+        rm -f "/tmp/.claude-state-${_PR_ID}/.pr-analysis-context"
 ```
 
 ## Saídas Esperadas
