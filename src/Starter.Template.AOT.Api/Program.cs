@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Starter.Template.AOT.Api.Infra.HealthChecks;
 using Starter.Template.AOT.Api.Infra.Security;
 using Starter.Template.AOT.Api.Infra.Logging;
+using Starter.Template.AOT.Api.Features.Query.NumberGetLabel;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Diagnostics.CodeAnalysis;
 
 const string OutputTemplate =
     "[{Timestamp:dd/MM/yyyy HH:mm:ss.fffffff}] [{CorrelationId}] [{UserName}] {Message:lj}{NewLine}{Exception}";
@@ -101,8 +103,7 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-// TODO: Registrar Use Cases das features aqui
-// Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
+builder.Services.AddScoped<INumberGetLabelUseCase, NumberGetLabelUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -136,9 +137,6 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
-    // TODO: Adicionar DynamicDependency para cada Controller implementado
-    // Requer: using System.Diagnostics.CodeAnalysis; no topo do arquivo
-    // Exemplo:
-    // [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NomeDaFeatureEndpoint))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NumberGetLabelEndpoint))]
     internal static void PreserveControllers() { }
 }
