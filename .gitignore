@@ -4,6 +4,7 @@ obj/
 .vs/
 .env
 .kiro/settings/mcp.json
+.mcp.json
 .claude/.pr-analysis-context
 .claude/.session-timer
 .claude/.pre-planning-done
