@@ -191,6 +191,8 @@ Se `DD_API_KEY` não estiver disponível no host, o pipeline prosseguirá sem Da
 @.claude/rules/pr-metadata-governance.md
 
 
+
+
 ---
 
 ## Escopo de Aplicação
