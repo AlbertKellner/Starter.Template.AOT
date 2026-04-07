@@ -201,8 +201,27 @@ Se você (assistente) se pegar pensando:
 
 ---
 
+## Executores Conhecidos e Lacunas de Enforcement
+
+### Claude Code
+
+Possui enforcement automático via hooks (`SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`), `TodoWrite` e `settings.json`.
+O pipeline é reforçado automaticamente a cada operação.
+
+### Kiro
+
+**Não possui** os mecanismos de enforcement automático do Claude Code.
+Sem hooks e sem TodoWrite, o Kiro tende a operar como assistente genérico e pular o pipeline.
+
+**Compensação implementada:** `.kiro/steering/development-pipeline.md` com `inclusion: always` injeta o `CLAUDE.md` e instruções explícitas de pipeline em toda interação do Kiro. Este steering file é o mecanismo de enforcement do Kiro neste repositório.
+
+**Responsabilidade do Kiro:** Na ausência de enforcement automático, o Kiro deve aplicar autodisciplina explícita — classificar o escopo, listar os passos aplicáveis e executá-los todos antes de considerar a tarefa concluída.
+
+---
+
 ## Histórico de Mudanças
 
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-04-06 | Criado: rule de enforcement obrigatório de processo para garantir que CLAUDE.md e skills sejam seguidos integralmente | Análise de causa-raiz de violação de processo |
+| 2026-04-07 | Adicionada seção "Executores Conhecidos e Lacunas de Enforcement": documenta diferença entre Claude Code e Kiro; registra steering file como mecanismo de compensação | Análise de causa-raiz de violação de pipeline pelo Kiro |
