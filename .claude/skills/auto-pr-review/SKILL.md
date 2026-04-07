@@ -35,12 +35,12 @@ Esta skill é ativada:
 
 ## Papéis e Identidades
 
-| Papel | Username GitHub | MCP Server | Tools Prefix | Email (git) | Faz commit? |
-|-------|----------------|------------|--------------|-------------|-------------|
-| **Codificador** | `ClaudeCode-Bot` | `github` | `mcp__github__*` | `ClaudeCode-Bot@users.noreply.github.com` | Sim |
-| **Revisor** | `Claude-Revisor` | `github-revisor` | `mcp__github-revisor__*` | `Claude-Revisor@users.noreply.github.com` | Não (nunca) |
+| Papel | Username GitHub | Nome (git) | MCP Server | Tools Prefix | Faz commit? |
+|-------|----------------|------------|------------|--------------|-------------|
+| **Codificador** | `ClaudeCode-Bot` | `Codificador - Claude Agent` | `github-codificador` | `mcp__github-codificador__*` | Sim (em nome do usuário codificador) |
+| **Revisor** | `Claude-Revisor` | `Claude-Revisor` | `github-revisor` | `mcp__github-revisor__*` | Não (nunca) |
 
-**Git push**: sempre usa credenciais padrão do container (AlbertKellner), independente do papel ativo.
+**Git push**: sempre usa credenciais do token do usuário codificador (via `GH_CLAUDE_CODE_MCP_CODIFICADOR`), independente do papel ativo.
 
 ---
 
@@ -126,14 +126,13 @@ Esta skill é ativada:
 
        REGRA CRÍTICA DE ISOLAMENTO MCP:
        Para TODA operação GitHub (ler PR, comentar, responder)
-       usar APENAS ferramentas com prefixo mcp__github__.
+       usar APENAS ferramentas com prefixo mcp__github-codificador__.
        NUNCA usar mcp__github-revisor__ durante esta fase.
 
        PASSOS:
        1. git fetch origin <head.ref> && git checkout <head.ref>
-       2. git config user.name "ClaudeCode-Bot"
-          git config user.email "ClaudeCode-Bot@users.noreply.github.com"
-       3. Ler threads de review via MCP (mcp__github__pull_request_read method: get_review_comments)
+       2. git config user.name "Codificador - Claude Agent"
+       3. Ler threads de review via MCP (mcp__github-codificador__pull_request_read method: get_review_comments)
 
        FILTRO DE THREADS — para cada thread não resolvida:
        (a) Se TODOS os comentários são do Codificador (ClaudeCode-Bot) e/ou Revisor (Claude-Revisor)
@@ -152,11 +151,11 @@ Esta skill é ativada:
        6. git commit -m "fix: corrigir apontamentos de revisão automática"
           (identidade Codificador configurada no passo 2)
        7. git push -u origin <head.ref>
-          (credenciais padrão AlbertKellner — NÃO alterar git config para push)
+          (credenciais do token do usuário codificador via GH_CLAUDE_CODE_MCP_CODIFICADOR — NÃO alterar git config para push)
        8. Se git push falhar por conflito de merge → PAUSAR ciclo, reportar ao usuário
 
        RESPOSTAS:
-       9. Responder a cada thread processada via MCP (mcp__github__add_reply_to_pull_request_comment):
+       9. Responder a cada thread processada via MCP (mcp__github-codificador__add_reply_to_pull_request_comment):
           - Correção feita → informar o que foi alterado, referenciar commit
           - Inviabilidade → explicar por que não é possível implementar
 
@@ -204,7 +203,7 @@ Esta skill é ativada:
 | `add_reply_to_pull_request_comment` | — | Responder a comentários de terceiros ("concordo" ou alternativa) |
 | `resolve_review_thread` | — | Resolver thread após verificar correção |
 
-### Fase Codificador (prefixo `mcp__github__`)
+### Fase Codificador (prefixo `mcp__github-codificador__`)
 
 | Ferramenta | Método | Propósito |
 |---|---|---|
@@ -217,7 +216,7 @@ Esta skill é ativada:
 As ferramentas MCP carregam automaticamente via inicialização assíncrona do Claude Code. Para usá-las, carregar via `ToolSearch` com sintaxe `select:`:
 
 ```
-ToolSearch("select:mcp__github__pull_request_read,mcp__github__add_reply_to_pull_request_comment")
+ToolSearch("select:mcp__github-codificador__pull_request_read,mcp__github-codificador__add_reply_to_pull_request_comment")
 ToolSearch("select:mcp__github-revisor__pull_request_read,mcp__github-revisor__pull_request_review_write")
 ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__github-revisor__add_reply_to_pull_request_comment")
 ```
@@ -253,3 +252,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 |---|---|---|
 | 2026-03-31 | Criado: skill de revisão automática de PR com ciclo Revisor↔Codificador | Instrução do usuário |
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry adicionado | Diagnóstico de MCP — Erro 12 |
+| 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |

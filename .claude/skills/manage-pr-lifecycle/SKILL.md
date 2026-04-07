@@ -29,7 +29,9 @@ Esta skill é ativada pelos passos 10, 11 e 12 do pipeline de validação pré-c
 
 ## Workflow — Verificação e Criação/Atualização de PR (Passo 10)
 
-Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github` em `.mcp.json`), autenticadas pelo usuário ClaudeCode-Bot via `GH_CLAUDE_CODE_MCP_CODIFICADOR`.
+Todas as operações de PR são realizadas exclusivamente via ferramentas MCP do GitHub (servidor `github-codificador` em `.mcp.json`), autenticadas em nome do usuário codificador:
+- **Nome**: Codificador - Claude Agent
+- **Token**: `GH_CLAUDE_CODE_MCP_CODIFICADOR`
 
 ### Passo 1: Verificar PR existente
 
@@ -119,6 +121,8 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 
 ## Ferramentas MCP Utilizadas
 
+Todas as ferramentas abaixo usam o prefixo `mcp__github-codificador__`:
+
 | Ferramenta | Método | Propósito |
 |---|---|---|
 | `list_pull_requests` | — | Buscar PRs abertos para o branch |
@@ -135,11 +139,11 @@ As ferramentas MCP do GitHub carregam automaticamente via inicialização assín
 **Para carregar ferramentas**, usar `ToolSearch` com sintaxe `select:` e nomes exatos:
 
 ```
-ToolSearch("select:mcp__github__list_pull_requests,mcp__github__create_pull_request")
-ToolSearch("select:mcp__github__update_pull_request,mcp__github__pull_request_read")
+ToolSearch("select:mcp__github-codificador__list_pull_requests,mcp__github-codificador__create_pull_request")
+ToolSearch("select:mcp__github-codificador__update_pull_request,mcp__github-codificador__pull_request_read")
 ```
 
-**NUNCA** usar busca por keywords — sempre usar `select:` com o nome completo (`mcp__github__<nome>`).
+**NUNCA** usar busca por keywords — sempre usar `select:` com o nome completo (`mcp__github-codificador__<nome>`).
 
 ### Protocolo de Retry quando MCP não Responde
 
@@ -205,8 +209,9 @@ Quando a tarefa é análise de PR:
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-21 | Criado: workflow extraído de pr-metadata-governance.md (separação rules/skills) | Auditoria de governança |
-| 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (usuário ClaudeCode-Bot) | Migração API → MCP |
+| 2026-03-21 | Migração: comandos `gh api` substituídos por ferramentas MCP do GitHub (token do usuário codificador) | Migração API → MCP |
 | 2026-03-30 | Corrigido: ferramentas MCP inexistentes substituídas por `pull_request_read` + `get_check_runs`; integrado `scripts/pipeline-timing.sh` para cálculo de métricas de tempo | Correção de implementação |
 | 2026-04-02 | Adicionado: tratamento de indisponibilidade de ferramentas MCP (retry 3x, manter pending, retomar ao reconectar) e dependências explícitas entre passos 10→10.1→11 | Análise de causa raiz — omissões de pipeline |
 | 2026-04-02 | Adicionado: item 4 no trigger de revisão automática — atualizar descrição do PR após conclusão do auto-pr-review para refletir correções realizadas | Análise de omissões pós-review |
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry substituiu declaração prematura de indisponibilidade | Diagnóstico de MCP — Erro 12 |
+| 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido servidor MCP de `github` para `github-codificador` com prefixo `mcp__github-codificador__*` | Instrução do usuário |

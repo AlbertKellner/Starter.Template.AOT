@@ -21,10 +21,10 @@ Esta rule define a política de revisão automática de código em Pull Requests
 | Campo | Valor |
 |-------|-------|
 | **Username GitHub** | `ClaudeCode-Bot` |
-| **Token (secret)** | `GH_CLAUDE_CODE_MCP_CODIFICADOR` |
-| **MCP Server** | `github` (prefixo `mcp__github__*`) |
-| **Email git** | `ClaudeCode-Bot@users.noreply.github.com` |
-| **Responsabilidades** | Implementar código, fazer commits, responder comentários de review |
+| **Nome (git user.name)** | `Codificador - Claude Agent` |
+| **Token (secret)** | `GH_CLAUDE_CODE_MCP_CODIFICADOR` (token do usuário codificador) |
+| **MCP Server** | `github-codificador` (prefixo `mcp__github-codificador__*`) |
+| **Responsabilidades** | Implementar código, fazer commits em nome do usuário codificador, responder comentários de review |
 | **Restrições** | NUNCA submeter review (APPROVE ou REQUEST_CHANGES); NUNCA usar tools `mcp__github-revisor__*` |
 
 ### Revisor
@@ -44,8 +44,8 @@ Esta rule define a política de revisão automática de código em Pull Requests
 
 ### Identidade Git
 
-- **git commit**: configurar `user.name` e `user.email` conforme o papel ativo (apenas Codificador faz commits)
-- **git push**: SEMPRE usa credenciais padrão do container (AlbertKellner), independente do papel
+- **git commit**: configurar `user.name="Codificador - Claude Agent"` (apenas Codificador faz commits)
+- **git push**: SEMPRE usa credenciais do token do usuário codificador (via `GH_CLAUDE_CODE_MCP_CODIFICADOR`), independente do papel
 - **Interações MCP**: usar EXCLUSIVAMENTE o MCP server do papel ativo
 
 ### Trigger
@@ -54,7 +54,7 @@ Após a conclusão do acompanhamento de GitHub Actions (passo 11 do pipeline pr�
 
 ### Isolamento de MCP Tools
 
-Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas MCP do seu papel. A violação de isolamento (ex: Revisor usando `mcp__github__*`) é um erro de governança.
+Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas MCP do seu papel. A violação de isolamento (ex: Revisor usando `mcp__github-codificador__*`) é um erro de governança.
 
 ### Filtragem de Comentários
 
@@ -148,3 +148,4 @@ O relatório ao encerrar deve incluir:
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-31 | Criado: política de revisão automática de PR com papéis Codificador e Revisor | Instrução do usuário |
+| 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
