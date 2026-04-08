@@ -92,6 +92,7 @@ docker compose down
 | Método | Rota | Autenticação | Descrição | Regra de Negócio |
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
+| `GET` | `/number-to-string/{number}` | Não | Converte número para string (1→"Um", 2→"Dois"); 404 para outros | — |
 
 ---
 
@@ -133,6 +134,7 @@ Esta tabela consolida padrões recorrentes de erro de lógica/implementação qu
 | 3 | Controller não preservado pelo trimmer AOT | 404 em endpoints após publish AOT | Adicionar `[DynamicDependency]` em `AotControllerPreservation` | DA-009 |
 | 4 | Namespace de Slice inclui subpasta do componente | Colisão `Namespace.Tipo`; erro de compilação | Namespace para na Feature, não na subpasta (ver naming-conventions.md) | — |
 | 5 | Model de Feature usando tipo de Shared/ExternalApi | Acoplamento de contrato; teste falha ao mockar | Criar Output model próprio em `<Feature>Models/` e mapear (DA-020) | DA-020 |
+| 6 | Feature com endpoint sem wiki page | governance-audit falha nos checks 7, 20, 24, 37 | Criar `wiki/Feature-<Nome>.md`, adicionar linha em `wiki/Governance-Architecture.md` e no runbook. Consultar checklist do PAD-001 | PAD-001 |
 
 > **Nota**: Esta tabela é preenchida à medida que padrões são identificados em sessões de desenvolvimento. O assistente deve verificar proativamente se algum padrão se aplica à implementação atual.
 
@@ -210,3 +212,4 @@ A GitHub Wiki precisa ser inicializada manualmente **uma única vez** antes que 
 | 2026-03-30 | Adicionado: seção de inicialização da GitHub Wiki com procedimento passo-a-passo | Verificação de conformidade de governança |
 | 2026-04-08 | Adicionado: seção "Tempos Médios do CI" com intervalos de polling recomendados para calibração do passo 11 | Análise de causa raiz — polling com valores arbitrários |
 | 2026-04-08 | Adicionado: seção "Padrões de Erro de Implementação Conhecidos" — checklist de erros recorrentes de lógica/implementação para prevenção proativa | Auditoria de governança — rodada 7 |
+| 2026-04-08 | Adicionado: padrão de erro #6 — feature com endpoint sem wiki page | Análise de causa raiz — omissão recorrente de wiki |

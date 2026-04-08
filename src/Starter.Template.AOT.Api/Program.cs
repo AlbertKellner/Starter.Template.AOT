@@ -1,3 +1,4 @@
+using Starter.Template.AOT.Api.Features.Query.NumberToStringGet;
 using Starter.Template.AOT.Api.Infra.ExceptionHandling;
 using Starter.Template.AOT.Api.Infra.Json;
 using Starter.Template.AOT.Api.Infra.ModelBinding;
@@ -101,8 +102,7 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-// TODO: Registrar Use Cases das features aqui
-// Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
+builder.Services.AddScoped<INumberToStringGetUseCase, NumberToStringGetUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -140,5 +140,6 @@ internal static class AotControllerPreservation
     // Requer: using System.Diagnostics.CodeAnalysis; no topo do arquivo
     // Exemplo:
     // [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NomeDaFeatureEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(NumberToStringGetEndpoint))]
     internal static void PreserveControllers() { }
 }

@@ -52,6 +52,32 @@ Features
 
 **Exceções permitidas**: nenhuma — toda funcionalidade nova deve seguir este padrão.
 
+**Artefatos de governança (condicionais — toda feature com endpoint):**
+- `wiki/Feature-<NomeDaFeature>.md` — página wiki seguindo template de `Instructions/wiki/wiki-governance.md`
+- Linha na tabela "Features Implementadas" em `wiki/Governance-Architecture.md`
+- Linha na tabela "Endpoints Disponíveis" em `scripts/operational-runbook.md`
+
+**Artefatos de infraestrutura (obrigatórios para toda feature):**
+- Registro do UseCase e interfaces no DI (`Program.cs`)
+- `[JsonSerializable(typeof(...))]` para cada tipo de Input/Output em `Infra/Json/AppJsonContext.cs`
+- `[DynamicDependency(...)]` para o Controller em `AotControllerPreservation` (`Program.cs`)
+- Teste unitário do UseCase em `src/Starter.Template.AOT.UnitTest/` (P015)
+
+**Checklist consolidado de criação de feature:**
+
+| # | Artefato | Condição | Referência |
+|---|---|---|---|
+| 1 | Pasta da Slice com subcomponentes | Sempre | PAD-001 |
+| 2 | Registro no DI (Program.cs) | Sempre | Padrão de erro #1 (runbook) |
+| 3 | Tipo no AppJsonContext | Quando há Input ou Output | Padrão de erro #2 (runbook) |
+| 4 | DynamicDependency no AotControllerPreservation | Sempre (endpoint) | Padrão de erro #3 (runbook) |
+| 5 | Teste unitário do UseCase | Sempre | P015 |
+| 6 | Wiki page (`wiki/Feature-<Nome>.md`) | Quando há endpoint | PAD-001, wiki-governance.md |
+| 7 | Linha em `wiki/Governance-Architecture.md` | Quando há endpoint | PAD-001 |
+| 8 | Linha no runbook (endpoints) | Quando há endpoint | PAD-001 |
+
+> Este checklist consolida artefatos definidos em múltiplos arquivos de governança. A fonte de verdade de cada item é indicada na coluna "Referência". O checklist é derivado — não inventa regras.
+
 *Referência: DA-004*
 
 ---
@@ -274,3 +300,4 @@ app.UseExceptionHandler();
 | 2026-03-15 | PAD-008 criado: tratamento centralizado de exceções via IExceptionHandler; localização inicial Shared/Middleware/ | DA-010, P010 |
 | 2026-03-18 | PAD-008 "Solução" corrigido: localização atualizada de Shared/Middleware/ para Infra/ExceptionHandling/ conforme DA-011 | DA-011 |
 | 2026-03-19 | PAD-007 atualizado: proibição explícita de models de Feature em Shared; anti-padrão adicionado | DA-020 |
+| 2026-04-08 | PAD-001 expandido: artefatos de governança condicionais (wiki page, Governance-Architecture, runbook) e checklist consolidado de criação de feature adicionados | Análise de causa raiz — omissão recorrente de wiki |
