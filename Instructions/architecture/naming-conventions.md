@@ -102,6 +102,34 @@ Cada subcomponente de uma Slice usa o nome da Feature como prefixo, seguido pelo
 
 ---
 
+## Nomenclatura de Testes Unitários
+
+Testes unitários espelham a estrutura de `Features/` do projeto principal dentro de `src/Starter.Template.AOT.UnitTest/`.
+
+| Componente | Padrão | Exemplo |
+|---|---|---|
+| Pasta do teste | `Features/<Query\|Command>/<NomeDaFeature>/` | `Features/Query/TodoItemsGetAll/` |
+| Arquivo de teste | `<NomeDaFeature>UseCaseTests.cs` | `TodoItemsGetAllUseCaseTests.cs` |
+| Classe de teste | `<NomeDaFeature>UseCaseTests` | `TodoItemsGetAllUseCaseTests` |
+| Método de teste | `<Método>_<Cenário>_<ResultadoEsperado>` | `ExecuteAsync_ValidInput_ReturnsItems` |
+
+### Regras de nomenclatura de métodos de teste:
+
+- Usar PascalCase com underscores separando as 3 partes
+- `<Método>`: nome do método sendo testado (ex: `ExecuteAsync`)
+- `<Cenário>`: condição ou estado de entrada (ex: `ValidInput`, `EmptyList`, `InvalidId`)
+- `<ResultadoEsperado>`: o que deve acontecer (ex: `ReturnsItems`, `ThrowsException`, `ReturnsNull`)
+
+### Anti-exemplos (proibidos):
+
+| Nome Proibido | Motivo |
+|---|---|
+| `Test1`, `TestMethod` | Sem descrição do cenário |
+| `ShouldWork` | Genérico, não descreve condição nem resultado |
+| `TodoItemsTest` | Não identifica qual método, cenário ou resultado |
+
+---
+
 ## Terminologia de Domínio
 
 A terminologia de domínio é definida no glossário:
@@ -243,3 +271,4 @@ Regra: só usar abreviações registradas aqui. Sem abreviações não documenta
 | Bootstrap | Estrutura criada sem convenções específicas | — |
 | 2026-03-15 | Convenções definidas: linguagem (inglês), Feature naming, subcomponentes de Slice, prefixos/sufixos, termos proibidos | Instruções do usuário |
 | 2026-03-15 | Adicionado: namespace de Slice para na Feature (não na subpasta); proibido `using` alias para tipos | Instrução do usuário |
+| 2026-04-08 | Adicionado: seção "Nomenclatura de Testes Unitários" — convenção de pastas, arquivos, classes e métodos de teste | Auditoria de governança — rodada 7 |

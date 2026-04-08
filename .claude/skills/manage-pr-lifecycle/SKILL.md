@@ -5,7 +5,7 @@ allowed-tools:
   - Bash
   - Read
   - Grep
-  - mcp__github__*
+  - mcp__github-codificador__*
 ---
 
 ## Contexto Dinâmico
@@ -215,3 +215,4 @@ Quando a tarefa é análise de PR:
 | 2026-04-02 | Adicionado: item 4 no trigger de revisão automática — atualizar descrição do PR após conclusão do auto-pr-review para refletir correções realizadas | Análise de omissões pós-review |
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry substituiu declaração prematura de indisponibilidade | Diagnóstico de MCP — Erro 12 |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido servidor MCP de `github` para `github-codificador` com prefixo `mcp__github-codificador__*` | Instrução do usuário |
+| 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança |

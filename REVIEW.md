@@ -49,7 +49,7 @@ Este checklist é **obrigatório** sempre que qualquer um destes arquivos for cr
 | 3.1 | Rules definem apenas POLÍTICAS (o quê)? | Rules não devem conter workflows procedurais detalhados |
 | 3.2 | Skills definem apenas WORKFLOWS (como)? | Skills não devem redefinir políticas — devem referenciar rules |
 | 3.3 | Hooks fazem apenas ENFORCEMENT? | Hooks não devem conter lógica de negócio |
-| 3.4 | CLAUDE.md é conciso e global? | Máximo ~100 linhas; detalhes operacionais delegados a rules/skills |
+| 3.4 | CLAUDE.md é conciso e global? | Contém apenas princípios globais, pipeline de alto nível e imports; detalhes operacionais delegados a rules/skills |
 
 ---
 
@@ -125,3 +125,4 @@ Este checklist é **obrigatório** sempre que qualquer um destes arquivos for cr
 |---|---|---|
 | 2026-03-18 | Criado: checklist estruturado de revisão de instruções | Reestruturação de governança |
 | 2026-03-21 | Adicionado: Checklist 8 — Auditoria Automatizada via scripts/governance-audit.sh | Análise de inconsistências do repositório |
+| 2026-04-08 | Corrigido: Checklist 3.4 — limite numérico de ~100 linhas removido; critério qualitativo mantido | Auditoria de governança |

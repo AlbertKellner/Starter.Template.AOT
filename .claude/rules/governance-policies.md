@@ -63,7 +63,9 @@ Esta regra consolida as políticas (o quê, não como) de normalização de ling
 | Snippet canônico | Implementações que usam o snippet |
 | Ferramentas operacionais (MCP, tokens, integrações) | technical-overview, environment-readiness, required-vars, container-setup, pipeline pré-commit |
 | Artefatos documentáveis (BDD, regras de negócio, contratos, testes, componentes, configuração, CI/CD) | Wiki (`wiki/`) — páginas de Feature, Business-Rules, Architecture, Project-Setup, CI-CD conforme `wiki-governance.md` |
+| Remoção de Feature | Wiki (`Feature-*.md` removida, `Home.md` e `_Sidebar.md` atualizados), `business-rules.md` (regras removidas/atualizadas), cenários BDD removidos, contratos OpenAPI atualizados, `technical-overview.md` e `folder-structure.md` (referências removidas), `Governance-Architecture.md` atualizada, `Domain-Business-Rules.md` atualizada |
 | Novo padrão organizacional de governança (organização de imports, classificação de rules, estrutura de seções) | `architecture-governance.md` (seção Separação de Governança Técnica e de Negócio), rules afetadas, CLAUDE.md |
+| Atualização de dependência NuGet | Verificar breaking changes no changelog, atualizar versão em `technical-overview.md` se listada, executar pipeline completo de Código (build + test + Docker), criar ADR se a atualização introduzir breaking change ou mudança de comportamento significativa |
 | Script de auditoria falha por bug do script (não por problema real nos artefatos) | `scripts/governance-audit.sh` — corrigir o script é parte da tarefa, não um problema pré-existente a ignorar |
 
 ### Limites:
@@ -130,3 +132,4 @@ Na ausência de sinal claro → assumir **ilustrativo**.
 | 2026-03-19 | Adicionado: artefatos documentáveis (BDD, regras, contratos, testes) como gatilho de propagação para wiki | Instrução do usuário |
 | 2026-03-30 | Adicionado: seção Classificação — meta-governança (ponte entre domínio técnico e de negócio) | Separação tech/negócio |
 | 2026-03-30 | Adicionado: 2 entradas no mapa de propagação — novo padrão organizacional de governança e correção de bug no script de auditoria | Análise de causa-raiz de omissão |
+| 2026-04-08 | Adicionado: entrada "Remoção de Feature" e "Atualização de dependência NuGet" no mapa de propagação | Auditoria de governança |

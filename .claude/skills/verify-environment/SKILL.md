@@ -27,6 +27,17 @@ Esta skill é ativada pelo passo 0 do pipeline de validação pré-commit (CLAUD
 
 ## Workflow
 
+### Passo 0: Consultar erros conhecidos de sessões anteriores
+
+Antes do checklist de pré-requisitos, ler `bash-errors-log.md` e `scripts/operational-runbook.md` seção "Problemas Recorrentes e Soluções" para identificar erros de ambiente já resolvidos. Aplicar proativamente as soluções documentadas antes de executar os comandos que falharam anteriormente. Exemplos:
+- Se o log registra que `dotnet` requer `export PATH="/root/.dotnet:$PATH"` → aplicar o export
+- Se o log registra que Docker daemon precisa ser iniciado manualmente → iniciar antes do checklist
+- Se o runbook lista um workaround para DNS de sandbox → aplicar antes de `docker compose`
+
+Consultar também `PENDENCIAS.md` para bloqueadores ativos que afetam o pipeline (ex: Docker não instalado → pular passos 4-8 e usar fallback debug).
+
+Consultar `scripts/operational-runbook.md` seção "Padrões de Erro de Implementação Conhecidos" para prevenir erros de lógica recorrentes (ex: tipo não registrado no DI, tipo não adicionado ao AppJsonContext). Verificar proativamente se algum padrão se aplica à implementação atual.
+
 ### Passo 1: Executar checklist de pré-requisitos
 
 Aplicar o checklist antes de qualquer operação Docker:
@@ -127,3 +138,4 @@ Quando um problema de ambiente ocorrer mais de uma vez em sessões distintas:
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-21 | Criado: workflow extraído de environment-readiness.md (separação rules/skills) | Auditoria de governança |
+| 2026-04-08 | Adicionado: Passo 0 — consulta proativa ao bash-errors-log.md e PENDENCIAS.md antes do checklist de pré-requisitos | Auditoria de governança — rodada 5 |

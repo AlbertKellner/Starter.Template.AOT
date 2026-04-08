@@ -36,7 +36,7 @@ Esta rule define a política de revisão automática de código em Pull Requests
 | **MCP Server** | `github-revisor` (prefixo `mcp__github-revisor__*`) |
 | **Email git** | `Claude-Revisor@users.noreply.github.com` |
 | **Responsabilidades** | Revisar código contra governança, comentar em trechos específicos, aprovar ou solicitar mudanças, resolver threads |
-| **Restrições** | NUNCA alterar código, fazer commits ou push; NUNCA usar tools `mcp__github__*` |
+| **Restrições** | NUNCA alterar código, fazer commits ou push; NUNCA usar tools `mcp__github-codificador__*` |
 
 ---
 
@@ -149,3 +149,4 @@ O relatório ao encerrar deve incluir:
 |---|---|---|
 | 2026-03-31 | Criado: política de revisão automática de PR com papéis Codificador e Revisor | Instrução do usuário |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
+| 2026-04-08 | Corrigido: restrição do Revisor atualizada de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança — rodada 2 |

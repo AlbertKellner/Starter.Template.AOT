@@ -31,26 +31,12 @@ Este arquivo documenta bloqueadores técnicos e pendências de configuração id
 
 ### 2. Controllers MVC incompatíveis com Debug + Native AOT
 
-**Status**: Limitação técnica conhecida
+**Status**: ✅ Documentado como trade-off aceito (DA-008, DA-009)
 
-**Impacto**: Impede uso de Controllers MVC em modo Debug quando Native AOT está habilitado
-
-**Descrição**: O .NET 9 Native AOT não suporta Controllers MVC em modo Debug. A aplicação usa Minimal APIs (FastEndpoints) como padrão arquitetural. Controllers MVC não fazem parte da arquitetura definida.
-
-**Comportamento esperado**:
-- Modo Debug: Minimal APIs funcionam normalmente
-- Modo Release/AOT: Minimal APIs funcionam normalmente
-- Controllers MVC: Não suportados em nenhum modo quando AOT está habilitado
-
-**Validação**:
-- Passos 1–3 do pipeline (Debug): validam Minimal APIs
-- Passos 4–8 do pipeline (Release/AOT + Docker): validam Minimal APIs em modo AOT
-
-**Resolução**: Não há resolução necessária. Controllers MVC não são usados neste projeto.
+**Descrição**: Controllers MVC usam reflection, gerando avisos de incompatibilidade AOT durante `dotnet publish`. Em modo Debug (`dotnet build`, `dotnet run`, `dotnet test`), Controllers funcionam normalmente. Este trade-off é aceito permanentemente conforme DA-008 e DA-009. Avisos AOT em publish são comportamento esperado e não requerem ação.
 
 **Referências**:
-- `Instructions/architecture/patterns.md` — padrão Minimal APIs (FastEndpoints)
-- `Instructions/architecture/technical-overview.md` — decisão de usar Minimal APIs
+- `Instructions/architecture/architecture-decisions.md` — DA-008 (Controllers MVC) e DA-009 (Native AOT)
 
 ---
 
@@ -94,4 +80,5 @@ Este arquivo documenta bloqueadores técnicos e pendências de configuração id
 |---|---|---|
 | 2026-04-06 | Criado: documentação de bloqueadores identificados durante tentativa de implementação de TestGet | Análise de causa-raiz |
 | 2026-04-06 | Git Bash marcado como resolvido | Confirmação do usuário |
+| 2026-04-08 | Item 2 corrigido: informação factualmente incorreta sobre Minimal APIs removida; trade-off Controllers MVC vs AOT documentado como aceito (DA-008, DA-009) | Auditoria de governança — rodada 4 |
 

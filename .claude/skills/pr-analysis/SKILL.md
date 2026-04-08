@@ -9,7 +9,7 @@ allowed-tools:
   - Glob
   - Edit
   - Write
-  - mcp__github__*
+  - mcp__github-codificador__*
   - mcp__github-revisor__*
 ---
 

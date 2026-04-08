@@ -78,6 +78,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── manage-pr-lifecycle/         # Criação/atualização de PR e acompanhamento de CI
 │   │   ├── auto-pr-review/              # Revisão automática de PR com ciclo Revisor↔Codificador
 │   │   ├── pr-analysis/                 # Análise de solicitações de mudança em PR existente
+│   │   ├── remove-feature/              # Remoção de feature com limpeza de código, governança e wiki
 │   │   ├── resolve-ambiguity/
 │   │   ├── review-alignment/
 │   │   ├── review-instructions/         # Executa REVIEW.md
@@ -109,6 +110,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
     │   ├── patterns.md
     │   ├── naming-conventions.md
     │   ├── folder-structure.md         # (este arquivo)
+    │   ├── mandatory-behaviors.md      # Tabela canônica de comportamentos obrigatórios
     │   └── architecture-decisions.md
     ├── business/                       # Memória de negócio e domínio
     │   ├── business-rules.md
@@ -296,3 +298,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-04-01 | 4 novos hooks adicionados: session-start.sh (SessionStart), stop-verification.sh (Stop), bash-error-capture.sh (PostToolUseFailure), compact-context.sh (PreCompact/PostCompact) | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-01 | .claude/agents/ adicionada: code-reviewer.md e governance-auditor.md — agentes especializados com memória persistente | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-06 | .claude/rules/mandatory-process-enforcement.md adicionada: meta-regra de precedência de processo de workspace; .kiro/proposals/ criada com proposta de mudança sistêmica | Análise de causa-raiz de violação de processo |
+| 2026-04-08 | Instructions/architecture/mandatory-behaviors.md adicionada: tabela canônica de comportamentos obrigatórios; .claude/skills/remove-feature/ adicionada: skill de remoção de feature | Auditoria de governança |
