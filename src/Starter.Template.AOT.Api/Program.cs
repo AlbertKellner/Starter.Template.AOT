@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using Starter.Template.AOT.Api.Features.Query.NumberGetByValue;
 using Starter.Template.AOT.Api.Infra.ExceptionHandling;
 using Starter.Template.AOT.Api.Infra.Json;
 using Starter.Template.AOT.Api.Infra.ModelBinding;
@@ -101,8 +103,7 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-// TODO: Registrar Use Cases das features aqui
-// Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
+builder.Services.AddScoped<INumberGetByValueUseCase, NumberGetByValueUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -136,9 +137,6 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
-    // TODO: Adicionar DynamicDependency para cada Controller implementado
-    // Requer: using System.Diagnostics.CodeAnalysis; no topo do arquivo
-    // Exemplo:
-    // [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NomeDaFeatureEndpoint))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NumberGetByValueEndpoint))]
     internal static void PreserveControllers() { }
 }

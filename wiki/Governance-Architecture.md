@@ -117,6 +117,7 @@ O enrichment do Serilog é transversal:
 | Feature | Tipo | Endpoint | Autenticação | Descrição |
 |---|---|---|---|---|
 | Health | Infra | `GET /health` | Não | Verificação de disponibilidade da aplicação e do Datadog Agent |
+| NumberGetByValue | Query | `GET /numbers/{number}` | Não | Retorna a representação textual de um número (1→"Um", 2→"Dois") |
 
 > Features adicionais serão registradas aqui conforme forem implementadas.
 

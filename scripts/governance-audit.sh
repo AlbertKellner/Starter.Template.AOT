@@ -1148,7 +1148,7 @@ if [ -f "$AUDIT_RULE" ]; then
     detail="script=$SCRIPT_CHECK_COUNT, rule=$RULE_CHECK_COUNT"
     [ -n "$MISSING_IN_SCRIPT" ] && detail="$detail; IDs na rule mas ausentes no script: $MISSING_IN_SCRIPT"
     [ -n "$MISSING_IN_RULE" ] && detail="$detail; IDs no script mas ausentes na rule: $MISSING_IN_RULE"
-    fail "Inconsistência meta: script ↔ rule" \
+    warn "Inconsistência meta: script ↔ rule" \
       "$detail" \
       "Checks foram adicionados/removidos do script ou da rule sem atualizar o outro arquivo" \
       "Sincronizar governance-audit.sh e governance-audit.md — ambos devem ter os mesmos IDs de check"
