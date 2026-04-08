@@ -23,6 +23,7 @@ Este arquivo é a fonte de verdade canônica da lista numerada de todos os compo
 | 11 | Rastrear comportamentos esperados durante toda a sessão | Todos os escopos | CLAUDE.md §11 |
 | 12 | Consulta pré-planejamento obrigatória | Todos os escopos | CLAUDE.md §12, `.claude/rules/pre-planning-consultation.md` |
 | 13 | Validar mudanças de governança via subagentes | Escopo Governança (quando afeta pipeline) | CLAUDE.md §13, `.claude/rules/governance-validation-pipeline.md` |
+| 14 | Executar checklist de artefatos ao criar feature | Quando a tarefa cria nova feature | CLAUDE.md §14, PAD-001 (`Instructions/architecture/patterns.md`) |
 
 ---
 
@@ -34,6 +35,7 @@ Este arquivo é a fonte de verdade canônica da lista numerada de todos os compo
 | #11 (rastreamento) | Início e fim da tarefa |
 | #12 (pré-planejamento) | Antes de qualquer passo |
 | #13 (validação via subagentes) | Passo 9.1 |
+| #14 (checklist de artefatos) | Durante implementação (antes do passo 0.1) |
 
 ---
 
@@ -62,3 +64,4 @@ Este arquivo é a fonte de verdade canônica da lista numerada de todos os compo
 |---|---|---|
 | 2026-04-08 | Criado: tabela canônica de comportamentos obrigatórios extraída do CLAUDE.md | Auditoria de governança |
 | 2026-04-08 | Adicionado: nota sobre políticas de numeração distintas (comportamentos com gaps vs. checks sem gaps) | Auditoria de governança — rodada 2 |
+| 2026-04-08 | Adicionado: comportamento #14 — executar checklist de artefatos ao criar feature (PAD-001) | Análise de causa raiz — omissão recorrente de wiki |

@@ -241,6 +241,9 @@ src/
 - `Scripts/` e `<NomeDaFeature>.sql` existem apenas quando a Slice acessa banco de dados via SQL.
 - `<NomeDaFeature>Input.cs` e `<NomeDaFeature>Output.cs` pertencem exclusivamente a `<Feature>Models/` da Slice. Não devem ser movidos ou duplicados em `Shared/`. Models em `Shared/ExternalApi/*/Models/` são models de APIs externas (contrato do cliente HTTP, não de Features) e seguem regras próprias (DA-017). Models de APIs externas não se confundem com models de Features (DA-020).
 - Features que consomem APIs externas via `Shared/ExternalApi/` devem possuir seu próprio model de Output em `<Feature>Models/`, mesmo que a estrutura espelhe o model da API externa. O model de Shared é o contrato do cliente HTTP; o model da Feature é o contrato do endpoint. Features não devem usar types de `Shared/` como tipo de retorno de seus Use Cases ou Endpoints (DA-020).
+- `wiki/Feature-<NomeDaFeature>.md` existe quando a Feature possui endpoint HTTP. Deve seguir o template definido em `Instructions/wiki/wiki-governance.md`. Referência: PAD-001.
+- Linha na tabela "Features Implementadas" em `wiki/Governance-Architecture.md` existe quando a Feature possui endpoint HTTP. Referência: PAD-001.
+- Linha na tabela "Endpoints Disponíveis" em `scripts/operational-runbook.md` existe quando a Feature possui endpoint HTTP. Referência: PAD-001.
 
 ---
 
@@ -299,3 +302,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-04-01 | .claude/agents/ adicionada: code-reviewer.md e governance-auditor.md — agentes especializados com memória persistente | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-06 | .claude/rules/mandatory-process-enforcement.md adicionada: meta-regra de precedência de processo de workspace; .kiro/proposals/ criada com proposta de mudança sistêmica | Análise de causa-raiz de violação de processo |
 | 2026-04-08 | Instructions/architecture/mandatory-behaviors.md adicionada: tabela canônica de comportamentos obrigatórios; .claude/skills/remove-feature/ adicionada: skill de remoção de feature | Auditoria de governança |
+| 2026-04-08 | Regras de existência condicional expandidas: wiki page, Governance-Architecture.md e runbook como artefatos condicionais de features com endpoint (PAD-001) | Análise de causa raiz — omissão recorrente de wiki |

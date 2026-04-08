@@ -85,6 +85,10 @@ Ver `.claude/rules/pre-planning-consultation.md` para a política completa.
 Quando a tarefa alterar aspectos que afetam o pipeline de codificação (passos 0–12, comportamentos obrigatórios 1–13, skills de pipeline, rules de fluxo de codificação ou hooks de enforcement), lançar subagentes após o commit (passo 9) para validar que os novos comportamentos são efetivamente aplicados. Um subagente executa na branch de desenvolvimento; outro executa na branch main (worktree isolado) com comando idêntico, ambos em paralelo. Comparar resultados para detectar regressões. Gate bloqueante: falha na branch dev bloqueia o pipeline (máximo 3 tentativas). Diferenças na regressão com main são reportadas no relatório final. Mudanças puramente documentais (glossário, wiki, ADRs) não ativam este comportamento.
 Ver `.claude/rules/governance-validation-pipeline.md` para a política completa. Ver `.claude/skills/governance-validation-pipeline/SKILL.md` para o workflow.
 
+### 14. Executar checklist de artefatos ao criar feature
+Quando a tarefa criar uma nova feature, executar o checklist consolidado de artefatos definido no PAD-001 (`Instructions/architecture/patterns.md`). O checklist inclui artefatos de código (Slice, DI, AppJsonContext, AotControllerPreservation, teste unitário) e artefatos de governança condicionais (wiki page, Governance-Architecture.md, runbook). Todos os artefatos aplicáveis devem ser criados durante a implementação — não após o governance-audit detectar a omissão. O checklist é derivado de múltiplas fontes de governança; a coluna "Referência" de cada item indica a fonte de verdade.
+Ver PAD-001 em `Instructions/architecture/patterns.md` para o checklist completo.
+
 ### Correção oportunista de governança durante tarefas de outro escopo
 Quando o assistente identificar uma melhoria necessária na governança durante uma tarefa de outro escopo:
 - **Correção trivial** (typo, referência quebrada, contagem desatualizada): corrigir imediatamente e incluir no mesmo commit, reclassificando para Híbrido se necessário.
