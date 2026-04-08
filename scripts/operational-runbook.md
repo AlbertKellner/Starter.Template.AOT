@@ -93,6 +93,7 @@ docker compose down
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
 | `GET` | `/numbers/{number}` | Não | Retorna label textual do número (1 → "Um", 2 → "Dois") | — |
+| `GET` | `/number-texts/{number}` | Não | Retorna texto correspondente ao número (1 → "Um", 2 → "Dois") | — |
 
 ---
 

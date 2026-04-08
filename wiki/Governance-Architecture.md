@@ -118,6 +118,7 @@ O enrichment do Serilog é transversal:
 |---|---|---|---|---|
 | Health | Infra | `GET /health` | Não | Verificação de disponibilidade da aplicação e do Datadog Agent |
 | NumberGetLabel | Query | `GET /numbers/{number}` | Não | Retorna o label textual de um número (1 → "Um", 2 → "Dois") |
+| NumberGetText | Query | `GET /number-texts/{number}` | Não | Retorna o texto correspondente a um número (1 → "Um", 2 → "Dois") |
 
 ---
 

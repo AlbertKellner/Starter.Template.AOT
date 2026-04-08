@@ -1,5 +1,6 @@
 using Starter.Template.AOT.Api.Infra.ExceptionHandling;
 using Starter.Template.AOT.Api.Features.Query.NumberGetLabel;
+using Starter.Template.AOT.Api.Features.Query.NumberGetText;
 using Starter.Template.AOT.Api.Infra.Json;
 using Starter.Template.AOT.Api.Infra.ModelBinding;
 using Starter.Template.AOT.Api.Infra.ModelValidation;
@@ -105,6 +106,7 @@ Log.Information("[Program] Registrar dependências das features");
 // TODO: Registrar Use Cases das features aqui
 // Exemplo: builder.Services.AddScoped<NomeDaFeatureUseCase>();
 builder.Services.AddScoped<INumberGetLabelUseCase, NumberGetLabelUseCase>();
+builder.Services.AddScoped<INumberGetTextUseCase, NumberGetTextUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -145,5 +147,8 @@ internal static class AotControllerPreservation
     [System.Diagnostics.CodeAnalysis.DynamicDependency(
         System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All,
         typeof(NumberGetLabelEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All,
+        typeof(NumberGetTextEndpoint))]
     internal static void PreserveControllers() { }
 }
