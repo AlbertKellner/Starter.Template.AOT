@@ -40,7 +40,6 @@ Regras de negócio, funcionalidades implementadas e conceitos de domínio.
 | Página | Endpoint | Descrição |
 |--------|----------|-----------|
 | [Health Check](Feature-Health) | `GET /health` | Verificação de disponibilidade da aplicação |
-| [NumberGetByValue](Feature-NumberGetByValue) | `GET /numbers/{number}` | Retorna a representação textual de um número |
 
 ---
 
