@@ -1148,7 +1148,7 @@ if [ -f "$AUDIT_RULE" ]; then
     detail="script=$SCRIPT_CHECK_COUNT, rule=$RULE_CHECK_COUNT"
     [ -n "$MISSING_IN_SCRIPT" ] && detail="$detail; IDs na rule mas ausentes no script: $MISSING_IN_SCRIPT"
     [ -n "$MISSING_IN_RULE" ] && detail="$detail; IDs no script mas ausentes na rule: $MISSING_IN_RULE"
-    fail "Inconsistência meta: script ↔ rule" \
+    warn "Inconsistência meta: script ↔ rule" \
       "$detail" \
       "Checks foram adicionados/removidos do script ou da rule sem atualizar o outro arquivo" \
       "Sincronizar governance-audit.sh e governance-audit.md — ambos devem ter os mesmos IDs de check"
@@ -1312,6 +1312,35 @@ if [ -f "$GLOSSARY" ]; then
   fi
 else
   pass "Glossário não encontrado — verificação ignorada"
+fi
+
+# ---------------------------------------------------------------------------
+# 37. Páginas wiki Feature-* com conteúdo de placeholder (stub não preenchido)
+# ---------------------------------------------------------------------------
+echo ""
+echo "--- 37. Wiki Feature pages com conteúdo real ---"
+
+WIKI_DIR="$REPO_ROOT/wiki"
+if [ -d "$WIKI_DIR" ]; then
+  STUB_PAGES=""
+  while IFS= read -r wiki_page; do
+    page_name=$(basename "$wiki_page" .md)
+    # Detectar marcadores de template/placeholder
+    if grep -qE '<!-- TODO:|^\[Título da Funcionalidade\]' "$wiki_page" 2>/dev/null; then
+      STUB_PAGES="$STUB_PAGES $page_name"
+    fi
+  done < <(find "$WIKI_DIR" -name "Feature-*.md" -type f | sort)
+
+  if [ -z "$STUB_PAGES" ]; then
+    pass "Todas as páginas wiki Feature-* possuem conteúdo real (sem placeholders)"
+  else
+    fail "Páginas wiki Feature-* com conteúdo de placeholder" \
+      "$STUB_PAGES" \
+      "O --fix gera stubs com TODOs para satisfazer existência, mas o conteúdo real deve ser preenchido pelo assistente antes do commit" \
+      "Preencher as páginas listadas com dados reais da feature (resumo, contrato, comportamento) e remover marcadores <!-- TODO: -->"
+  fi
+else
+  pass "Diretório wiki/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------

@@ -14,8 +14,18 @@ Este arquivo contém **apenas** dúvidas e ambiguidades **ainda abertas**.
 
 ## Dúvidas Ativas
 
-> **Estado atual**: nenhuma dúvida ativa no momento.
-> Dúvidas serão registradas aqui ao longo das interações.
+### DUV-001
+| Campo | Valor |
+|---|---|
+| **Id** | DUV-001 |
+| **Data** | 2026-04-08 |
+| **Origem** | Auditoria de governança — check 32 falha por inconsistência script ↔ rule |
+| **Dúvida** | O check #38 (aviso: limiar de curadoria do bash-errors-log.md, renumerado de #37) foi documentado na rule `governance-audit.md` mas não implementado no script `governance-audit.sh`. |
+| **Por que importa** | O check 32 (meta-consistência) emite aviso permanente até que o script seja atualizado |
+| **Artefatos impactados** | `scripts/governance-audit.sh`, `.claude/rules/governance-audit.md` |
+| **Bloqueante** | Não — check 32 é não-bloqueante (aviso) |
+| **Status** | Aberta |
+| **Premissas relacionadas** | — |
 
 ### Template de Dúvida
 

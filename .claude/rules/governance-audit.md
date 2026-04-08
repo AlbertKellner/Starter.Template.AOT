@@ -58,6 +58,7 @@ O script `scripts/governance-audit.sh` verifica automaticamente.
 | 22 | `wiki/Governance-Architecture.md` lista todas as integrações de `Shared/ExternalApi/` | Completude wiki |
 | 23 | Todas as rules possuem estrutura mínima (Propósito + Histórico ou Relação com Outras Rules) | Estrutura mínima |
 | 24 | Tabela "Features Implementadas" na wiki lista todas as features | Completude wiki |
+| 37 | Páginas wiki `Feature-*.md` não contêm conteúdo de placeholder (`<!-- TODO:` ou `[Título da Funcionalidade]`) — stubs gerados pelo `--fix` devem ser preenchidos com conteúdo real antes do commit | Completude wiki |
 
 ### Verificações não-bloqueantes (aviso, não bloqueia commit)
 
@@ -75,7 +76,7 @@ O script `scripts/governance-audit.sh` verifica automaticamente.
 | 34 | Todas as skills referenciam pelo menos uma rule | Integridade referencial |
 | 35 | Auto-fix usa backup (`safe_fix`) antes de alterações destrutivas (`sed -i`) — meta-análise do próprio script | Meta-segurança |
 | 36 | Conceitos usados no mapa de propagação de `governance-policies.md` existem no glossário | Completude semântica |
-| 37 | `bash-errors-log.md` não ultrapassou o limiar de curadoria (30 erros ativos) — se ultrapassou, emitir aviso para executar curadoria conforme `bash-error-logging.md` | Higiene operacional |
+| 38 | `bash-errors-log.md` não ultrapassou o limiar de curadoria (30 erros ativos) — se ultrapassou, emitir aviso para executar curadoria conforme `bash-error-logging.md` | Higiene operacional |
 
 ### Sobre a lista de artefatos removidos (checks #6 e #11)
 
@@ -192,3 +193,4 @@ Avisos (checks não-bloqueantes) podem ser promovidos a falhas (bloqueantes) via
 | 2026-04-08 | Adicionado: política de renumeração obrigatória de checks (sem gaps); política de promoção de avisos a falhas | Auditoria de governança |
 | 2026-04-08 | Adicionado: seção "Diagnóstico de Falha do Script" — procedimento para distinguir falha legítima de bug do script | Auditoria de governança — rodada 2 |
 | 2026-04-08 | Adicionado: check #37 (aviso) — limiar de curadoria do bash-errors-log.md (30 erros) | Auditoria de governança — rodada 7 |
+| 2026-04-08 | Check #37 reclassificado: limiar de curadoria movido para #38 (não implementado no script — DUV-001); #37 agora é check bloqueante de completude wiki — detecta páginas Feature-* com conteúdo de placeholder gerado pelo --fix | Análise de causa-raiz — stub wiki não preenchido |

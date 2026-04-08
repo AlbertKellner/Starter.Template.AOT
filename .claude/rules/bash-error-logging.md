@@ -159,5 +159,5 @@ Quando o `bash-errors-log.md` ultrapassar 30 erros, o assistente deve consolidar
 ## Relação com Outras Rules
 
 - `governance-policies.md` — políticas de ambiguidade (§4) e propagação (§3) aplicáveis a erros
-- `environment-readiness.md` e `verify-environment/SKILL.md` — consultam o log proativamente no passo 0 do pipeline para prevenir erros recorrentes
+- `environment-readiness.md` e `.claude/skills/verify-environment/SKILL.md` — consultam o log proativamente no passo 0 do pipeline para prevenir erros recorrentes
 - O passo 0 do `CLAUDE.md` referencia este arquivo como fonte de soluções conhecidas a aplicar proativamente
