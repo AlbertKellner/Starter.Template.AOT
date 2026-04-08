@@ -10,7 +10,7 @@ public sealed class NumberToStringGetEndpoint(INumberToStringGetUseCase useCase,
     public IActionResult Get(int number)
     {
 
-        logger.LogInformation("[NumberToStringGetEndpoint][Get] Receber requisição. Number={Number}", number);
+        logger.LogInformation("[NumberToStringGetEndpoint][Get] Receber número para conversão em texto. Number={Number}", number);
 
         var result = useCase.Execute(number);
 
