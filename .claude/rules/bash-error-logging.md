@@ -20,12 +20,17 @@ Esta rule define o comportamento obrigatório do assistente quando qualquer coma
 
 ## Quando Esta Rule Se Aplica
 
-Esta rule se aplica a **qualquer comando Bash que retorne erro**, incluindo:
+Esta rule se aplica a **qualquer comando Bash que retorne erro** e a **qualquer omissão de governança detectada na Fase 4 do behavior tracking**, incluindo:
 - Comandos de build (`dotnet build`, `dotnet publish`, `dotnet test`)
 - Comandos Docker (`docker compose`, `docker build`, `docker run`, `docker exec`)
 - Comandos de sistema (`apt-get`, `curl`, `cp`, `mkdir`)
 - Comandos de CI/CD e scripts de pipeline
 - Qualquer outro comando shell executado durante o desenvolvimento
+- **Omissões de pipeline** (passo obrigatório não executado — classificação (ii) na Fase 4)
+- **Bloqueios de ferramenta** (passo bloqueado por erro de MCP, Docker, rede — classificação (iii) na Fase 4)
+- **Classificações incorretas de escopo** que levaram a omissão ou execução indevida de passos
+
+**Critério para falhas de `dotnet test`**: registrar no log apenas quando a causa raiz for um padrão de implementação recorrente (ex: tipo não registrado no DI, tipo não adicionado ao AppJsonContext, mock não configurado) — não registrar falhas de lógica de negócio corrigidas imediatamente na mesma sessão. Padrões recorrentes devem também ser adicionados à seção "Padrões de Erro de Implementação Conhecidos" do `scripts/operational-runbook.md`.
 
 ---
 
@@ -60,6 +65,8 @@ Esta rule se aplica a **qualquer comando Bash que retorne erro**, incluindo:
 
 ## Estrutura Obrigatória de Cada Registro
 
+### Para erros de Bash:
+
 ```markdown
 ## Erro [N] — [Título descritivo do problema]
 
@@ -71,6 +78,22 @@ Esta rule se aplica a **qualquer comando Bash que retorne erro**, incluindo:
 | **Erro retornado** | `[mensagem de erro exata]` |
 | **Causa** | [Explicação técnica objetiva da causa raiz] |
 | **Novo comando / solução** | `[comando ou sequência que resolveu]` ou descrição da solução |
+```
+
+### Para erros de governança (omissões de pipeline):
+
+```markdown
+## Erro [N] — [Título: qual comportamento foi omitido]
+
+| Campo | Valor |
+|---|---|
+| **Número** | [N] |
+| **Data** | [YYYY-MM-DD] |
+| **Tipo** | Governança |
+| **Comportamento omitido** | [Passo ou comportamento que não foi executado] |
+| **Escopo da tarefa** | [Código / Governança / Híbrido / CI/Infra / Análise de PR] |
+| **Causa** | [Por que o comportamento não foi executado — causa raiz] |
+| **Correção implementada** | [Qual skill, rule, hook ou pipeline foi corrigido para prevenir recorrência] |
 ```
 
 ---
@@ -114,6 +137,15 @@ Esta rule se aplica a **qualquer comando Bash que retorne erro**, incluindo:
 - Erros resolvidos permanecem como referência para problemas futuros similares
 - A seção "Resultado Final" deve ser atualizada quando o pipeline for concluído com sucesso
 
+### Curadoria Periódica
+
+Quando o `bash-errors-log.md` ultrapassar 30 erros, o assistente deve consolidar:
+
+1. **Erros de ambiente/infraestrutura com solução estável** → migrar para `scripts/operational-runbook.md` seção "Problemas Recorrentes e Soluções". O runbook é a fonte de verdade para prevenção; o log é a fonte de verdade para rastreabilidade.
+2. **Erros transitórios ou de sandbox sem relevância futura** (ex: DNS de sandbox, HTTP 503 temporário) → mover para seção "Arquivo Histórico" no final do `bash-errors-log.md`.
+3. A seção ativa do log deve conter apenas erros recentes ou sem solução definitiva.
+4. Erros migrados para o runbook devem manter referência ao número original no log (ex: "Ref: Erro 1, Erro 3").
+
 ---
 
 ## Relação com Outros Artefatos
@@ -127,3 +159,5 @@ Esta rule se aplica a **qualquer comando Bash que retorne erro**, incluindo:
 ## Relação com Outras Rules
 
 - `governance-policies.md` — políticas de ambiguidade (§4) e propagação (§3) aplicáveis a erros
+- `environment-readiness.md` e `verify-environment/SKILL.md` — consultam o log proativamente no passo 0 do pipeline para prevenir erros recorrentes
+- O passo 0 do `CLAUDE.md` referencia este arquivo como fonte de soluções conhecidas a aplicar proativamente

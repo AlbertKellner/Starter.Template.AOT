@@ -44,6 +44,7 @@ Este arquivo mantém um registro de alto nível das decisões arquiteturais mais
 **Decisão**: A exposição HTTP é feita via Controllers com Actions bem definidas, usando ASP.NET Core MVC (não Minimal API).
 **Motivação**: Preferência explícita do time — Controllers com Actions oferecem organização mais explícita, melhor suporte a atributos de rota e são mais familiares para o time.
 **Alternativas consideradas**: Minimal API — descartada em favor de Controllers.
+**Trade-off com AOT (DA-009)**: Controllers MVC usam reflection, gerando avisos AOT em `dotnet publish`. Este conflito é aceito permanentemente — Controllers funcionam em JIT (build/run/test) e avisos AOT em publish são comportamento esperado. Se no futuro os avisos bloquearem o publish ou o usuário decidir migrar, esta DA será revogada em favor de Minimal API com source generators.
 **Consequências**:
 - Cada Slice tem seu próprio Controller, localizado na pasta `<Feature>Endpoint/`.
 - O Controller contém uma ou mais Actions bem definidas.
@@ -106,7 +107,7 @@ Este arquivo mantém um registro de alto nível das decisões arquiteturais mais
 **Alternativas consideradas**: ReadyToRun — descartada por não oferecer os mesmos ganhos de startup e footprint que Native AOT.
 **Trade-offs**:
 - Controllers MVC (DA-008) usam reflection para roteamento e model binding, gerando avisos de incompatibilidade AOT durante `dotnet publish`. `dotnet build` e `dotnet run` continuam funcionando normalmente com JIT.
-- Migração futura para Minimal API com source generators eliminaria esses avisos, mas DA-008 permanece ativo até decisão explícita do usuário.
+- **Conflito aceito permanentemente**: o uso de Controllers MVC com Native AOT é um trade-off aceito. Controllers funcionam em JIT (build/run/test) e avisos AOT em publish são comportamento esperado e não requerem ação. Se no futuro os avisos AOT bloquearem o publish ou o usuário decidir migrar, DA-008 será revogada em favor de Minimal API com source generators.
 **Consequências**:
 - Todo código novo deve evitar reflection dinâmica não anotada.
 - `dotnet publish` pode emitir avisos AOT relacionados ao MVC; esses avisos são conhecidos e registrados aqui.
@@ -245,6 +246,18 @@ Este arquivo mantém um registro de alto nível das decisões arquiteturais mais
 - `folder-structure.md` atualizado com regra de residência de models.
 - Models de APIs externas permanecem em `Shared/ExternalApi/*/Models/` (DA-017) como contratos do cliente HTTP, mas não podem ser usados diretamente como Output de Features.
 
+### DA-022 — Contratos OpenAPI e BDD como Artefatos Futuros
+**Data**: 2026-04-08
+**Status**: Ativo
+**Decisão**: Contratos OpenAPI e cenários BDD são mantidos como placeholders até que o domínio real seja definido. Nenhuma implementação deve depender do conteúdo desses placeholders. Os checks de auditoria #27 (BDD) e #28 (contratos) emitem avisos (não falhas) enquanto esta decisão estiver ativa.
+**Motivação**: O projeto está em fase de bootstrap com domínio genérico. Criar contratos e BDD detalhados para um domínio placeholder geraria artefatos que seriam descartados quando o domínio real fosse definido. Manter como placeholders preserva a estrutura sem gerar dívida técnica falsa.
+**Alternativas consideradas**: Criar contratos e BDD detalhados para o domínio atual — rejeitado por gerar artefatos descartáveis. Remover contratos e BDD do repositório — rejeitado por perder a estrutura preparada para quando o domínio for definido.
+**Trade-offs**: Checks de auditoria emitem avisos que podem ser ignorados. Quando o domínio real for definido, esta DA deve ser revogada e os checks promovidos a falhas.
+**Consequências**:
+- Checks #27 e #28 do `governance-audit.sh` permanecem como avisos (não bloqueantes).
+- `Instructions/contracts/` e `Instructions/bdd/` contêm placeholders genéricos.
+- PREM-003 em `assumptions-log.md` registra a mesma premissa.
+
 ---
 
 ## Decisões Pendentes
@@ -257,6 +270,7 @@ Este arquivo mantém um registro de alto nível das decisões arquiteturais mais
 | DP-004a | Observabilidade — log sinks em produção (Seq, Application Insights, Elasticsearch etc.) | Médio |
 | DP-004b | Observabilidade — distributed tracing (W3C TraceContext, OpenTelemetry) | Médio |
 | DP-004c | Observabilidade — métricas (.NET Meter API, Prometheus etc.) | Médio |
+| DP-005 | Estratégia de versionamento e releases (SemVer, tags, changelog, critérios de release) | Médio |
 
 ---
 
@@ -303,3 +317,6 @@ Ao adicionar uma nova decisão:
 | 2026-03-18 | DA-015 criada: padrão de logging estruturado storytelling — referenciada por technical-overview.md e SNP-001 mas ausente do registro | Revisão de governança |
 | 2026-03-19 | DA-018 criada: Memory Cache para endpoints GET com Decorator Pattern; reestruturação de ExternalApi config em HttpRequest/CircuitBreaker/EndpointCache | Instrução do usuário |
 | 2026-03-19 | DA-020 criada: isolamento de models de Feature — Input e Output não compartilhados via Shared | Instrução do usuário |
+| 2026-04-08 | DA-008 e DA-009 atualizadas: conflito Controllers MVC vs Native AOT documentado como aceito permanentemente; trade-off explicitado em ambas as DAs | Auditoria de governança |
+| 2026-04-08 | DP-005 adicionada: estratégia de versionamento e releases como decisão pendente | Auditoria de governança — rodada 2 |
+| 2026-04-08 | DA-022 criada: contratos OpenAPI e BDD como artefatos futuros — checks #27 e #28 emitem avisos enquanto ativa | Auditoria de governança — rodada 3 |

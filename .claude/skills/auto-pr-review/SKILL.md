@@ -7,7 +7,7 @@ allowed-tools:
   - Read
   - Grep
   - Glob
-  - mcp__github__*
+  - mcp__github-codificador__*
   - mcp__github-revisor__*
 ---
 
@@ -102,9 +102,9 @@ Esta skill é ativada:
        VERIFICAÇÃO DE CORREÇÕES DO CODIFICADOR:
        - Threads com última resposta do Codificador indicando correção feita:
          - Verificar a alteração correspondente no código atual
-         - Se adequada → resolver thread (mcp__github-revisor__resolve_review_thread)
+         - Se adequada → indicar resolução via comentário na thread ("Thread resolvida — correção verificada")
        - Threads com última resposta do Codificador indicando inviabilidade:
-         - Re-avaliar: se justificativa for válida → resolver thread
+         - Re-avaliar: se justificativa for válida → indicar resolução via comentário
          - Se justificativa for insuficiente → insistir com alternativa
 
        SUBMISSÃO DE REVIEW:
@@ -201,7 +201,8 @@ Esta skill é ativada:
 | `pull_request_review_write` | `create` (com event) | Submeter review direta (APPROVE) |
 | `add_comment_to_pending_review` | — | Adicionar comentário inline à review pendente |
 | `add_reply_to_pull_request_comment` | — | Responder a comentários de terceiros ("concordo" ou alternativa) |
-| `resolve_review_thread` | — | Resolver thread após verificar correção |
+
+**Nota sobre `resolve_review_thread`**: esta ferramenta pode não estar disponível em todos os MCP servers do GitHub. Se não estiver disponível, a resolução de threads é feita implicitamente pela submissão de review APPROVE, ou o Revisor indica resolução via comentário na thread ("Thread resolvida — correção verificada"). O workflow não deve bloquear por ausência desta ferramenta.
 
 ### Fase Codificador (prefixo `mcp__github-codificador__`)
 
@@ -253,3 +254,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | 2026-03-31 | Criado: skill de revisão automática de PR com ciclo Revisor↔Codificador | Instrução do usuário |
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry adicionado | Diagnóstico de MCP — Erro 12 |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
+| 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*`; `resolve_review_thread` removido da tabela de ferramentas (indisponível via MCP) — resolução via comentário ou APPROVE | Auditoria de governança — rodada 2 |

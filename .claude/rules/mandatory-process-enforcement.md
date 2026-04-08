@@ -58,7 +58,7 @@ Quando houver conflito entre instruções:
    - Não assumir que etapas são opcionais
 
 4. **Classificar escopo da tarefa**
-   - CLAUDE.md define critérios de classificação (Código, Governança, Análise de PR)
+   - CLAUDE.md define critérios de classificação (Código, Governança, Híbrido, CI/Infra, Análise de PR)
    - Classificação determina quais passos do pipeline se aplicam
    - Executar TODOS os passos aplicáveis ao escopo
 
@@ -161,11 +161,26 @@ Quando houver conflito entre instruções:
 
 ### Falha em Passo Intermediário
 
-**Regra:** Não avançar até resolver.
+**Regra:** Não avançar até resolver. Não desistir na primeira tentativa.
 
-- Se passo falha → corrigir antes de avançar
+- Se passo falha → investigar causa raiz, consultar erros conhecidos em `bash-errors-log.md`
+- Tentar abordagem alternativa que respeite a governança (fallbacks documentados, ajuste de configuração)
+- Após 3 tentativas com abordagens diferentes → escalar ao usuário com diagnóstico detalhado
 - Não pular para "testar se o resto funciona"
 - Não assumir que "o problema vai se resolver depois"
+- Ver Política de Resiliência em Falhas Repetidas no CLAUDE.md
+
+### Instrução Explícita do Usuário contra o Pipeline
+
+**Regra:** Alertar, mas respeitar a autoridade do usuário.
+
+Quando o usuário solicitar explicitamente que um ou mais passos do pipeline sejam pulados:
+1. Alertar o usuário sobre os riscos de pular o passo, referenciando a política de governança
+2. Se o usuário confirmar após o alerta, respeitar a instrução e registrar a exceção no relatório final com justificativa
+3. Não bloquear a execução — o usuário tem autoridade final sobre seu repositório
+4. A governança orienta; o usuário decide
+
+**Nota**: esta exceção aplica-se apenas a instruções explícitas e inequívocas do usuário na mensagem atual. Não se aplica a inferências, suposições ou interpretações do assistente.
 
 ---
 
@@ -217,6 +232,8 @@ Sem hooks e sem TodoWrite, o Kiro tende a operar como assistente genérico e pul
 
 **Responsabilidade do Kiro:** Na ausência de enforcement automático, o Kiro deve aplicar autodisciplina explícita — classificar o escopo, listar os passos aplicáveis e executá-los todos antes de considerar a tarefa concluída.
 
+**Fallback para subagentes:** O Kiro não suporta o passo 9.1 (validação via subagentes). O fallback definido no CLAUDE.md (seção "Fallback para Executores sem Suporte a Subagentes") substitui o passo 9.1 por: auditoria estrutural via `governance-audit.sh` + verificação manual + registro no relatório.
+
 ---
 
 ## Histórico de Mudanças
@@ -225,3 +242,6 @@ Sem hooks e sem TodoWrite, o Kiro tende a operar como assistente genérico e pul
 |---|---|---|
 | 2026-04-06 | Criado: rule de enforcement obrigatório de processo para garantir que CLAUDE.md e skills sejam seguidos integralmente | Análise de causa-raiz de violação de processo |
 | 2026-04-07 | Adicionada seção "Executores Conhecidos e Lacunas de Enforcement": documenta diferença entre Claude Code e Kiro; registra steering file como mecanismo de compensação | Análise de causa-raiz de violação de pipeline pelo Kiro |
+| 2026-04-08 | Adicionado: fallback para subagentes (passo 9.1) quando executor não suporta subagentes (Kiro) | Auditoria de governança |
+| 2026-04-08 | Adicionado: caso especial "Instrução Explícita do Usuário contra o Pipeline" — alertar mas respeitar autoridade do usuário | Auditoria de governança — rodada 2 |
+| 2026-04-08 | Atualizado: lista de escopos expandida para 5 (Híbrido e CI/Infra adicionados); caso "Falha em Passo Intermediário" expandido com política de resiliência (3 tentativas antes de escalar) | Auditoria de governança — rodada 6 |

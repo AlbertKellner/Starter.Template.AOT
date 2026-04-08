@@ -19,7 +19,7 @@ Esta rule define a política de rastreamento, visibilidade e verificação de to
 ### Inicialização Obrigatória
 
 No início de qualquer tarefa, antes do primeiro passo de implementação, o assistente deve:
-1. Classificar o escopo da tarefa (código / governança / pr-analysis)
+1. Classificar o escopo da tarefa (código / governança / híbrido / CI-infra / pr-analysis)
 2. Coletar todos os comportamentos esperados dos arquivos de governança
 3. Apresentá-los ao usuário via TodoWrite, agrupados por fase
 
@@ -30,7 +30,7 @@ Os comportamentos esperados são derivados de três fontes complementares:
 | Fonte | O que contém | Onde está |
 |---|---|---|
 | Pipeline pré-commit | Passos obrigatórios por escopo (0 a 12) | `CLAUDE.md` seção "Pipeline de Validação Pré-Commit" |
-| Comportamentos obrigatórios | Regras transversais de toda interação (itens 1–11) | `CLAUDE.md` seção "Comportamento Obrigatório" |
+| Comportamentos obrigatórios | Regras transversais de toda interação (itens 1–13) | `CLAUDE.md` seção "Comportamento Obrigatório"; tabela canônica em `Instructions/architecture/mandatory-behaviors.md` |
 | Skills ativados | Workflows procedurais específicos da tarefa | `.claude/skills/*/SKILL.md` |
 
 A combinação das três fontes forma a lista completa de comportamentos esperados para a tarefa.
@@ -43,6 +43,8 @@ Nem todos os comportamentos se aplicam a todos os escopos. A filtragem é obriga
 |---|---|---|
 | **Código** | Todos: 0 → 12 | Todos aplicáveis |
 | **Governança** | Apenas: 0.1, 9, 9.1 (condicional — apenas quando afeta pipeline de codificação), 10, 12 | Todos exceto os vinculados a build/execução |
+| **Híbrido (Código + Governança)** | Todos os passos do escopo Código (0 → 12) mais passo 9.1 condicional | Todos aplicáveis |
+| **CI/Infra** | Apenas: 0, 0.1, 9, 10, 11, 12 | Todos exceto os vinculados a build/execução local |
 | **Análise de PR** | Conforme skill pr-analysis | Todos exceto criação de PR (passo 10) |
 
 ### Visibilidade Contínua
@@ -92,3 +94,5 @@ O relatório deve conter:
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-21 | Criado: regra de rastreamento de comportamentos esperados | Instrução do usuário |
+| 2026-04-08 | Corrigido: referência a comportamentos obrigatórios atualizada de "1–11" para "1–13"; adicionada referência à tabela canônica em mandatory-behaviors.md | Auditoria de governança |
+| 2026-04-08 | Adicionado: escopos Híbrido e CI/Infra à tabela de filtragem por escopo | Auditoria de governança — rodada 5 |

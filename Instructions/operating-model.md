@@ -22,6 +22,7 @@ Este repositório opera com um sistema de governança persistente. Todo conteúd
 |---|---|---|
 | Nova definição durável | Introduz ou altera regra, princípio, invariante, convenção, decisão | `ingest-definition` |
 | Solicitação de implementação | Cria, altera, remove ou revisa artefato do repositório | `implement-request` |
+| Remoção de feature | Remove feature existente com limpeza de código, governança e wiki | `remove-feature` |
 | Revisão de alinhamento | Verifica consistência entre artefatos | `review-alignment` |
 | Evolução de governança | Reorganiza, consolida ou melhora a base de governança | `evolve-governance` |
 | Resolução de ambiguidade | Responde a dúvida registrada ou esclarece lacuna | `resolve-ambiguity` |
@@ -44,6 +45,7 @@ As seguintes skills são invocadas como passos do pipeline pré-commit (definido
 | `governance-behavior-tracking` | Início e fim da tarefa | Coleta, apresentação e verificação de comportamentos esperados |
 | `auto-pr-review` | Passo 12 (pós-CI) | Revisão automática de PR com ciclo Revisor↔Codificador |
 | `governance-validation-pipeline` | Passo 9.1 | Validação de mudanças de governança via subagentes (dev + regressão main) |
+| `remove-feature` | Ativada por tipo de mensagem | Remoção de feature com limpeza de código, governança e wiki (também listada na tabela de classificação de mensagens) |
 
 ---
 
@@ -140,3 +142,5 @@ Agentes com configuração persistente, memória por projeto e ferramentas restr
 | 2026-03-21 | Adicionado: skill governance-behavior-tracking na tabela de Skills de Pipeline (coleta, apresentação e verificação de comportamentos esperados) | Instrução do usuário |
 | 2026-04-01 | Adicionado: skill governance-validation-pipeline na tabela de Skills de Pipeline (passo 9.1 — validação de governança via subagentes) | Instrução do usuário |
 | 2026-04-01 | Adicionado: seção "Agentes Dedicados" com code-reviewer e governance-auditor; referência a .claude/agents/ nas referências cruzadas | Melhoria de governança com recursos avançados do Claude Code |
+| 2026-04-08 | Adicionado: skill remove-feature na tabela de classificação de mensagens | Auditoria de governança |
+| 2026-04-08 | Adicionado: skill remove-feature na tabela de Skills de Pipeline (ativada por tipo de mensagem) | Auditoria de governança — rodada 3 |

@@ -16,7 +16,7 @@ Esta pasta contém os hooks de enforcement do Claude Code para este repositório
 | `session-timer.sh` | PostToolUse | Bash | Auto-inicializa e rastreia tempo efetivo da sessão; cria `.claude/.session-timer` na primeira invocação; detecta segmentos de trabalho; exibe tempo acumulado periodicamente; informativo, nunca bloqueante |
 | `pre-planning-gate.sh` | PreToolUse | Edit\|Write | Verifica se a consulta pré-planejamento foi executada na sessão; emite lembrete do comportamento #12 se não; usa `.claude/.pre-planning-done` como estado; informativo |
 | `post-commit-pr-reminder.sh` | PostToolUse | Bash | Detecta `git commit`/`git push` e emite lembrete para executar passo 10 (criar/atualizar PR); informativo, nunca bloqueante |
-| `session-start.sh` | SessionStart | — | Limpa estado stale, injeta contexto de branch, verifica variáveis de ambiente críticas; informativo |
+| `session-start.sh` | SessionStart | — | Limpa estado stale, injeta contexto de branch, verifica variáveis de ambiente críticas, detecta containers Docker órfãos de sessão anterior; informativo |
 | `stop-verification.sh` | Stop | — | Verifica consulta pré-planejamento e mudanças não commitadas; emite lembretes de governança; informativo |
 | `bash-error-capture.sh` | PostToolUseFailure | Bash | Captura automaticamente erros de bash e registra entrada estruturada em `bash-errors-log.md`; informativo |
 | `compact-context.sh` | PreCompact/PostCompact | — | Salva e restaura estado do pipeline durante compactação de contexto; garante continuidade de rastreamento |
@@ -65,3 +65,4 @@ Os hooks são configurados em `.claude/settings.json` na seção `hooks`:
 | 2026-04-01 | Adicionado: hook type:prompt para validação semântica de mensagens de commit (PostToolUse Bash com filtro git commit*) | Melhoria de governança |
 | 2026-04-01 | Atualizado: settings.json com autoMemoryEnabled, env, limpeza de permissões redundantes, 5 novos event types | Melhoria de governança |
 | 2026-04-03 | Corrigido: exit codes dos hooks bloqueantes — exit 1 revertido para exit 2 (exit 1 é não-bloqueante; exit 2 é bloqueante segundo docs oficiais) | Pesquisa de documentação oficial |
+| 2026-04-08 | Atualizado: session-start.sh expandido com detecção de containers Docker órfãos de sessão anterior | Auditoria de governança |

@@ -178,6 +178,20 @@ app.MapHealthChecks("/health");
 
 O endpoint `/health` é a verificação canônica de disponibilidade da aplicação e deve ser o critério de aceitação antes de qualquer commit (ver P012).
 
+### P015 — Cobertura Mínima de Testes por Feature (provisório até DP-003)
+Toda feature que implementa regra de negócio (RN-NNN) deve ter pelo menos um teste unitário que valide o comportamento principal do UseCase.
+
+**Regras práticas:**
+- Testes residem em `src/Starter.Template.AOT.UnitTest/` espelhando a estrutura de `Features/` do projeto principal.
+- Cada UseCase deve ter pelo menos um teste que valide o cenário de sucesso (happy path).
+- Cada UseCase com validação de input deve ter pelo menos um teste que valide rejeição de input inválido.
+- Testes devem usar o padrão Arrange/Act/Assert.
+- Testes validam tipo do evento de log + conteúdo parcial via `Contains` (conforme DA-015, SNP-001).
+
+**Nota**: esta diretriz é provisória. A decisão pendente DP-003 definirá a estratégia completa de testes (cobertura mínima, tipos de testes por camada, ferramentas). Até lá, P015 garante que nenhuma feature é implementada sem validação mínima.
+
+*Referência: DP-003 em `Instructions/architecture/architecture-decisions.md`*
+
 ---
 
 ## Restrições Técnicas
@@ -199,6 +213,7 @@ O endpoint `/health` é a verificação canônica de disponibilidade da aplicaç
 - Compilação limpa (`dotnet build`) obrigatória antes de qualquer commit.
 - `/health` retornando `Healthy` obrigatório antes de qualquer commit.
 - Testes passando obrigatoriamente antes de concluir qualquer tarefa.
+- Toda feature com regra de negócio deve ter teste unitário mínimo (P015) — provisório até DP-003.
 - Código sempre em inglês.
 - Respostas ao usuário sempre em português com resumo e justificativa técnica.
 - Pull requests sempre em português brasileiro (título, descrição e corpo).
@@ -231,3 +246,5 @@ O endpoint `/health` é a verificação canônica de disponibilidade da aplicaç
 | 2026-03-15 | P014 adicionado: compilação AOT obrigatória; trade-off com Controllers registrado em DA-009 | Instrução do usuário |
 | 2026-03-15 | P006 atualizado: pull requests devem ser escritos em português brasileiro | Instrução do usuário |
 | 2026-03-19 | P009 atualizado: restrição explícita — models de Input/Output de Features não podem residir em Shared | DA-020 |
+| 2026-04-08 | P015 adicionado: cobertura mínima de testes por feature (provisório até DP-003) | Auditoria de governança — rodada 6 |
+| 2026-04-08 | P015 referenciado na seção "Práticas de Qualidade"; convenção de nomenclatura de testes adicionada em naming-conventions.md | Auditoria de governança — rodada 7 |

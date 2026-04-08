@@ -75,6 +75,7 @@ O script `scripts/governance-audit.sh` verifica automaticamente.
 | 34 | Todas as skills referenciam pelo menos uma rule | Integridade referencial |
 | 35 | Auto-fix usa backup (`safe_fix`) antes de alterações destrutivas (`sed -i`) — meta-análise do próprio script | Meta-segurança |
 | 36 | Conceitos usados no mapa de propagação de `governance-policies.md` existem no glossário | Completude semântica |
+| 37 | `bash-errors-log.md` não ultrapassou o limiar de curadoria (30 erros ativos) — se ultrapassou, emitir aviso para executar curadoria conforme `bash-error-logging.md` | Higiene operacional |
 
 ### Sobre a lista de artefatos removidos (checks #6 e #11)
 
@@ -128,6 +129,15 @@ Isso transforma o script de detector de sintomas em diagnosticador de causas-rai
 
 ## O Que Fazer com Falhas
 
+### Diagnóstico de Falha do Script
+
+Quando o `governance-audit.sh` falhar e a correção manual dos artefatos não resolver a falha:
+1. Verificar se o artefato está realmente inconsistente ou se o script tem bug (regex incorreto, path obsoleto, heurística falha)
+2. Se for bug do script: corrigir o script como parte da tarefa — o script é artefato de governança e sua correção é obrigatória
+3. Re-executar a auditoria após a correção do script
+4. Registrar a correção do script no histórico de mudanças desta rule e do script
+5. O assistente não deve ficar em loop corrigindo artefatos corretos — diagnosticar a causa raiz inclui avaliar o próprio script
+
 ### Falhas detectadas durante o pipeline pré-commit (bloqueantes):
 1. Executar `bash scripts/governance-audit.sh --fix` para tentar correção automática
 2. Corrigir manualmente falhas remanescentes
@@ -148,6 +158,14 @@ Quando uma nova categoria de inconsistência for identificada (manualmente ou po
 2. Se sim: adicionar nova verificação ao `scripts/governance-audit.sh`
 3. Atualizar a tabela "O Que a Auditoria Verifica" nesta rule
 4. Testar o script com a nova verificação
+
+### Política de Numeração de Checks
+
+Quando um check for removido, todos os checks subsequentes devem ser renumerados para manter a sequência contígua (sem gaps). Isso garante que a correspondência 1:1 entre rule e script permaneça simples e verificável pelo check #32. Ao renumerar, atualizar simultaneamente: (1) a tabela nesta rule, (2) o script `governance-audit.sh`, (3) qualquer referência a números de check em outras rules ou skills. Novos checks recebem o próximo número sequencial após o maior existente.
+
+### Promoção de Avisos a Falhas
+
+Avisos (checks não-bloqueantes) podem ser promovidos a falhas (bloqueantes) via decisão registrada em ADR quando o projeto atingir maturidade suficiente no domínio correspondente. A promoção deve ser acompanhada de atualização na tabela desta rule e no script.
 
 ---
 
@@ -171,3 +189,6 @@ Quando uma nova categoria de inconsistência for identificada (manualmente ou po
 | 2026-03-21 | Quarta rodada — maturidade de auto-diagnóstico: (1) valores hardcoded eliminados nos checks #5, #6, #11 — derivação dinâmica de variáveis e artefatos removidos; (2) check #6 restrito ao campo `**Status**` para evitar falsos positivos; (3) mensagens de diagnóstico enriquecidas (CAUSA + AÇÃO) em todos os fails/warns; (4) auto-fix expandido: check #7 cria stubs wiki, check #13 remove imports quebrados; (5) check #17 expandido com validação de sintaxe bash; (6) check #19 expandido com validação de estrutura mínima do SKILL.md; (7) check #23 expandido com validação de Histórico/Relação; (8) check #32 expandido com correspondência individual de IDs (não apenas contagem); (9) checks 33–34 adicionados (conectividade do grafo de rules, skills→rules) | Análise de maturidade de governança |
 | 2026-03-21 | Quinta rodada — auto-diagnóstico e prevenção: (1) safe_fix com backup obrigatório antes de sed -i no modo --fix; (2) constantes configuráveis extraídas para topo do script (MAX_POLICY_STEPS, INLINE_CONFIG_PREFIXES, REMOVED_STATUS_PATTERN); (3) "Obsoleto/Obsoleta" adicionado ao padrão de status removido; (4) heurística do check #6 melhorada — verificação estrutural de seção Histórico em vez de keyword matching; (5) check #26 regex expandido para rotas parametrizadas e case-insensitive; (6) check #31 padrão de status expandido; (7) check #33 expandido com detecção de circularidade bidirecional; (8) checks 35–36 adicionados (meta-segurança do --fix, conceitos de rules no glossário); (9) ciclo verify→fix→re-verify documentado no pipeline CLAUDE.md e implementado em pre-commit-gate.sh | Análise de capacidade de auto-diagnóstico |
 | 2026-03-30 | Corrigido: checks #3 e #4 — regex de extração de contagem no README alterado para buscar o número na linha que contém `.claude/rules/` e `.claude/skills/` (aceita qualquer termo descritivo, não apenas "rules"/"skills"); eliminado falso positivo quando README usa "políticas operacionais" ou "workflows procedurais" | Separação tech/negócio |
+| 2026-04-08 | Adicionado: política de renumeração obrigatória de checks (sem gaps); política de promoção de avisos a falhas | Auditoria de governança |
+| 2026-04-08 | Adicionado: seção "Diagnóstico de Falha do Script" — procedimento para distinguir falha legítima de bug do script | Auditoria de governança — rodada 2 |
+| 2026-04-08 | Adicionado: check #37 (aviso) — limiar de curadoria do bash-errors-log.md (30 erros) | Auditoria de governança — rodada 7 |

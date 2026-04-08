@@ -27,19 +27,32 @@ FASE 0 — DETECTAR NOVA TAREFA
 
   O assistente DEVE:
   1. Reconhecer a mudança de contexto
-  2. Classificar o escopo da nova tarefa (Fase 1)
-  3. Reiniciar o pipeline de comportamentos para a nova tarefa
-  4. Manter o TodoWrite anterior como referência histórica, mas criar nova
+  2. Verificar se a tarefa anterior tem passos pendentes no pipeline
+  3. Se houver passos pendentes:
+     a. Alertar o usuário: listar quais passos da tarefa anterior estão incompletos
+     b. Perguntar se deve completar a tarefa anterior primeiro ou abandoná-la
+     c. Se abandonar: registrar no relatório quais passos ficaram pendentes e por quê;
+        executar cleanup necessário (ex: `docker compose down` se containers estiverem rodando)
+     d. Se completar: executar os passos pendentes antes de iniciar a nova tarefa
+  4. Classificar o escopo da nova tarefa (Fase 1)
+  5. Reiniciar o pipeline de comportamentos para a nova tarefa
+  6. Manter o TodoWrite anterior como referência histórica, mas criar nova
      lista de comportamentos para a nova tarefa
 
   Tratar uma nova diretiva como "continuação" da tarefa anterior — sem
   classificação de escopo nem pipeline — é uma omissão de governança.
+  Abandonar silenciosamente uma tarefa com passos pendentes sem alertar
+  o usuário também é uma omissão de governança.
 
 FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
 
   1. Classificar o escopo da tarefa:
-     - Código → todos os passos do pipeline (0 → 11)
+     - Código → todos os passos do pipeline (0 → 12)
      - Governança → apenas passos 0.1, 9, 10
+     - Híbrido (Código + Governança) → todos os passos do escopo Código (0 → 12)
+       mais o passo 9.1 condicional do escopo Governança
+     - CI/Infra → apenas passos 0, 0.1, 9, 10, 11, 12
+       (sem build/test/Docker — o CI validará a mudança de infraestrutura)
      - Análise de PR → conforme skill pr-analysis
 
   2. Derivar passos do pipeline pré-commit (CLAUDE.md):
@@ -63,19 +76,23 @@ FASE 1 — COLETAR COMPORTAMENTOS ESPERADOS
        [9]   Commit
        [9.1] Validação de governança via subagentes (condicional — apenas quando afeta pipeline)
        [10]  Criar/atualizar PR
+       [12]  Perguntar sobre revisão automática de PR (apenas se PR contém código)
 
   3. Derivar comportamentos obrigatórios (CLAUDE.md seção "Comportamento Obrigatório"):
-     - Interpretar antes de agir
-     - Ler governança relevante antes de implementar
-     - Verificar ambiguidades antes de implementar
-     - Classificar trechos técnicos enviados pelo usuário (quando aplicável)
-     - Atualizar governança primeiro (quando aplicável)
-     - Seguir prioridade entre fontes de verdade
-     - Usar contexto acumulado do repositório
-     - Não depender de repetição de instruções
-     - Avaliar eficiência em toda tarefa
-     - Proteção de branch em análise de PR (quando aplicável)
-     - Rastrear comportamentos esperados (esta skill)
+     Referência canônica: Instructions/architecture/mandatory-behaviors.md
+     - Interpretar antes de agir (#1)
+     - Ler governança relevante antes de implementar (#2)
+     - Verificar ambiguidades antes de implementar (#3)
+     - Classificar trechos técnicos enviados pelo usuário (quando aplicável) (#4)
+     - Atualizar governança primeiro (quando aplicável) (#5)
+     - Seguir prioridade entre fontes de verdade (#6)
+     - Usar contexto acumulado do repositório (#7)
+     - Não depender de repetição de instruções (#8)
+     - Avaliar eficiência em toda tarefa (#9)
+     - Proteção de branch em análise de PR (quando aplicável) (#10)
+     - Rastrear comportamentos esperados (esta skill) (#11)
+     - Consulta pré-planejamento obrigatória (#12)
+     - Validar mudanças de governança via subagentes (quando aplicável) (#13)
 
   4. Derivar comportamentos de skills ativados:
      - implement-request: normalizar, classificar, ler governança, verificar ambiguidades,
@@ -186,3 +203,7 @@ FASE 4 — VERIFICAÇÃO FINAL (OBRIGATÓRIA)
 | 2026-04-02 | Adicionado: Fase 3 item 5 (comportamentos bloqueados por erro de ferramenta — manter pending, retomar ao reconectar); Fase 4 marcada como OBRIGATÓRIA com enforcement explícito; exemplo de MCP em categoria (iii) | Análise exaustiva de omissões |
 | 2026-04-02 | Corrigido: "MCP indisponível" substituído por "MCP ainda não conectou"; adicionado protocolo de retry (3 tentativas via ToolSearch) antes de declarar bloqueio | Diagnóstico de MCP — Erro 12 |
 | 2026-04-02 | Adicionado: Fase 0 (detectar nova tarefa) — toda nova diretiva do usuário requer reclassificação de escopo e reinício do pipeline; tratar como continuação sem classificação é omissão de governança | Análise de omissões na remoção de feature |
+| 2026-04-08 | Corrigido: comportamentos #12 e #13 adicionados à lista derivada (Fase 1 passo 3); referência à tabela canônica mandatory-behaviors.md; passo 9.1 e passo 12 condicional adicionados ao escopo governança | Auditoria de governança |
+| 2026-04-08 | Corrigido: Fase 1 passo 1 escopo Código atualizado de "0 → 11" para "0 → 12" | Auditoria de governança — rodada 2 |
+| 2026-04-08 | Adicionado: escopo Híbrido (Código + Governança) à Fase 1 passo 1 | Auditoria de governança — rodada 3 |
+| 2026-04-08 | Adicionado: escopo CI/Infra à Fase 1 passo 1; Fase 0 expandida com política de tarefas interrompidas (alertar usuário, completar ou abandonar explicitamente) | Auditoria de governança — rodada 4 |

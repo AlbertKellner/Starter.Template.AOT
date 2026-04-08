@@ -31,6 +31,15 @@ echo "[SessionStart] Branch: $current_branch"
 echo "[SessionStart] Últimos commits:"
 echo "$recent_commits" | sed 's/^/  /'
 
+# --- Check for orphaned Docker containers from previous session ---
+if command -v docker &>/dev/null; then
+  running_containers=$(docker compose ps -q 2>/dev/null | wc -l || echo "0")
+  if (( running_containers > 0 )); then
+    echo "[SessionStart] AVISO: $running_containers container(s) da sessão anterior detectado(s)."
+    echo "[SessionStart] Executar 'docker compose down' antes de prosseguir se não forem intencionais."
+  fi
+fi
+
 # --- Verify critical environment variables ---
 missing_vars=()
 for var in DD_API_KEY GH_CLAUDE_CODE_MCP_CODIFICADOR; do

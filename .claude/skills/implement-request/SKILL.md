@@ -35,7 +35,8 @@ Ativar esta skill quando a mensagem do usuário:
 2. CLASSIFICAR A SOLICITAÇÃO
    - Nova funcionalidade
    - Alteração de comportamento
-   - Remoção
+   - Remoção (se for remoção de Feature/Slice inteira, ativar a skill `remove-feature`
+     que contém o workflow completo de limpeza de código, governança e wiki)
    - Implementação guiada por regra
    - Atualização decorrente de nova definição
 
@@ -88,6 +89,7 @@ Ativar esta skill quando a mensagem do usuário:
       a. Se é em Infra/ → componente registrado em technical-overview.md? Subpasta em folder-structure.md?
       b. Se é em Shared/ExternalApi/ → integração registrada em technical-overview.md? Subpasta em folder-structure.md?
       c. Se é em Features/ → feature registrada em business-rules.md? Página na Wiki?
+      d. Se é Feature com UseCase → teste unitário existe em UnitTest/? Se não, criar antes de prosseguir (P015).
     - Se qualquer registro estiver ausente → atualizar ANTES de prosseguir para o relatório
     - Este passo NÃO é opcional — é o enforcement do passo 7 (governança antes de implementação)
     - Este passo previne a causa-raiz de componentes implementados sem registro na governança
@@ -116,6 +118,7 @@ Ativar esta skill quando a mensagem do usuário:
 - `.claude/rules/governance-policies.md` — políticas de normalização, ambiguidade, snippets, propagação e contexto
 - `.claude/rules/source-of-truth-priority.md` — hierarquia de prioridade entre fontes
 - `.claude/rules/instruction-review.md` — meta-regra de revisão de instruções
+- `.claude/skills/remove-feature/SKILL.md` — workflow de remoção de feature (ativado quando classificação é Remoção de Feature)
 - `Instructions/operating-model.md`
 - `open-questions.md`
 - `assumptions-log.md`

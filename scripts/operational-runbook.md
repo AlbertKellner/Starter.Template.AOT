@@ -122,6 +122,24 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 
 ---
 
+## Padrões de Erro de Implementação Conhecidos
+
+Esta tabela consolida padrões recorrentes de erro de lógica/implementação que causam falha em `dotnet test` ou `dotnet run`. O assistente deve consultar esta tabela antes de implementar novas features para prevenir erros já conhecidos.
+
+| # | Padrão de Erro | Sintoma | Prevenção | Ref |
+|---|---|---|---|---|
+| 1 | Tipo não registrado no DI | `InvalidOperationException: Unable to resolve service for type` | Registrar UseCase, Repository e interfaces no `Program.cs` antes de testar | — |
+| 2 | Tipo não adicionado ao AppJsonContext | Serialização falha em AOT; resposta vazia ou 500 | Adicionar `[JsonSerializable(typeof(NovaTipo))]` em `Infra/Json/AppJsonContext.cs` | DA-009 |
+| 3 | Controller não preservado pelo trimmer AOT | 404 em endpoints após publish AOT | Adicionar `[DynamicDependency]` em `AotControllerPreservation` | DA-009 |
+| 4 | Namespace de Slice inclui subpasta do componente | Colisão `Namespace.Tipo`; erro de compilação | Namespace para na Feature, não na subpasta (ver naming-conventions.md) | — |
+| 5 | Model de Feature usando tipo de Shared/ExternalApi | Acoplamento de contrato; teste falha ao mockar | Criar Output model próprio em `<Feature>Models/` e mapear (DA-020) | DA-020 |
+
+> **Nota**: Esta tabela é preenchida à medida que padrões são identificados em sessões de desenvolvimento. O assistente deve verificar proativamente se algum padrão se aplica à implementação atual.
+
+**Política de evolução**: quando um erro de lógica/implementação ocorrer pela segunda vez em sessões distintas (mesmo padrão, causa raiz similar), o assistente deve adicionar o padrão a esta tabela como medida preventiva. A adição é parte da tarefa atual — não requer sessão dedicada.
+
+---
+
 ## Serviços Externos e Dependências
 
 | Serviço | URL Base | Autenticação | Variável de Configuração | Impacto se Indisponível |
@@ -191,3 +209,4 @@ A GitHub Wiki precisa ser inicializada manualmente **uma única vez** antes que 
 | 2026-03-19 | Criado: runbook operacional unificado com portas, URLs, comandos, troubleshooting e dependências externas | Instrução do usuário |
 | 2026-03-30 | Adicionado: seção de inicialização da GitHub Wiki com procedimento passo-a-passo | Verificação de conformidade de governança |
 | 2026-04-08 | Adicionado: seção "Tempos Médios do CI" com intervalos de polling recomendados para calibração do passo 11 | Análise de causa raiz — polling com valores arbitrários |
+| 2026-04-08 | Adicionado: seção "Padrões de Erro de Implementação Conhecidos" — checklist de erros recorrentes de lógica/implementação para prevenção proativa | Auditoria de governança — rodada 7 |
