@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Pipeline Completion Guard",
+  "description": "Fires when the agent stops and checks whether all pipeline steps from the declared checklist were completed. If steps remain, instructs the agent to resume execution from where it left off.",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "VERIFICAÇÃO DE COMPLETUDE DO PIPELINE: Antes de encerrar, verifique se você declarou um checklist de passos no início desta tarefa. Se declarou, verifique se TODOS os passos aplicáveis foram executados. Se algum passo ficou pendente, retome a execução imediatamente a partir do passo onde parou. Respostas como \"understood\", \"ok\" ou confirmações soltas NÃO são encerramentos válidos de tarefa — se a última coisa que você fez foi uma confirmação sem ação, isso é uma falha de continuidade e você deve retomar. Só encerre a tarefa quando: (1) todos os passos do pipeline foram executados, OU (2) o usuário explicitamente pediu para parar, OU (3) há um bloqueador documentado que impede a continuação."
+  }
+}
