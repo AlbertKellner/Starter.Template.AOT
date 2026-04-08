@@ -14,6 +14,14 @@ public class NumberGetLabelEndpoint(INumberGetLabelUseCase useCase, ILogger<Numb
 
         var output = useCase.Execute(number);
 
+        if (output is null)
+        {
+
+            logger.LogInformation("[NumberGetLabelEndpoint][GetLabel] Retornar 404 — number={Number} não mapeado", number);
+
+            return NotFound();
+        }
+
         logger.LogInformation("[NumberGetLabelEndpoint][GetLabel] Retornar resposta. Label={Label}", output.Label);
 
         return Ok(output);
