@@ -103,11 +103,13 @@ Antes de iniciar o pipeline, classificar o escopo da tarefa:
 9.1. **Validação de governança via subagentes** — lançar subagente na branch de desenvolvimento para validar que os novos comportamentos são aplicados; lançar subagente na branch main (worktree isolado) com comando idêntico para teste regressivo. **Gate obrigatório para escopo governança**: falha na dev bloqueia o PR (máximo 3 tentativas). Regressão com main é reportada no relatório final. Ver `.claude/rules/governance-validation-pipeline.md` para a política completa.
 10. **Exceção: quando a tarefa for análise de PR (skill pr-analysis), este passo NÃO se aplica — o PR já existe. Em vez disso, atualizar título e descrição do PR existente via ferramenta MCP `update_pull_request` se as mudanças alterarem o escopo. NÃO criar PR novo. NÃO usar o branch atribuído pelo sistema externo — usar exclusivamente o head.ref do PR sendo analisado.** Para todas as demais tarefas: verificar se já existe um PR aberto para o branch atual; se não existir, criar o PR seguindo as regras de `.claude/rules/pr-metadata-governance.md`. Se já existir, atualizar título e descrição para refletir o estado atual da implementação.
 11. **Checkpoint de encerramento** — a tarefa NÃO se encerra com a abertura ou atualização do PR. Executar obrigatoriamente as seguintes validações antes de considerar a tarefa concluída:
-    1. Acompanhar a execução das GitHub Actions até o término de todos os jobs do pipeline.
-    2. Verificar os logs no Datadog usando os filtros referentes ao pipeline associado ao PR (env, service, timestamp da execução).
-    3. Procurar por falhas, erros ou comportamentos anômalos nos logs.
-    4. Se todos os jobs passarem e não houver erros nos logs: reportar o resultado e prosseguir para o passo 12.
-    5. Se algum job falhar ou houver erros nos logs: diagnosticar a causa raiz, corrigir, e reiniciar o ciclo a partir do passo apropriado. Registrar o erro em `bash-errors-log.md`.
+    1. **Calibrar intervalos de polling**: antes de iniciar o acompanhamento, consultar a seção "Tempos Médios do CI" em `scripts/operational-runbook.md`. Usar o tempo médio do primeiro job como intervalo antes do primeiro check. Para jobs subsequentes, usar o intervalo de polling recomendado na tabela. **Não usar valores arbitrários de sleep** — os intervalos devem ser baseados nos tempos documentados.
+    2. Acompanhar a execução das GitHub Actions até o término de todos os jobs do pipeline.
+    3. Verificar os logs no Datadog usando os filtros referentes ao pipeline associado ao PR (env, service, timestamp da execução).
+    4. Procurar por falhas, erros ou comportamentos anômalos nos logs.
+    5. Se todos os jobs passarem e não houver erros nos logs: reportar o resultado (incluindo métricas de tempo via `scripts/pipeline-timing.sh`) e prosseguir para o passo 12.
+    6. Se algum job falhar ou houver erros nos logs: diagnosticar a causa raiz, corrigir, e reiniciar o ciclo a partir do passo apropriado. Registrar o erro em `bash-errors-log.md`.
+    7. **Atualizar tempos médios**: se os tempos observados divergirem >30% dos registrados em `scripts/operational-runbook.md`, atualizar a tabela "Tempos Médios do CI".
     Ver `.claude/rules/pr-metadata-governance.md` para a política completa.
 12. **Perguntar ao usuário se deseja revisão automática de código** (skill `auto-pr-review`). Executar somente após a conclusão do passo 11 (acompanhamento de CI) e com confirmação positiva do usuário. Se o usuário recusar, a tarefa é encerrada. Ver `.claude/rules/auto-pr-review-governance.md` para a política completa.
 

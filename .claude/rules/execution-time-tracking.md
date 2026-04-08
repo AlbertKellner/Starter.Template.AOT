@@ -91,7 +91,7 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 #### Quando reportar
 
 - **Após conclusão do CI (passo 11)**: exibir métricas de tempo do pipeline como parte do relatório final
-- **Para estimar tempo de espera**: consultar check runs do PR anterior para obter tempos históricos e calcular estratégia de polling
+- **Para calibrar polling do CI (passo 11.1)**: antes de iniciar o acompanhamento, consultar a seção "Tempos Médios do CI" em `scripts/operational-runbook.md` para obter os intervalos de polling recomendados. **Não usar valores arbitrários de sleep.** Se os tempos observados divergirem >30% dos registrados, atualizar a tabela no runbook.
 
 ---
 
@@ -109,3 +109,4 @@ echo '<json_dos_check_runs>' | bash scripts/pipeline-timing.sh <PR_NUMBER>
 |---|---|---|
 | 2026-03-21 | Criado: regra de rastreamento de tempo de execução efetivo | Instrução do usuário |
 | 2026-03-30 | Corrigido: inicialização auto-gerenciada pelo hook (não depende mais do assistente); adicionadas métricas de pipeline CI via check runs + `pipeline-timing.sh` | Correção de implementação |
+| 2026-04-08 | Reforçado: calibração de polling do CI é obrigatória via runbook; proibido usar valores arbitrários de sleep | Análise de causa raiz — polling com valores arbitrários |

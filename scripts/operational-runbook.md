@@ -95,6 +95,22 @@ docker compose down
 
 ---
 
+## Tempos Médios do CI (GitHub Actions)
+
+Esta tabela registra os tempos médios observados dos jobs do pipeline de CI. O assistente deve consultar esta tabela antes de iniciar o polling do CI (passo 11) para calibrar os intervalos de espera.
+
+| Job | Tempo médio | Intervalo de polling recomendado | Última atualização |
+|---|---|---|---|
+| Compilação | ~75s | 80s antes do primeiro check | 2026-04-08 |
+| Execução | ~120s | 60s entre checks subsequentes | 2026-04-08 |
+| Pipeline total (wall clock) | ~195s | — | 2026-04-08 |
+
+> **Nota**: Estes valores são estimativas iniciais. Devem ser atualizados periodicamente com base nos dados reais de `scripts/pipeline-timing.sh`. Quando os tempos observados divergirem significativamente (>30%) dos registrados, atualizar esta tabela.
+
+**Como atualizar**: após a conclusão do CI, executar `scripts/pipeline-timing.sh` com os check runs do PR e comparar com os valores desta tabela. Se houver divergência significativa, atualizar os tempos médios e a data.
+
+---
+
 ## Problemas Recorrentes e Soluções
 
 Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `bash-errors-log.md`. Para cada sintoma, a causa e a solução já são conhecidas.
@@ -174,3 +190,4 @@ A GitHub Wiki precisa ser inicializada manualmente **uma única vez** antes que 
 |---|---|---|
 | 2026-03-19 | Criado: runbook operacional unificado com portas, URLs, comandos, troubleshooting e dependências externas | Instrução do usuário |
 | 2026-03-30 | Adicionado: seção de inicialização da GitHub Wiki com procedimento passo-a-passo | Verificação de conformidade de governança |
+| 2026-04-08 | Adicionado: seção "Tempos Médios do CI" com intervalos de polling recomendados para calibração do passo 11 | Análise de causa raiz — polling com valores arbitrários |

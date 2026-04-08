@@ -105,6 +105,12 @@ O workflow de criação/atualização está em `.claude/skills/manage-pr-lifecyc
 
 **Pré-condição**: o passo 11 depende da existência de PR (passo 10 completo). Se o passo 10 for bloqueado por indisponibilidade de ferramentas MCP, o passo 11 é adiado até resolução do bloqueio. Se a resolução ocorrer durante a sessão (MCP reconectar), retomar imediatamente.
 
+### Calibração obrigatória de intervalos de polling
+
+Antes de iniciar o polling do CI, o assistente **deve** consultar a seção "Tempos Médios do CI" em `scripts/operational-runbook.md` e usar os intervalos de polling recomendados. Usar valores arbitrários de sleep é proibido. Após a conclusão do CI, se os tempos observados divergirem >30% dos registrados, atualizar a tabela no runbook.
+
+Ver `scripts/pipeline-timing.sh` para cálculo de métricas e `.claude/rules/execution-time-tracking.md` para a política de rastreamento de tempo.
+
 O workflow de acompanhamento está em `.claude/skills/manage-pr-lifecycle/SKILL.md`.
 
 ---
@@ -172,3 +178,4 @@ Todo merge deve utilizar **merge commit** (`merge_method: "merge"`).
 | 2026-03-21 | Adicionado: referência explícita ao hook branch-guard.sh na Política de Branch | Análise estrutural de governança |
 | 2026-03-30 | Adicionado: referência ao hook post-commit-pr-reminder.sh na Política de Verificação e Criação Automática de PR | Verificação de conformidade de governança |
 | 2026-04-02 | Adicionado: pré-condição do passo 11 (depende de PR existente do passo 10; adiamento e retomada automática quando MCP reconectar) | Análise de causa raiz — omissão de passo 11 |
+| 2026-04-08 | Adicionado: calibração obrigatória de intervalos de polling via runbook; proibido usar valores arbitrários de sleep | Análise de causa raiz — polling com valores arbitrários |
