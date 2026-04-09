@@ -124,10 +124,15 @@ Esta skill é ativada:
        SUBMISSÃO DE REVIEW:
        - Se problemas encontrados:
          a. Criar review pendente (mcp__github-revisor__pull_request_review_write method: create, sem event)
-         b. Comentar nos trechos/linhas exatos (mcp__github-revisor__add_comment_to_pending_review)
+         b. Comentar APENAS nos trechos com problemas (mcp__github-revisor__add_comment_to_pending_review)
+            - Comentários de confirmação são PROIBIDOS (ver Política de Comentários na rule)
+            - Só comentar quando há ação para o Codificador: corrigir, justificar ou investigar
          c. Submeter review REQUEST_CHANGES (mcp__github-revisor__pull_request_review_write method: submit_pending, event: REQUEST_CHANGES)
        - Se nenhum problema restante + todas threads do Revisor resolvidas:
          a. Submeter review APPROVE (mcp__github-revisor__pull_request_review_write method: create, event: APPROVE)
+            - Body: resumo breve (2-3 frases) confirmando conformidade geral
+            - Proibido: checklist item-a-item, comentários inline de confirmação
+            - SEM criar review pendente + comentários — submeter APPROVE direto
          b. ENCERRAR ciclo → ir para passo 4
 
        REGRA DE INSISTÊNCIA HUMANA:
@@ -275,3 +280,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*`; `resolve_review_thread` removido da tabela de ferramentas (indisponível via MCP) — resolução via comentário ou APPROVE | Auditoria de governança — rodada 2 |
 | 2026-04-09 | Reforçado: (1) "concordo" deve ser reply na mesma thread do terceiro via `add_reply_to_pull_request_comment` com texto exato sem adições; (2) resolução de threads deve ser reply na thread original, não review separada; (3) filtro do Codificador exige "concordo" na mesma thread — "concordo" em thread separada ou como parte de frase não é válido | Análise de falhas no PR #55 |
+| 2026-04-09 | Reforçado: comentários inline de confirmação proibidos na fase Revisor; APPROVE sem apontamentos deve ser direto com body breve (sem review pendente + comentários) | Análise de causa raiz — ruído no PR #56 |
