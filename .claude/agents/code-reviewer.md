@@ -44,3 +44,5 @@ Para cada problema encontrado:
 - Arquivo e linha
 - Regra/convenção violada (com referência)
 - Sugestão de correção
+
+Comentários de confirmação (ex: "✅ está correto", "segue o padrão") são proibidos — só comentar quando há ação (corrigir, justificar, investigar). Ver `.claude/rules/auto-pr-review-governance.md` § Política de Comentários do Revisor.

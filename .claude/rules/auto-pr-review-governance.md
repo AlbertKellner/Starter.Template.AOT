@@ -67,6 +67,25 @@ Qualquer comentário no PR que não tenha sido escrito pelo Revisor deve ser tra
 - **Não aderente** → Revisor responde **na mesma thread** via `mcp__github-revisor__add_reply_to_pull_request_comment` explicando por que não está em conformidade e sugere alternativa alinhada à governança.
 - **NUNCA** criar thread/comentário separado para responder a terceiros — a resposta DEVE ser reply na thread original.
 
+### Política de Comentários do Revisor
+
+O Revisor só posta comentários inline quando há ação para o Codificador: corrigir, justificar ou investigar. Comentários que apenas confirmam conformidade sem apontar problema, sugestão ou dúvida são proibidos — geram ruído sem valor.
+
+**Exemplos proibidos** (comentários de confirmação):
+- "✅ está correto"
+- "✅ segue o padrão"
+- "Nomenclatura OK"
+- "Logging conforme SNP-001"
+- "Vertical Slice corretamente estruturada"
+
+**Exemplos permitidos** (apontamentos com ação):
+- "Nomenclatura diverge de naming-conventions §X — renomear para Y"
+- "Falta log de saída conforme SNP-001"
+- "Considerar extrair para método — complexidade alta"
+- "Tipo não registrado no AppJsonContext — adicionar [JsonSerializable]"
+
+**Body da review de APPROVE sem apontamentos**: quando o Revisor aprova sem encontrar problemas, o body deve ser um resumo breve (2-3 frases) confirmando conformidade geral. Checklists item-a-item são proibidos no body — o APPROVE já comunica a aprovação. Exemplo: "Implementação conforme governança. Vertical Slice, logging SNP-001, testes e artefatos de governança presentes."
+
 ### Aprovação e Request Changes
 
 - **REQUEST_CHANGES**: submetido pelo Revisor quando encontra problemas de conformidade com governança
@@ -153,3 +172,4 @@ O relatório ao encerrar deve incluir:
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: restrição do Revisor atualizada de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança — rodada 2 |
 | 2026-04-09 | Reforçado: "concordo" deve ser reply na mesma thread do terceiro (texto exato, sem adições); resolução de threads deve ser reply na thread original (não review separada); filtragem do Codificador exige "concordo" na mesma thread | Análise de falhas no PR #55 |
+| 2026-04-09 | Adicionado: Política de Comentários do Revisor — comentários de confirmação proibidos; body de APPROVE sem apontamentos deve ser resumo breve (2-3 frases), sem checklist | Análise de causa raiz — ruído no PR #56 |
