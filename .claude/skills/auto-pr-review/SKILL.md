@@ -86,6 +86,7 @@ Esta skill é ativada:
           - Instructions/business/business-rules.md
           - .claude/rules/ (todas as policies aplicáveis)
        6. Verificar cada arquivo inteiro contra diretrizes de governança
+       6.1 Verificar que o body do PR contém as 5 seções obrigatórias (Motivos, Plano, Realizado, Validação, Checklist) conforme pr-metadata-governance.md — se ausentes, apontar como REQUEST_CHANGES
        7. Ler TODAS as threads de review (inclusive outdated) via get_review_comments:
           - Para threads outdated: re-avaliar se o problema persiste no código atual
           - Para threads resolvidas por humano: respeitar resolução (não re-abrir)
@@ -281,3 +282,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*`; `resolve_review_thread` removido da tabela de ferramentas (indisponível via MCP) — resolução via comentário ou APPROVE | Auditoria de governança — rodada 2 |
 | 2026-04-09 | Reforçado: (1) "concordo" deve ser reply na mesma thread do terceiro via `add_reply_to_pull_request_comment` com texto exato sem adições; (2) resolução de threads deve ser reply na thread original, não review separada; (3) filtro do Codificador exige "concordo" na mesma thread — "concordo" em thread separada ou como parte de frase não é válido | Análise de falhas no PR #55 |
 | 2026-04-09 | Reforçado: comentários inline de confirmação proibidos na fase Revisor; APPROVE sem apontamentos deve ser direto com body breve (sem review pendente + comentários) | Análise de causa raiz — ruído no PR #56 |
+| 2026-04-09 | Adicionado: passo 6.1 na fase Revisor — verificar que body do PR contém as 5 seções obrigatórias (Motivos, Plano, Realizado, Validação, Checklist); ausência é apontamento REQUEST_CHANGES | Padronização de descrições de PR |

@@ -41,14 +41,21 @@ Usar a ferramenta MCP `list_pull_requests` para buscar PRs abertos para o branch
 
 - Usar a ferramenta MCP `create_pull_request` para criar o PR
 - Seguir o formato obrigatório de título (Semantic Commit) definido em `pr-metadata-governance.md`
-- Preencher a descrição com as três seções obrigatórias (Motivos, Plano, Realizado)
+- Preencher a descrição com as cinco seções obrigatórias:
+  1. **Motivos da alteração** — causa raiz ou necessidade
+  2. **Plano de execução** — lista numerada dos passos planejados
+  3. **O que foi realizado** — artefatos criados/modificados, tabelas de comportamento (código) ou artefatos (governança)
+  4. **Validação** — evidências inline com emoji de status (✅/⚠️) e resultado de cada comando
+  5. **Checklist** — itens marcáveis conforme template
 - Reportar a URL do PR criado no relatório final
 
 ### Passo 2b: Se já existir PR aberto
 
 - Usar a ferramenta MCP `update_pull_request` para atualizar título e descrição
 - Revisar o título — atualizar se a nova mudança alterar o escopo ou foco
-- Revisar a descrição — incorporar as mudanças do novo commit
+- Revisar as cinco seções da descrição e incorporar as mudanças do novo commit
+- Atualizar a seção Validação com as evidências mais recentes
+- Marcar itens do Checklist conforme o estado atual
 - Reportar a URL do PR atualizado no relatório final
 
 ### Regras
@@ -216,3 +223,4 @@ Quando a tarefa é análise de PR:
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry substituiu declaração prematura de indisponibilidade | Diagnóstico de MCP — Erro 12 |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido servidor MCP de `github` para `github-codificador` com prefixo `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança |
+| 2026-04-09 | Atualizado: passos 2a e 2b expandidos para referenciar 5 seções obrigatórias (Motivos, Plano, Realizado, Validação, Checklist) com tabelas de comportamento/artefatos e evidências inline | Padronização de descrições de PR |

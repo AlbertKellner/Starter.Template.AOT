@@ -38,6 +38,10 @@ Para cada arquivo alterado, verificar:
 6. **Models isolados** (DA-020): Input/Output em Feature>Models/, não em Shared/?
 7. **File-scoped namespace** (P007): Sem chaves no namespace?
 
+Para o PR como um todo, verificar:
+
+8. **Descrição do PR** (pr-metadata-governance.md): Body contém as 5 seções obrigatórias (Motivos, Plano, Realizado, Validação, Checklist)? Seção Validação contém evidências inline com resultados reais? Tabelas de comportamento/artefatos presentes quando aplicável?
+
 ## Formato de Saída
 
 Para cada problema encontrado:
