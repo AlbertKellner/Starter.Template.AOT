@@ -12,7 +12,7 @@ Não requer autenticação.
 
 | Campo | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
-| `number` | `int` (rota) | Sim | Número a ser convertido (valores aceitos: 1, 2) |
+| `number` | `int` (rota) | Sim | Número a ser convertido (valores aceitos: 0 a 10) |
 
 **Método**: `GET`
 **Rota**: `/number-string/{number}`
@@ -37,15 +37,24 @@ Retorna Problem Details (RFC 7807) quando o número não é 1 nem 2.
 
 ## Comportamento
 
+- Se `number` = 0, retorna `"Zero"`
 - Se `number` = 1, retorna `"Um"`
 - Se `number` = 2, retorna `"Dois"`
+- Se `number` = 3, retorna `"Três"`
+- Se `number` = 4, retorna `"Quatro"`
+- Se `number` = 5, retorna `"Cinco"`
+- Se `number` = 6, retorna `"Seis"`
+- Se `number` = 7, retorna `"Sete"`
+- Se `number` = 8, retorna `"Oito"`
+- Se `number` = 9, retorna `"Nove"`
+- Se `number` = 10, retorna `"Dez"`
 - Qualquer outro valor gera `ArgumentOutOfRangeException`, capturada pelo `GlobalExceptionHandler`
 
 ## Testes Automatizados
 
-- `Execute_Number1_ReturnsUm` — valida retorno "Um" para entrada 1
-- `Execute_Number2_ReturnsDois` — valida retorno "Dois" para entrada 2
-- `Execute_InvalidNumber_ThrowsArgumentOutOfRangeException` — valida exceção para valores inválidos
+- `Execute_ValidNumber_ReturnsExpectedString` — Theory com 11 casos (0-10), valida retorno correto
+- `Execute_ValidNumber_LogsProcessingAndResult` — valida logs de storytelling SNP-001
+- `Execute_InvalidNumber_ThrowsArgumentOutOfRangeException` — Theory com valores -1, 11, 100
 
 ## BDD
 

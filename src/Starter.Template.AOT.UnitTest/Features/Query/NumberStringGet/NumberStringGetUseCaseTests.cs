@@ -14,12 +14,29 @@ public class NumberStringGetUseCaseTests
         _useCase = new NumberStringGetUseCase(_logger);
     }
 
-    [Fact]
-    public void Execute_Number1_ReturnsUm()
+    [Theory]
+    [InlineData(0, "Zero")]
+    [InlineData(1, "Um")]
+    [InlineData(2, "Dois")]
+    [InlineData(3, "Três")]
+    [InlineData(4, "Quatro")]
+    [InlineData(5, "Cinco")]
+    [InlineData(6, "Seis")]
+    [InlineData(7, "Sete")]
+    [InlineData(8, "Oito")]
+    [InlineData(9, "Nove")]
+    [InlineData(10, "Dez")]
+    public void Execute_ValidNumber_ReturnsExpectedString(int number, string expected)
     {
-        var result = _useCase.Execute(1);
+        var result = _useCase.Execute(number);
 
-        Assert.Equal("Um", result.Value);
+        Assert.Equal(expected, result.Value);
+    }
+
+    [Fact]
+    public void Execute_ValidNumber_LogsProcessingAndResult()
+    {
+        _useCase.Execute(1);
 
         var logs = _logger.GetSnapshot();
 
@@ -32,17 +49,12 @@ public class NumberStringGetUseCaseTests
             l.Message.Contains("Retornar valor convertido"));
     }
 
-    [Fact]
-    public void Execute_Number2_ReturnsDois()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(11)]
+    [InlineData(100)]
+    public void Execute_InvalidNumber_ThrowsArgumentOutOfRangeException(int number)
     {
-        var result = _useCase.Execute(2);
-
-        Assert.Equal("Dois", result.Value);
-    }
-
-    [Fact]
-    public void Execute_InvalidNumber_ThrowsArgumentOutOfRangeException()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => _useCase.Execute(3));
+        Assert.Throws<ArgumentOutOfRangeException>(() => _useCase.Execute(number));
     }
 }
