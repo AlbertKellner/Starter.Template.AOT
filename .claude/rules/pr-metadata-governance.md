@@ -147,6 +147,26 @@ Todo merge deve utilizar **merge commit** (`merge_method: "merge"`).
 
 ---
 
+## Política de Formatação de Body em PRs e Reviews
+
+> O body de PRs e reviews é renderizado como Markdown pelo GitHub.
+> Texto mal formatado compromete a legibilidade e a utilidade da interface pública do trabalho.
+
+### Regras obrigatórias:
+
+1. **Quebras de linha reais**: o body deve ser escrito com quebras de linha reais no parâmetro da ferramenta MCP — nunca com `\n` escapados inline numa única string.
+2. **Markdown legível antes do envio**: o texto deve ser legível como Markdown válido antes de ser enviado. Se o assistente não consegue ler o body como Markdown formatado, o GitHub também não conseguirá.
+3. **Validação visual**: antes de submeter, o assistente deve verificar mentalmente que headers (`##`, `###`), listas (`-`, `*`), blocos de código e parágrafos estão separados por quebras de linha reais.
+
+### Proibido:
+- Montar o body como string inline com `\n` escapados (ex: `"## Título\n\nTexto..."`)
+- Enviar body sem verificar a formatação Markdown resultante
+
+### Causa raiz desta política:
+PR #56 e sua review foram criados com `\n` literais no body, resultando em Markdown quebrado no GitHub. O erro foi de formatação na chamada da ferramenta MCP, não uma limitação da API.
+
+---
+
 ## Política de Consistência
 
 - A descrição é a **fonte de verdade textual** do PR
@@ -179,3 +199,4 @@ Todo merge deve utilizar **merge commit** (`merge_method: "merge"`).
 | 2026-03-30 | Adicionado: referência ao hook post-commit-pr-reminder.sh na Política de Verificação e Criação Automática de PR | Verificação de conformidade de governança |
 | 2026-04-02 | Adicionado: pré-condição do passo 11 (depende de PR existente do passo 10; adiamento e retomada automática quando MCP reconectar) | Análise de causa raiz — omissão de passo 11 |
 | 2026-04-08 | Adicionado: calibração obrigatória de intervalos de polling via runbook; proibido usar valores arbitrários de sleep | Análise de causa raiz — polling com valores arbitrários |
+| 2026-04-09 | Adicionado: Política de Formatação de Body em PRs e Reviews — quebras de linha reais obrigatórias; `\n` escapados proibidos | Análise de causa raiz — PR #56 com Markdown quebrado |
