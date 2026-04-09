@@ -58,13 +58,14 @@ Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas M
 
 ### Filtragem de Comentários
 
-O Codificador deve IGNORAR comentários que não sejam do Codificador (`ClaudeCode-Bot`) nem do Revisor (`Claude-Revisor`). Para threads com comentários de terceiros, o Codificador só pode implementar quando o último comentário da thread for do Revisor com texto exato **"concordo"**.
+O Codificador deve IGNORAR comentários que não sejam do Codificador (`ClaudeCode-Bot`) nem do Revisor (`Claude-Revisor`). Para threads com comentários de terceiros, o Codificador só pode implementar quando existir reply do Revisor **dentro da mesma thread** com texto exato **"concordo"** (sem adições). O "concordo" em outra thread, em review separada ou como parte de frase ("Concordo com o apontamento...") NÃO é válido — deve ser reply na mesma thread com texto exato "concordo".
 
 ### Tratamento de Comentários de Terceiros pelo Revisor
 
 Qualquer comentário no PR que não tenha sido escrito pelo Revisor deve ser tratado como comentário de humano:
-- **Aderente à governança** → Revisor responde com texto exato "concordo"
-- **Não aderente** → Revisor explica por que não está em conformidade e sugere alternativa alinhada à governança
+- **Aderente à governança** → Revisor responde **na mesma thread** do comentário do terceiro via `mcp__github-revisor__add_reply_to_pull_request_comment` (usando o commentId do comentário original) com texto exato **"concordo"** — sem adições, sem qualificações, sem explicações adicionais no mesmo comentário. Contexto técnico adicional, se necessário, deve ser postado em comentário separado após o "concordo".
+- **Não aderente** → Revisor responde **na mesma thread** via `mcp__github-revisor__add_reply_to_pull_request_comment` explicando por que não está em conformidade e sugere alternativa alinhada à governança.
+- **NUNCA** criar thread/comentário separado para responder a terceiros — a resposta DEVE ser reply na thread original.
 
 ### Aprovação e Request Changes
 
@@ -74,9 +75,10 @@ Qualquer comentário no PR que não tenha sido escrito pelo Revisor deve ser tra
 
 ### Resolução de Threads
 
-- O Revisor resolve threads quando a correção do Codificador é verificada e adequada
-- O Revisor resolve threads quando a justificativa de inviabilidade do Codificador é válida
+- O Revisor resolve threads respondendo **na mesma thread** via `mcp__github-revisor__add_reply_to_pull_request_comment` com "Thread resolvida — correção verificada" quando a correção do Codificador é verificada e adequada
+- O Revisor resolve threads respondendo **na mesma thread** quando a justificativa de inviabilidade do Codificador é válida
 - Threads resolvidas por humanos são respeitadas — não são re-abertas nem reimplementadas
+- **NUNCA** indicar resolução em review separada ou comentário avulso — a indicação DEVE ser reply na thread original do apontamento
 
 ### Inviabilidade de Implementação
 
@@ -150,3 +152,4 @@ O relatório ao encerrar deve incluir:
 | 2026-03-31 | Criado: política de revisão automática de PR com papéis Codificador e Revisor | Instrução do usuário |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: restrição do Revisor atualizada de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança — rodada 2 |
+| 2026-04-09 | Reforçado: "concordo" deve ser reply na mesma thread do terceiro (texto exato, sem adições); resolução de threads deve ser reply na thread original (não review separada); filtragem do Codificador exige "concordo" na mesma thread | Análise de falhas no PR #55 |

@@ -91,9 +91,17 @@ Esta skill é ativada:
           - Para threads resolvidas por humano: respeitar resolução (não re-abrir)
 
        TRATAMENTO DE COMENTÁRIOS DE TERCEIROS (não-Revisor, não-Codificador):
-       - Se comentário é aderente à governança → responder "concordo"
-       - Se comentário NÃO é aderente → explicar por que não está em conformidade
-         com as diretrizes de governança e sugerir alternativa alinhada
+       - Se comentário é aderente à governança → responder **na mesma thread** do
+         comentário do terceiro via `mcp__github-revisor__add_reply_to_pull_request_comment`
+         (usando o commentId do comentário original) com texto exato **"concordo"** —
+         sem adições, sem qualificações, sem explicações adicionais no mesmo comentário.
+         Se o Revisor quiser adicionar contexto técnico, deve fazê-lo em um comentário
+         separado APÓS o "concordo".
+       - Se comentário NÃO é aderente → responder **na mesma thread** via
+         `mcp__github-revisor__add_reply_to_pull_request_comment` explicando por que
+         não está em conformidade com as diretrizes de governança e sugerir alternativa alinhada.
+       - **NUNCA** criar thread/comentário separado para responder a terceiros —
+         a resposta DEVE ser reply na thread original do terceiro.
 
        TRATAMENTO DE REVIEWS FORMAIS DE HUMANOS:
        - Se humano submeteu REQUEST_CHANGES → incorporar apontamentos na análise
@@ -102,10 +110,16 @@ Esta skill é ativada:
        VERIFICAÇÃO DE CORREÇÕES DO CODIFICADOR:
        - Threads com última resposta do Codificador indicando correção feita:
          - Verificar a alteração correspondente no código atual
-         - Se adequada → indicar resolução via comentário na thread ("Thread resolvida — correção verificada")
+         - Se adequada → responder **na mesma thread** via
+           `mcp__github-revisor__add_reply_to_pull_request_comment`
+           (usando commentId do último comentário da thread) com texto:
+           "Thread resolvida — correção verificada"
        - Threads com última resposta do Codificador indicando inviabilidade:
-         - Re-avaliar: se justificativa for válida → indicar resolução via comentário
-         - Se justificativa for insuficiente → insistir com alternativa
+         - Re-avaliar: se justificativa for válida → responder **na mesma thread** via
+           `mcp__github-revisor__add_reply_to_pull_request_comment` indicando resolução
+         - Se justificativa for insuficiente → responder **na mesma thread** insistindo com alternativa
+       - **NUNCA** indicar resolução em review separada ou comentário avulso —
+         a indicação DEVE ser reply na thread original do apontamento.
 
        SUBMISSÃO DE REVIEW:
        - Se problemas encontrados:
@@ -138,9 +152,14 @@ Esta skill é ativada:
        (a) Se TODOS os comentários são do Codificador (ClaudeCode-Bot) e/ou Revisor (Claude-Revisor)
            → thread processável
        (b) Se há comentário(s) de terceiro(s) (nem Codificador nem Revisor):
-           - Se último comentário da thread é do Revisor com texto exato "concordo"
-             → thread processável
-           - Caso contrário → IGNORAR thread (não há solução de implementação aprovada)
+           - Verificar se existe reply do Revisor **dentro da mesma thread** com texto
+             exato "concordo" (sem adições). O "concordo" deve ser um comentário
+             independente na thread, não parte de uma frase maior.
+           - Se existe → thread processável
+           - Se NÃO existe → IGNORAR thread (não há solução de implementação aprovada)
+           - **ATENÇÃO**: "concordo" em outra thread, em review separada ou como parte
+             de frase ("Concordo com o apontamento...") NÃO conta — deve ser reply
+             na mesma thread com texto exato "concordo".
 
        IMPLEMENTAÇÃO:
        4. Para cada thread processável:
@@ -255,3 +274,4 @@ ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__githu
 | 2026-04-02 | Corrigido: seção MCP — ferramentas carregam automaticamente (inicialização assíncrona); protocolo de retry adicionado | Diagnóstico de MCP — Erro 12 |
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido prefixo MCP de `mcp__github__*` para `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*`; `resolve_review_thread` removido da tabela de ferramentas (indisponível via MCP) — resolução via comentário ou APPROVE | Auditoria de governança — rodada 2 |
+| 2026-04-09 | Reforçado: (1) "concordo" deve ser reply na mesma thread do terceiro via `add_reply_to_pull_request_comment` com texto exato sem adições; (2) resolução de threads deve ser reply na thread original, não review separada; (3) filtro do Codificador exige "concordo" na mesma thread — "concordo" em thread separada ou como parte de frase não é válido | Análise de falhas no PR #55 |
