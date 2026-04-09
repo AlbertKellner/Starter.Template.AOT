@@ -54,13 +54,33 @@ O título deve ser um **Semantic Commit** no formato:
 
 ## Estrutura Obrigatória da Descrição
 
-A descrição deve sempre seguir as três seções do template `.github/pull_request_template.md`:
+A descrição deve sempre seguir as cinco seções do template `.github/pull_request_template.md`:
 
 ### Seção 1 — Motivos da alteração
-### Seção 2 — Plano de execução
-### Seção 3 — O que foi realizado
+Causa raiz, problema identificado ou necessidade. Responde ao "porquê".
 
-**Esta seção deve estar sempre atualizada.** Toda vez que um novo commit for adicionado, ela deve ser revisada e atualizada.
+### Seção 2 — Plano de execução
+Lista numerada dos passos planejados. Responde ao "como pretendido".
+
+### Seção 3 — O que foi realizado
+Artefatos criados/modificados, comportamentos implementados. Responde ao "o quê de fato aconteceu".
+
+**Recursos obrigatórios por escopo:**
+- **Código com endpoints**: incluir tabela de comportamento (Input | Status | Response)
+- **Governança**: incluir tabela de artefatos (Artefato | Ação | Status)
+- **Ambos**: listar arquivos criados e modificados com descrição breve
+
+### Seção 4 — Validação
+Evidências inline de que a alteração funciona, com emoji de status:
+- `✅` para validações bem-sucedidas (ex: `✅ dotnet build — 0 erros`)
+- `⚠️` para limitações conhecidas com fallback documentado (ex: `⚠️ Docker indisponível — validação em modo debug`)
+
+**Proibido**: dizer apenas "testei" ou "funciona" sem evidência. Cada validação deve incluir o comando executado e o resultado obtido.
+
+### Seção 5 — Checklist
+Checklist padronizado com itens marcáveis conforme o template.
+
+**Todas as seções devem estar sempre atualizadas.** Toda vez que um novo commit for adicionado, elas devem ser revisadas e atualizadas.
 
 ---
 
@@ -200,3 +220,4 @@ PR #56 e sua review foram criados com `\n` literais no body, resultando em Markd
 | 2026-04-02 | Adicionado: pré-condição do passo 11 (depende de PR existente do passo 10; adiamento e retomada automática quando MCP reconectar) | Análise de causa raiz — omissão de passo 11 |
 | 2026-04-08 | Adicionado: calibração obrigatória de intervalos de polling via runbook; proibido usar valores arbitrários de sleep | Análise de causa raiz — polling com valores arbitrários |
 | 2026-04-09 | Adicionado: Política de Formatação de Body em PRs e Reviews — quebras de linha reais obrigatórias; `\n` escapados proibidos | Análise de causa raiz — PR #56 com Markdown quebrado |
+| 2026-04-09 | Expandido: Estrutura Obrigatória da Descrição de 3 para 5 seções (adicionadas Validação e Checklist); tabelas de comportamento/artefatos obrigatórias por escopo; evidências inline obrigatórias na seção Validação | Análise de padrões de PR do repositório |

@@ -1344,6 +1344,54 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+echo ""
+echo "--- 38. bash-errors-log.md limiar de curadoria ---"
+
+BASH_ERRORS_LOG="$REPO_ROOT/bash-errors-log.md"
+if [ -f "$BASH_ERRORS_LOG" ]; then
+  ACTIVE_ERRORS=$(grep -cP '^\|\s*\d+\s*\|' "$BASH_ERRORS_LOG" || true)
+  ACTIVE_ERRORS=${ACTIVE_ERRORS:-0}
+  if [ "$ACTIVE_ERRORS" -le 30 ]; then
+    pass "bash-errors-log.md dentro do limiar de curadoria ($ACTIVE_ERRORS erros ativos, máx 30)"
+  else
+    warn "bash-errors-log.md ultrapassou limiar de curadoria" \
+      "$ACTIVE_ERRORS erros ativos (máx 30)" \
+      "Acúmulo de erros sem curadoria periódica" \
+      "Executar curadoria conforme bash-error-logging.md — arquivar erros resolvidos ou obsoletos"
+  fi
+else
+  pass "bash-errors-log.md não encontrado — verificação ignorada"
+fi
+
+# ---------------------------------------------------------------------------
+echo ""
+echo "--- 39. PR template contém seções obrigatórias ---"
+
+PR_TEMPLATE="$REPO_ROOT/.github/pull_request_template.md"
+if [ -f "$PR_TEMPLATE" ]; then
+  MISSING_SECTIONS=""
+  for section in "Motivos da alteração" "Plano de execução" "O que foi realizado" "Validação" "Checklist"; do
+    if ! grep -q "## $section" "$PR_TEMPLATE" 2>/dev/null; then
+      MISSING_SECTIONS="$MISSING_SECTIONS $section"
+    fi
+  done
+
+  if [ -z "$MISSING_SECTIONS" ]; then
+    pass "PR template contém todas as 5 seções obrigatórias"
+  else
+    fail "PR template com seções obrigatórias ausentes" \
+      "$MISSING_SECTIONS" \
+      "Template de PR não segue o padrão de 5 seções definido em pr-metadata-governance.md" \
+      "Adicionar as seções ausentes ao .github/pull_request_template.md"
+  fi
+else
+  fail "PR template não encontrado" \
+    ".github/pull_request_template.md não existe" \
+    "Template de PR é obrigatório para padronização de descrições" \
+    "Criar .github/pull_request_template.md com as 5 seções obrigatórias"
+fi
+
+# ---------------------------------------------------------------------------
 # Resumo
 # ---------------------------------------------------------------------------
 echo ""
