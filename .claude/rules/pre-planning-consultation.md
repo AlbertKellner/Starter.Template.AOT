@@ -6,7 +6,7 @@ Meta-governança (ponte entre domínio técnico e de negócio). Aplica-se tanto 
 
 ## Propósito
 
-Esta rule define a política de consulta e resolução de dúvidas obrigatória antes de qualquer planejamento, execução de código ou alteração de governança. O workflow procedural de resolução é executado pela skill `resolve-ambiguity`.
+Esta rule define a política de consulta e resolução de dúvidas obrigatória antes de qualquer planejamento, execução de código ou alteração de governança. O workflow procedural de resolução é executado pela skill `resolve-ambiguity`. O workflow procedural completo de planejamento (incluindo esta consulta como Fase 1) é executado pela skill `planning`.
 
 ---
 
@@ -100,3 +100,4 @@ O arquivo de estado é transiente (não versionado, em `/tmp/`) e deve ser criad
 | Data | Mudança | Referência |
 |---|---|---|
 | 2026-03-31 | Criado: política de consulta pré-planejamento obrigatória com gate iterativo, consulta de documentação para integrações e enforcement via hook | Instrução do usuário |
+| 2026-04-10 | Adicionado: referência à skill `planning` como workflow procedural completo de planejamento (Fase 1 operacionaliza esta policy) | Instrução do usuário |

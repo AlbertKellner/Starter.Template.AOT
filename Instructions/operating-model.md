@@ -30,6 +30,7 @@ Este repositório opera com um sistema de governança persistente. Todo conteúd
 | Alteração de instrução | Cria, altera ou remove arquivos de governança | `review-instructions` |
 | Análise de PR | Analisa solicitações de mudança em pull request aberto | `pr-analysis` |
 | Revisão automática de PR | Revisão de código automatizada com ciclo Revisor↔Codificador | `auto-pr-review` |
+| Planejamento de implementação | Estrutura exploração, design e plano antes de implementar | `planning` |
 
 Uma mensagem pode ativar múltiplos tipos simultaneamente.
 
@@ -144,3 +145,4 @@ Agentes com configuração persistente, memória por projeto e ferramentas restr
 | 2026-04-01 | Adicionado: seção "Agentes Dedicados" com code-reviewer e governance-auditor; referência a .claude/agents/ nas referências cruzadas | Melhoria de governança com recursos avançados do Claude Code |
 | 2026-04-08 | Adicionado: skill remove-feature na tabela de classificação de mensagens | Auditoria de governança |
 | 2026-04-08 | Adicionado: skill remove-feature na tabela de Skills de Pipeline (ativada por tipo de mensagem) | Auditoria de governança — rodada 3 |
+| 2026-04-10 | Adicionado: skill planning na tabela de classificação de mensagens (planejamento estruturado de implementação) | Instrução do usuário |

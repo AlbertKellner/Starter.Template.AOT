@@ -77,6 +77,7 @@ A estrutura abaixo foi criada no bootstrap e não deve ser alterada sem instruç
 │   │   ├── governance-validation-pipeline/ # Validação de governança via subagentes
 │   │   ├── manage-pr-lifecycle/         # Criação/atualização de PR e acompanhamento de CI
 │   │   ├── auto-pr-review/              # Revisão automática de PR com ciclo Revisor↔Codificador
+│   │   ├── planning/                    # Planejamento estruturado de implementação
 │   │   ├── pr-analysis/                 # Análise de solicitações de mudança em PR existente
 │   │   ├── remove-feature/              # Remoção de feature com limpeza de código, governança e wiki
 │   │   ├── resolve-ambiguity/
@@ -303,3 +304,4 @@ Qualquer adição à estrutura de governança deve:
 | 2026-04-06 | .claude/rules/mandatory-process-enforcement.md adicionada: meta-regra de precedência de processo de workspace; .kiro/proposals/ criada com proposta de mudança sistêmica | Análise de causa-raiz de violação de processo |
 | 2026-04-08 | Instructions/architecture/mandatory-behaviors.md adicionada: tabela canônica de comportamentos obrigatórios; .claude/skills/remove-feature/ adicionada: skill de remoção de feature | Auditoria de governança |
 | 2026-04-08 | Regras de existência condicional expandidas: wiki page, Governance-Architecture.md e runbook como artefatos condicionais de features com endpoint (PAD-001) | Análise de causa raiz — omissão recorrente de wiki |
+| 2026-04-10 | .claude/skills/planning/ adicionada: skill de planejamento estruturado de implementação | Instrução do usuário |
