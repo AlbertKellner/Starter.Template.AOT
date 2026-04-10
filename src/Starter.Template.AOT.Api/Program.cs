@@ -10,8 +10,6 @@ using Starter.Template.AOT.Api.Infra.Security;
 using Starter.Template.AOT.Api.Infra.Logging;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Starter.Template.AOT.Api.Features.Query.NumberStringGet;
-
 const string OutputTemplate =
     "[{Timestamp:dd/MM/yyyy HH:mm:ss.fffffff}] [{CorrelationId}] [{UserName}] {Message:lj}{NewLine}{Exception}";
 
@@ -102,8 +100,6 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
-builder.Services.AddScoped<INumberStringGetUseCase, NumberStringGetUseCase>();
-
 Log.Information("[Program] Registrar segurança e autenticação");
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -136,6 +132,5 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
-    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.NumberStringGet.NumberStringGetEndpoint))]
     internal static void PreserveControllers() { }
 }
