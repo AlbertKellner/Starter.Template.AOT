@@ -28,6 +28,7 @@ Ver seção "Valores Fundamentais da Governança" no `CLAUDE.md` injetado acima.
 
 ### Comportamento Obrigatório Antes de Qualquer Tarefa
 
+0. **Confirmação de modo (planejamento vs. execução direta)**: antes de iniciar qualquer tarefa que altere código ou remova artefatos, apresentar ao usuário um plano de ação resumido e perguntar se deseja ver o planejamento detalhado ou se autoriza execução direta. Se o usuário já indicar o modo na mensagem original (ex: "execute direto", "me mostre o plano"), respeitar sem perguntar. Tarefas puramente informativas não requerem esta confirmação. Este passo compensa a ausência do hook `pre-planning-gate.sh` que o Claude Code executa automaticamente.
 1. Ler `CLAUDE.md` completamente (já injetado acima via `#[[file:]]`)
 2. Classificar o escopo da tarefa: **Código**, **Governança**, **Híbrido (Código + Governança)**, **CI/Infra** ou **Análise de PR**
 3. Identificar quais passos do pipeline se aplicam ao escopo classificado
@@ -90,6 +91,7 @@ O Kiro não suporta subagentes com isolamento de worktree. Quando o passo 9.1 fo
 O Kiro não possui os mecanismos de enforcement automático do Claude Code (hooks SessionStart, PreToolUse, Stop, TodoWrite).
 Sem enforcement automático, o Kiro tende a operar como assistente genérico e pular o pipeline.
 Esta seção compensa a ausência de hooks com instruções explícitas e diretas no steering file de inclusão obrigatória.
+O passo 0 ("Confirmação de modo") compensa especificamente a ausência do hook `pre-planning-gate.sh`.
 
 ### Alternativa ao TodoWrite para Rastreamento de Comportamentos
 
