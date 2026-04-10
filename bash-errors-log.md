@@ -290,3 +290,25 @@ EOF
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
+
+## Erro 22 — dotnet não encontrado no PATH padrão
+
+| Campo | Valor |
+|---|---|
+| **Número** | 22 |
+| **Data** | 2026-04-10 |
+| **Comando executado** | `which dotnet && dotnet --version` |
+| **Erro retornado** | Exit code 1 — dotnet não encontrado no PATH |
+| **Causa** | O .NET SDK está instalado em `/root/.dotnet` mas o PATH padrão do container não inclui esse diretório |
+| **Novo comando / solução** | `export PATH="/root/.dotnet:$PATH" && dotnet --version` |
+
+## Erro 23 — Exit code 144 ao encerrar processo da aplicação
+
+| Campo | Valor |
+|---|---|
+| **Número** | 23 |
+| **Data** | 2026-04-10 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; echo "done"` |
+| **Erro retornado** | Exit code 144 (128 + SIGTERM 16) |
+| **Causa** | Comportamento esperado — o pkill envia SIGTERM ao processo e o shell reporta o sinal como exit code 128+signal. O processo foi encerrado com sucesso. |
+| **Novo comando / solução** | Nenhuma ação necessária — exit code 144 é comportamento normal ao encerrar processo via pkill |
