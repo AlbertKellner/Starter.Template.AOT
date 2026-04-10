@@ -93,6 +93,10 @@ O arquivo de estado é transiente (não versionado, em `/tmp/`) e deve ser criad
 - `instruction-review.md` — alterações nesta rule ativam revisão via REVIEW.md
 - `governance-behavior-tracking.md` — este comportamento deve ser rastreado na lista de comportamentos esperados
 
+## Relação com Comportamento #15
+
+O comportamento #15 ("Confirmação de modo antes de executar") é complementar a este: #12 resolve dúvidas técnicas e de negócio; #15 alinha com o usuário a abordagem (planejamento detalhado vs. execução direta) antes de iniciar. Ambos são gates pré-execução, mas operam em dimensões diferentes — #12 trata de completude de informação, #15 trata de alinhamento de expectativa.
+
 ---
 
 ## Histórico de Mudanças
@@ -101,3 +105,4 @@ O arquivo de estado é transiente (não versionado, em `/tmp/`) e deve ser criad
 |---|---|---|
 | 2026-03-31 | Criado: política de consulta pré-planejamento obrigatória com gate iterativo, consulta de documentação para integrações e enforcement via hook | Instrução do usuário |
 | 2026-04-10 | Adicionado: referência à skill `planning` como workflow procedural completo de planejamento (Fase 1 operacionaliza esta policy) | Instrução do usuário |
+| 2026-04-10 | Adicionado: relação com comportamento #15 (confirmação de modo planejamento vs. execução direta) | Instrução do usuário |
