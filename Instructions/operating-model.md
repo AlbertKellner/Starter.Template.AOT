@@ -34,6 +34,8 @@ Este repositório opera com um sistema de governança persistente. Todo conteúd
 
 Uma mensagem pode ativar múltiplos tipos simultaneamente.
 
+**Roteamento planejamento vs. execução**: Quando a mensagem é classificada como "Solicitação de implementação", a skill `implement-request` é ativada — porém seu primeiro passo (Passo 0) pergunta ao usuário se deseja planejamento estruturado (skill `planning`) ou execução direta. O usuário sempre tem a escolha antes de qualquer ação.
+
 ### Skills de Pipeline (não ativadas por tipo de mensagem)
 
 As seguintes skills são invocadas como passos do pipeline pré-commit (definido em `CLAUDE.md`), não por classificação de mensagem:
@@ -146,3 +148,4 @@ Agentes com configuração persistente, memória por projeto e ferramentas restr
 | 2026-04-08 | Adicionado: skill remove-feature na tabela de classificação de mensagens | Auditoria de governança |
 | 2026-04-08 | Adicionado: skill remove-feature na tabela de Skills de Pipeline (ativada por tipo de mensagem) | Auditoria de governança — rodada 3 |
 | 2026-04-10 | Adicionado: skill planning na tabela de classificação de mensagens (planejamento estruturado de implementação) | Instrução do usuário |
+| 2026-04-10 | Adicionado: nota de roteamento planejamento vs. execução na classificação de mensagens — implement-request oferece escolha antes de agir | Análise de causa raiz — implementação iniciada sem oferecer planejamento |

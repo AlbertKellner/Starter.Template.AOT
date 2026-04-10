@@ -27,6 +27,19 @@ Ativar esta skill quando a mensagem do usuário:
 ## Workflow Interno
 
 ```
+0. OFERECER PLANEJAMENTO
+   - Antes de qualquer análise, perguntar ao usuário:
+
+     "Você quer Planejar ou Executar diretamente?
+      1. Planejar — exploração de codebase, design da solução, plano estruturado para aprovação
+      2. Executar diretamente — implementação imediata seguindo o pipeline completo"
+
+   - Se o usuário selecionar "Planejar" → invocar skill `planning` com a mensagem original
+     e encerrar esta skill (a planning entrega o plano; após aprovação, implement-request
+     é reativada a partir do passo 1)
+   - Se o usuário selecionar "Executar diretamente" → prosseguir para passo 1
+   - Esta é a PRIMEIRA ação obrigatória da skill, sem exceções
+
 1. NORMALIZAR
    - Interpretar a mensagem semanticamente
    - Identificar o que deve ser criado, alterado ou removido
@@ -115,6 +128,7 @@ Ativar esta skill quando a mensagem do usuário:
 - Dúvidas e premissas registradas quando necessário
 
 ## Arquivos de Governança Relacionados
+- `.claude/skills/planning/SKILL.md` — skill de planejamento estruturado (invocada pelo passo 0 quando usuário escolhe "Planejar")
 - `.claude/rules/governance-policies.md` — políticas de normalização, ambiguidade, snippets, propagação e contexto
 - `.claude/rules/source-of-truth-priority.md` — hierarquia de prioridade entre fontes
 - `.claude/rules/instruction-review.md` — meta-regra de revisão de instruções
@@ -125,3 +139,10 @@ Ativar esta skill quando a mensagem do usuário:
 
 ## Nota sobre Invocação
 Esta skill não exige que o usuário use linguagem específica. Toda mensagem que implica criação, alteração ou remoção de artefatos ativa esta skill automaticamente.
+
+## Histórico de Mudanças
+
+| Data | Mudança | Referência |
+|---|---|---|
+| Bootstrap | Criado: workflow de execução de solicitação de implementação | — |
+| 2026-04-10 | Adicionado: Passo 0 (OFERECER PLANEJAMENTO) — pergunta obrigatória "Planejar ou Executar?" antes de qualquer ação; roteamento para skill `planning` quando usuário escolhe planejar | Análise de causa raiz — implementação iniciada sem oferecer planejamento |
