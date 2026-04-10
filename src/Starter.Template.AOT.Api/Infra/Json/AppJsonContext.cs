@@ -8,4 +8,5 @@ namespace Starter.Template.AOT.Api.Infra.Json;
 [JsonSerializable(typeof(ProblemDetails))]
 [JsonSerializable(typeof(ValidationProblemDetails))]
 [JsonSerializable(typeof(Starter.Template.AOT.Api.Features.Query.NumberStringGet.NumberStringGetOutput))]
+[JsonSerializable(typeof(Starter.Template.AOT.Api.Features.Query.NumberTextGet.NumberTextGetOutput))]
 internal sealed partial class AppJsonContext : JsonSerializerContext { }

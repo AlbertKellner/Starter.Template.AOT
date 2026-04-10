@@ -41,6 +41,7 @@ Regras de negócio, funcionalidades implementadas e conceitos de domínio.
 |--------|----------|-----------|
 | [Health Check](Feature-Health) | `GET /health` | Verificação de disponibilidade da aplicação |
 | [Conversão Número-String](Feature-NumberStringGet) | `GET /number-string/{number}` | Conversão de número (1, 2) para string |
+| [Conversão Número-Texto](Feature-NumberTextGet) | `GET /number-text/{number}` | Conversão de número (1, 2) para texto |
 
 ---
 

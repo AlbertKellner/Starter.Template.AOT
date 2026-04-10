@@ -11,6 +11,7 @@ using Starter.Template.AOT.Api.Infra.Logging;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Starter.Template.AOT.Api.Features.Query.NumberStringGet;
+using Starter.Template.AOT.Api.Features.Query.NumberTextGet;
 
 const string OutputTemplate =
     "[{Timestamp:dd/MM/yyyy HH:mm:ss.fffffff}] [{CorrelationId}] [{UserName}] {Message:lj}{NewLine}{Exception}";
@@ -103,6 +104,7 @@ builder.Services.AddHttpContextAccessor();
 Log.Information("[Program] Registrar dependências das features");
 
 builder.Services.AddScoped<INumberStringGetUseCase, NumberStringGetUseCase>();
+builder.Services.AddScoped<INumberTextGetUseCase, NumberTextGetUseCase>();
 
 Log.Information("[Program] Registrar segurança e autenticação");
 
@@ -137,5 +139,6 @@ app.Run();
 internal static class AotControllerPreservation
 {
     [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.NumberStringGet.NumberStringGetEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.NumberTextGet.NumberTextGetEndpoint))]
     internal static void PreserveControllers() { }
 }

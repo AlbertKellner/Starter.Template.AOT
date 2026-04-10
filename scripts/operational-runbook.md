@@ -93,6 +93,7 @@ docker compose down
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
 | `GET` | `/number-string/{number}` | Não | Conversão de número (0-10) para string em português | — |
+| `GET` | `/number-text/{number}` | Não | Conversão de número (1, 2) para texto em português | — |
 
 ---
 
