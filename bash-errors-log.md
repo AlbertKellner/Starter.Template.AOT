@@ -290,3 +290,14 @@ EOF
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
+
+## Erro 22 — Exploração de pasta Features antes da criação da Slice
+
+| Campo | Valor |
+|---|---|
+| **Número** | 22 |
+| **Data** | 2026-04-16 |
+| **Comando executado** | `ls src/Starter.Template.AOT.Api/Features/ 2>/dev/null` |
+| **Erro retornado** | Exit code 2 — pasta inexistente (feature NumberStringGet havia sido removida no commit 2e5cbae) |
+| **Causa** | Exploração intencional — verificação da estrutura antes de recriar a feature `NumberStringGet`. Não é falha de execução do pipeline; o hook `bash-error-capture.sh` captura todo non-zero exit de comandos bash. |
+| **Novo comando / solução** | Criação explícita da estrutura com `mkdir -p src/Starter.Template.AOT.Api/Features/Query/NumberStringGet/{NumberStringGetEndpoint,NumberStringGetInterfaces,NumberStringGetModels,NumberStringGetUseCase}` resolveu a ausência. |
