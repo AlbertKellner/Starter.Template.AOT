@@ -301,3 +301,14 @@ EOF
 | **Erro retornado** | Exit code 2 — pasta inexistente (feature NumberStringGet havia sido removida no commit 2e5cbae) |
 | **Causa** | Exploração intencional — verificação da estrutura antes de recriar a feature `NumberStringGet`. Não é falha de execução do pipeline; o hook `bash-error-capture.sh` captura todo non-zero exit de comandos bash. |
 | **Novo comando / solução** | Criação explícita da estrutura com `mkdir -p src/Starter.Template.AOT.Api/Features/Query/NumberStringGet/{NumberStringGetEndpoint,NumberStringGetInterfaces,NumberStringGetModels,NumberStringGetUseCase}` resolveu a ausência. |
+
+## Erro 23 — `.mcp.json` ausente na raiz do repositório (bloqueio de auto-pr-review)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 23 |
+| **Data** | 2026-04-16 |
+| **Comando executado** | `ls -la /home/user/Starter.Template.AOT/.mcp.json 2>&1; cat /home/user/Starter.Template.AOT/.mcp.json 2>&1` |
+| **Erro retornado** | `ls: cannot access '/home/user/Starter.Template.AOT/.mcp.json': No such file or directory` |
+| **Causa** | O arquivo `.mcp.json` é referenciado em `Instructions/architecture/technical-overview.md` (§Recursos Operacionais) e em `.claude/rules/auto-pr-review-governance.md` como fonte de configuração dos MCP servers segregados `github-codificador` e `github-revisor`. No entanto, o arquivo não existe no repositório — apenas o MCP unificado `mcp__github__*` está disponível (provisionado por configuração externa ao repositório). A skill `auto-pr-review` exige isolamento `mcp__github-codificador__*` ↔ `mcp__github-revisor__*` e bloqueia ao detectar a ausência. |
+| **Novo comando / solução** | Pendente — requer decisão do usuário: (1) provisionar `.mcp.json` com as duas entradas segregadas consumindo `GH_CLAUDE_CODE_MCP_CODIFICADOR` e `GH_CLAUDE_CODE_MCP_REVISOR`; ou (2) atualizar `auto-pr-review-governance.md` e `technical-overview.md` para refletir modelo de MCP unificado. Registrado também como limitação operacional para execução do passo 12 do pipeline. |
