@@ -23,7 +23,7 @@ Esta rule define a política de revisão automática de código em Pull Requests
 | **Username GitHub** | `ClaudeCode-Bot` |
 | **Nome (git user.name)** | `Codificador - Claude Agent` |
 | **Token (secret)** | `GH_CLAUDE_CODE_MCP_CODIFICADOR` (token do usuário codificador) |
-| **MCP Server** | `github-codificador` (prefixo `mcp__github-codificador__*`) |
+| **MCP Server** | `github` (prefixo `mcp__github__*`) |
 | **Responsabilidades** | Implementar código, fazer commits em nome do usuário codificador, responder comentários de review |
 | **Restrições** | NUNCA submeter review (APPROVE ou REQUEST_CHANGES); NUNCA usar tools `mcp__github-revisor__*` |
 
@@ -36,7 +36,7 @@ Esta rule define a política de revisão automática de código em Pull Requests
 | **MCP Server** | `github-revisor` (prefixo `mcp__github-revisor__*`) |
 | **Email git** | `Claude-Revisor@users.noreply.github.com` |
 | **Responsabilidades** | Revisar código contra governança, comentar em trechos específicos, aprovar ou solicitar mudanças, resolver threads |
-| **Restrições** | NUNCA alterar código, fazer commits ou push; NUNCA usar tools `mcp__github-codificador__*` |
+| **Restrições** | NUNCA alterar código, fazer commits ou push; NUNCA usar tools `mcp__github__*` |
 
 ---
 
@@ -54,7 +54,7 @@ Após a conclusão do acompanhamento de GitHub Actions (passo 11 do pipeline pr�
 
 ### Isolamento de MCP Tools
 
-Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas MCP do seu papel. A violação de isolamento (ex: Revisor usando `mcp__github-codificador__*`) é um erro de governança.
+Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas MCP do seu papel. A violação de isolamento (ex: Revisor usando `mcp__github__*`) é um erro de governança.
 
 ### Filtragem de Comentários
 
@@ -173,3 +173,4 @@ O relatório ao encerrar deve incluir:
 | 2026-04-08 | Corrigido: restrição do Revisor atualizada de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança — rodada 2 |
 | 2026-04-09 | Reforçado: "concordo" deve ser reply na mesma thread do terceiro (texto exato, sem adições); resolução de threads deve ser reply na thread original (não review separada); filtragem do Codificador exige "concordo" na mesma thread | Análise de falhas no PR #55 |
 | 2026-04-09 | Adicionado: Política de Comentários do Revisor — comentários de confirmação proibidos; body de APPROVE sem apontamentos deve ser resumo breve (2-3 frases), sem checklist | Análise de causa raiz — ruído no PR #56 |
+| 2026-04-18 | Corrigido: nome do MCP Server do Codificador revertido de `github-codificador` para `github` e prefixo de tools `mcp__github-codificador__*` para `mcp__github__*`. Razão: divergência entre rule (esperava `github-codificador`) e realidade operacional (harness do Claude Code expõe o server como `github`, conforme `session-start.sh:70` e ferramentas carregadas via ToolSearch). As alterações de 2026-04-07 e 2026-04-08 haviam introduzido o nome inconsistente; este registro reverte ambas. | Análise de causa raiz — bloqueio de `auto-pr-review` no PR #64 (Erro 23 do `bash-errors-log.md`) |

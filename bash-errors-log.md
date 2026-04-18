@@ -290,3 +290,25 @@ EOF
 | **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
+
+## Erro 22 — Exploração de pasta Features antes da criação da Slice
+
+| Campo | Valor |
+|---|---|
+| **Número** | 22 |
+| **Data** | 2026-04-16 |
+| **Comando executado** | `ls src/Starter.Template.AOT.Api/Features/ 2>/dev/null` |
+| **Erro retornado** | Exit code 2 — pasta inexistente (feature NumberStringGet havia sido removida no commit 2e5cbae) |
+| **Causa** | Exploração intencional — verificação da estrutura antes de recriar a feature `NumberStringGet`. Não é falha de execução do pipeline; o hook `bash-error-capture.sh` captura todo non-zero exit de comandos bash. |
+| **Novo comando / solução** | Criação explícita da estrutura com `mkdir -p src/Starter.Template.AOT.Api/Features/Query/NumberStringGet/{NumberStringGetEndpoint,NumberStringGetInterfaces,NumberStringGetModels,NumberStringGetUseCase}` resolveu a ausência. |
+
+## Erro 23 — `.mcp.json` ausente na raiz do repositório (bloqueio de auto-pr-review)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 23 |
+| **Data** | 2026-04-16 |
+| **Comando executado** | `ls -la /home/user/Starter.Template.AOT/.mcp.json 2>&1; cat /home/user/Starter.Template.AOT/.mcp.json 2>&1` |
+| **Erro retornado** | `ls: cannot access '/home/user/Starter.Template.AOT/.mcp.json': No such file or directory` |
+| **Causa** | `.mcp.json` não existe no repositório — os GitHub MCPs são **env-driven pelo harness externo do Claude Code**, com nomes canônicos `github` (Codificador) e `github-revisor` (Revisor), conforme `.claude/hooks/session-start.sh:70`. A skill `auto-pr-review` bloqueou porque a rule `auto-pr-review-governance.md` havia sido alterada em 2026-04-07 e 2026-04-08 para exigir `github-codificador` + `mcp__github-codificador__*`, nomes que nunca existiram no harness. Também o `.claude/settings.json` tinha permissão para `mcp__github-codificador__*` — server inexistente. A divergência estava isolada na rule/settings; hook e `technical-overview.md` já apontavam para `github`. |
+| **Novo comando / solução** | Resolvido em 2026-04-18: (1) `auto-pr-review-governance.md` — Codificador voltou a `github` / `mcp__github__*`; (2) `.claude/settings.json` — permissão atualizada para `mcp__github__*`; (3) `technical-overview.md` — seção "Recursos Operacionais" esclarece que os GitHub MCPs são env-driven (sem `.mcp.json`). Não foi necessário provisionar `.mcp.json`; a config real sempre esteve correta no harness. O passo 12 (auto-pr-review) passa a ser executável. |
