@@ -312,3 +312,14 @@ EOF
 | **Erro retornado** | `ls: cannot access '/home/user/Starter.Template.AOT/.mcp.json': No such file or directory` |
 | **Causa** | `.mcp.json` não existe no repositório — os GitHub MCPs são **env-driven pelo harness externo do Claude Code**, com nomes canônicos `github` (Codificador) e `github-revisor` (Revisor), conforme `.claude/hooks/session-start.sh:70`. A skill `auto-pr-review` bloqueou porque a rule `auto-pr-review-governance.md` havia sido alterada em 2026-04-07 e 2026-04-08 para exigir `github-codificador` + `mcp__github-codificador__*`, nomes que nunca existiram no harness. Também o `.claude/settings.json` tinha permissão para `mcp__github-codificador__*` — server inexistente. A divergência estava isolada na rule/settings; hook e `technical-overview.md` já apontavam para `github`. |
 | **Novo comando / solução** | Resolvido em 2026-04-18: (1) `auto-pr-review-governance.md` — Codificador voltou a `github` / `mcp__github__*`; (2) `.claude/settings.json` — permissão atualizada para `mcp__github__*`; (3) `technical-overview.md` — seção "Recursos Operacionais" esclarece que os GitHub MCPs são env-driven (sem `.mcp.json`). Não foi necessário provisionar `.mcp.json`; a config real sempre esteve correta no harness. O passo 12 (auto-pr-review) passa a ser executável. |
+
+## Erro 24 — pkill retorna exit code 144 quando processo já encerrou
+
+| Campo | Valor |
+|---|---|
+| **Número** | 24 |
+| **Data** | 2026-04-22 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; echo "process killed"` |
+| **Erro retornado** | Exit code 144 (no matching processes found) |
+| **Causa** | O processo em background já havia encerrado naturalmente antes da chamada ao `pkill`. Exit code 144 é falso positivo — não indica falha real da aplicação. O health check respondeu com sucesso antes do kill. |
+| **Novo comando / solução** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; true` — suprimir o código de saída quando o processo já não existe. Alternativamente, usar `kill $(cat /tmp/app-pid.txt) 2>/dev/null; true`. |
