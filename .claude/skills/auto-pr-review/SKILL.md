@@ -7,7 +7,7 @@ allowed-tools:
   - Read
   - Grep
   - Glob
-  - mcp__github-codificador__*
+  - mcp__github__*
   - mcp__github-revisor__*
 ---
 
@@ -37,7 +37,7 @@ Esta skill é ativada:
 
 | Papel | Username GitHub | Nome (git) | MCP Server | Tools Prefix | Faz commit? |
 |-------|----------------|------------|------------|--------------|-------------|
-| **Codificador** | `ClaudeCode-Bot` | `Codificador - Claude Agent` | `github-codificador` | `mcp__github-codificador__*` | Sim (em nome do usuário codificador) |
+| **Codificador** | `ClaudeCode-Bot` | `Codificador - Claude Agent` | `github` | `mcp__github__*` | Sim (em nome do usuário codificador) |
 | **Revisor** | `Claude-Revisor` | `Claude-Revisor` | `github-revisor` | `mcp__github-revisor__*` | Não (nunca) |
 
 **Git push**: sempre usa credenciais do token do usuário codificador (via `GH_CLAUDE_CODE_MCP_CODIFICADOR`), independente do papel ativo.
@@ -146,13 +146,13 @@ Esta skill é ativada:
 
        REGRA CRÍTICA DE ISOLAMENTO MCP:
        Para TODA operação GitHub (ler PR, comentar, responder)
-       usar APENAS ferramentas com prefixo mcp__github-codificador__.
+       usar APENAS ferramentas com prefixo mcp__github__.
        NUNCA usar mcp__github-revisor__ durante esta fase.
 
        PASSOS:
        1. git fetch origin <head.ref> && git checkout <head.ref>
        2. git config user.name "Codificador - Claude Agent"
-       3. Ler threads de review via MCP (mcp__github-codificador__pull_request_read method: get_review_comments)
+       3. Ler threads de review via MCP (mcp__github__pull_request_read method: get_review_comments)
 
        FILTRO DE THREADS — para cada thread não resolvida:
        (a) Se TODOS os comentários são do Codificador (ClaudeCode-Bot) e/ou Revisor (Claude-Revisor)
@@ -180,7 +180,7 @@ Esta skill é ativada:
        8. Se git push falhar por conflito de merge → PAUSAR ciclo, reportar ao usuário
 
        RESPOSTAS:
-       9. Responder a cada thread processada via MCP (mcp__github-codificador__add_reply_to_pull_request_comment):
+       9. Responder a cada thread processada via MCP (mcp__github__add_reply_to_pull_request_comment):
           - Correção feita → informar o que foi alterado, referenciar commit
           - Inviabilidade → explicar por que não é possível implementar
 
@@ -229,7 +229,7 @@ Esta skill é ativada:
 
 **Nota sobre `resolve_review_thread`**: esta ferramenta pode não estar disponível em todos os MCP servers do GitHub. Se não estiver disponível, a resolução de threads é feita implicitamente pela submissão de review APPROVE, ou o Revisor indica resolução via comentário na thread ("Thread resolvida — correção verificada"). O workflow não deve bloquear por ausência desta ferramenta.
 
-### Fase Codificador (prefixo `mcp__github-codificador__`)
+### Fase Codificador (prefixo `mcp__github__`)
 
 | Ferramenta | Método | Propósito |
 |---|---|---|
@@ -242,7 +242,7 @@ Esta skill é ativada:
 As ferramentas MCP carregam automaticamente via inicialização assíncrona do Claude Code. Para usá-las, carregar via `ToolSearch` com sintaxe `select:`:
 
 ```
-ToolSearch("select:mcp__github-codificador__pull_request_read,mcp__github-codificador__add_reply_to_pull_request_comment")
+ToolSearch("select:mcp__github__pull_request_read,mcp__github__add_reply_to_pull_request_comment")
 ToolSearch("select:mcp__github-revisor__pull_request_read,mcp__github-revisor__pull_request_review_write")
 ToolSearch("select:mcp__github-revisor__add_comment_to_pending_review,mcp__github-revisor__add_reply_to_pull_request_comment")
 ```
