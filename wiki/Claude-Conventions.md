@@ -226,7 +226,7 @@ O repositório possui um mecanismo de revisão automática de código em Pull Re
 
 | Papel | Conta GitHub | Responsabilidade |
 |---|---|---|
-| **Codificador** | `ClaudeCode-Bot` | Implementa código, cria o PR, corrige solicitações de mudança da revisão |
+| **Codificador** | `Claude-Codificador` | Implementa código, cria o PR, corrige solicitações de mudança da revisão |
 | **Revisor** | `Claude-Revisor` | Analisa o código do PR, verifica conformidade com a governança do repositório, solicita mudanças ou aprova |
 
 ### Isolamento MCP

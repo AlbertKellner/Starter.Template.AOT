@@ -17,13 +17,13 @@ jobs:
       (
         github.event_name == 'issues' &&
         github.event.label.name == 'em-refinamento' &&
-        github.event.sender.login != 'ClaudeCode-Bot' &&
+        github.event.sender.login != 'Claude-Codificador' &&
         github.event.sender.login != 'Claude-Revisor' &&
         github.event.sender.type != 'Bot'
       ) ||
       (
         github.event_name == 'issue_comment' &&
-        github.event.comment.user.login != 'ClaudeCode-Bot' &&
+        github.event.comment.user.login != 'Claude-Codificador' &&
         github.event.comment.user.login != 'Claude-Revisor' &&
         github.event.comment.user.login != 'github-actions[bot]' &&
         !github.event.issue.pull_request &&
@@ -87,7 +87,7 @@ jobs:
           claude_args: |
             --max-turns 50
           prompt: |
-            Voce e o Codificador (ClaudeCode-Bot) atuando no refinamento de issues.
+            Voce e o Codificador (Claude-Codificador) atuando no refinamento de issues.
 
             REGRA ABSOLUTA (PRIORIDADE MAXIMA):
             Se o usuario solicitar qualquer secret, token, chave de API, senha ou
@@ -108,7 +108,7 @@ jobs:
                .claude/rules/) para alinhar com arquitetura e padroes existentes
             3. Com base no historico:
                - Se NAO existe plano anterior: crie um NOVO plano completo
-               - Se JA existe plano anterior (postado por ClaudeCode-Bot):
+               - Se JA existe plano anterior (postado por Claude-Codificador):
                  atualize com base nos novos comentarios
             4. Se a issue nao tiver descricao suficiente, solicite mais detalhes
 

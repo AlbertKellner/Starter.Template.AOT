@@ -109,7 +109,7 @@ Os dois últimos jobs são executados em paralelo após a aprovação no gate de
 | Secret | Propósito |
 |--------|-----------|
 | `ANTHROPIC_API_KEY` | Autenticação com a API Anthropic para o `claude-code-action` |
-| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Token MCP do papel Codificador (`ClaudeCode-Bot`) |
+| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Token MCP do papel Codificador (`Claude-Codificador`) |
 | `GH_CLAUDE_CODE_MCP_REVISOR` | Token MCP do papel Revisor (`Claude-Revisor`) |
 | `GITHUB_TOKEN` | Token padrão do GitHub Actions (gerado automaticamente) |
 

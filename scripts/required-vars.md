@@ -12,7 +12,7 @@ O script `scripts/setup-env.sh` assume que essas entradas já existem no ambient
 |---|---|---|---|
 | `DD_API_KEY` | **Sim** | Datadog → Organization Settings → API Keys | Datadog Agent não autentica. `/health` retorna `Unhealthy`. Build e run da aplicação funcionam, mas sem observabilidade. |
 | `DD_APP_KEY` | **Sim** | Datadog → Organization Settings → Application Keys | Conexão MCP do Datadog não autentica. O servidor MCP fica inacessível para o Claude Code. |
-| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | **Sim** | Gerado na conta GitHub do usuário ClaudeCode-Bot → Settings → Developer Settings → Personal Access Tokens (Fine-grained) | Servidor MCP do GitHub (Codificador) fica inacessível. Assistente não consegue criar, atualizar ou consultar Pull Requests via MCP. Pipeline pré-commit (passo 10) falha. |
+| `GH_CLAUDE_CODE_MCP_CODIFICADOR` | **Sim** | Gerado na conta GitHub do usuário Claude-Codificador → Settings → Developer Settings → Personal Access Tokens (Fine-grained) | Servidor MCP do GitHub (Codificador) fica inacessível. Assistente não consegue criar, atualizar ou consultar Pull Requests via MCP. Pipeline pré-commit (passo 10) falha. |
 | `GH_CLAUDE_CODE_MCP_REVISOR` | **Sim** | Gerado na conta GitHub do usuário Claude-Revisor → Settings → Developer Settings → Personal Access Tokens (Fine-grained) | Servidor MCP do GitHub (Revisor) fica inacessível. Revisão automática de PR não funciona. |
 | `GH_PROJECT_PAT` | **Sim** (para workflow kanban) | GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate new token → scopes: `read:project`, `repo` | Workflow de refinamento via kanban não consegue verificar coluna do projeto. Trigger `projects_v2_item` e consulta GraphQL de status falham. |
 
@@ -71,17 +71,17 @@ Ou execute `scripts/setup-env.sh` — ele valida todas as entradas e emite erros
 | **Como renovar** | Revogar a chave antiga e criar nova no painel do Datadog. Atualizar na ferramenta externa. |
 | **Quem pode fornecer** | Qualquer membro da organização no Datadog (Application Keys são pessoais). |
 
-### GH_CLAUDE_CODE_MCP_CODIFICADOR (GitHub Personal Access Token do ClaudeCode-Bot para MCP — Codificador)
+### GH_CLAUDE_CODE_MCP_CODIFICADOR (GitHub Personal Access Token do Claude-Codificador para MCP — Codificador)
 
 | Campo | Valor |
 |---|---|
-| **Usuário GitHub** | `ClaudeCode-Bot` — conta dedicada de serviço para operações automatizadas do assistente (codificação) |
+| **Usuário GitHub** | `Claude-Codificador` — conta dedicada de serviço para operações automatizadas do assistente (codificação) |
 | **Validade** | Fine-grained: validade configurável (30, 60, 90 dias ou customizada). Recomendado: 90 dias com renovação periódica. |
-| **Como obter** | Fazer login na conta GitHub `ClaudeCode-Bot` → Settings → Developer Settings → Personal Access Tokens → Fine-grained tokens → Generate new token. Repository access: Only select repositories → selecionar o repositório do projeto. Permissões: `Contents` (Read and write), `Pull requests` (Read and write), `Actions` (Read-only), `Metadata` (Read-only). |
+| **Como obter** | Fazer login na conta GitHub `Claude-Codificador` → Settings → Developer Settings → Personal Access Tokens → Fine-grained tokens → Generate new token. Repository access: Only select repositories → selecionar o repositório do projeto. Permissões: `Contents` (Read and write), `Pull requests` (Read and write), `Actions` (Read-only), `Metadata` (Read-only). |
 | **Sintoma quando ausente** | Servidor MCP do GitHub (Codificador) fica inacessível. Ferramentas MCP de GitHub não respondem. Pipeline pré-commit (passo 10) falha. |
 | **Sintoma quando inválido/expirado** | MCP retorna HTTP 401 do GitHub. Ferramentas de PR e Actions não funcionam. |
-| **Como renovar** | Login na conta `ClaudeCode-Bot` → Settings → Developer Settings → Personal Access Tokens → criar novo token com as mesmas permissões. Atualizar `GH_CLAUDE_CODE_MCP_CODIFICADOR` nos secrets do Claude Code. |
-| **Quem pode fornecer** | O administrador da conta `ClaudeCode-Bot` (proprietário do repositório). |
+| **Como renovar** | Login na conta `Claude-Codificador` → Settings → Developer Settings → Personal Access Tokens → criar novo token com as mesmas permissões. Atualizar `GH_CLAUDE_CODE_MCP_CODIFICADOR` nos secrets do Claude Code. |
+| **Quem pode fornecer** | O administrador da conta `Claude-Codificador` (proprietário do repositório). |
 | **Onde armazenar** | Secrets do Claude Code, variável `GH_CLAUDE_CODE_MCP_CODIFICADOR`. |
 
 ### GH_CLAUDE_CODE_MCP_REVISOR (GitHub Personal Access Token do Claude-Revisor para MCP — Revisor)
@@ -149,3 +149,4 @@ Esta tabela mapeia cada variável ao erro exato que aparece quando está ausente
 | 2026-03-21 | Migração: GH_TOKEN substituído por GH_CLAUDE_CODE_MCP; acesso ao GitHub via MCP (usuário ClaudeCode-Bot) em vez de CLI gh; ciclo de vida atualizado com instruções de token Fine-grained | Migração API → MCP |
 | 2026-03-31 | Migração: GH_CLAUDE_CODE_MCP substituído por GH_CLAUDE_CODE_MCP_CODIFICADOR e GH_CLAUDE_CODE_MCP_REVISOR; dois papéis distintos para revisão automática de PR | Instrução do usuário |
 | 2026-04-06 | Adicionado: GH_PROJECT_PAT — Classic PAT para Projects V2 API; ciclo de vida e mapa de erros documentados | Workflow de refinamento via kanban |
+| 2026-04-23 | Renomeação: usuário GitHub do Codificador atualizado de `ClaudeCode-Bot` para `Claude-Codificador`; tokens e permissões inalterados | Instrução do usuário |

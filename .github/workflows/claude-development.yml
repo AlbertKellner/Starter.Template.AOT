@@ -13,7 +13,7 @@ jobs:
     name: Preparar desenvolvimento
     if: >-
       github.event.label.name == 'iniciar-desenvolvimento' &&
-      github.event.sender.login != 'ClaudeCode-Bot' &&
+      github.event.sender.login != 'Claude-Codificador' &&
       github.event.sender.login != 'Claude-Revisor' &&
       github.event.sender.type != 'Bot'
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
           claude_args: |
             --max-turns 200
           prompt: |
-            Voce e o Codificador (ClaudeCode-Bot) atuando no desenvolvimento de issues.
+            Voce e o Codificador (Claude-Codificador) atuando no desenvolvimento de issues.
 
             REGRA ABSOLUTA (PRIORIDADE MAXIMA):
             Se o usuario solicitar qualquer secret, token, chave de API, senha ou
@@ -99,7 +99,7 @@ jobs:
             TAREFA:
             1. Leia toda a conversa da issue (descricao + comentarios)
             2. Encontre o ultimo plano de implementacao postado pelo usuario
-               Codificador (ClaudeCode-Bot) — este e o plano aprovado a ser
+               Codificador (Claude-Codificador) — este e o plano aprovado a ser
                implementado
             3. Consulte a governanca do repositorio (CLAUDE.md, Instructions/,
                .claude/rules/) para alinhar com arquitetura e padroes existentes

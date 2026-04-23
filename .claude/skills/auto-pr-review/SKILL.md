@@ -37,7 +37,7 @@ Esta skill é ativada:
 
 | Papel | Username GitHub | Nome (git) | MCP Server | Tools Prefix | Faz commit? |
 |-------|----------------|------------|------------|--------------|-------------|
-| **Codificador** | `ClaudeCode-Bot` | `Codificador - Claude Agent` | `github` | `mcp__github__*` | Sim (em nome do usuário codificador) |
+| **Codificador** | `Claude-Codificador` | `Codificador - Claude Agent` | `github` | `mcp__github__*` | Sim (em nome do usuário codificador) |
 | **Revisor** | `Claude-Revisor` | `Claude-Revisor` | `github-revisor` | `mcp__github-revisor__*` | Não (nunca) |
 
 **Git push**: sempre usa credenciais do token do usuário codificador (via `GH_CLAUDE_CODE_MCP_CODIFICADOR`), independente do papel ativo.
@@ -155,7 +155,7 @@ Esta skill é ativada:
        3. Ler threads de review via MCP (mcp__github__pull_request_read method: get_review_comments)
 
        FILTRO DE THREADS — para cada thread não resolvida:
-       (a) Se TODOS os comentários são do Codificador (ClaudeCode-Bot) e/ou Revisor (Claude-Revisor)
+       (a) Se TODOS os comentários são do Codificador (Claude-Codificador) e/ou Revisor (Claude-Revisor)
            → thread processável
        (b) Se há comentário(s) de terceiro(s) (nem Codificador nem Revisor):
            - Verificar se existe reply do Revisor **dentro da mesma thread** com texto
