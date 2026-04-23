@@ -40,6 +40,9 @@ Regras de negócio, funcionalidades implementadas e conceitos de domínio.
 | Página | Endpoint | Descrição |
 |--------|----------|-----------|
 | [Health Check](Feature-Health) | `GET /health` | Verificação de disponibilidade da aplicação |
+| [DiskDrivesGetAll](Feature-DiskDrivesGetAll) | `GET /disk-drives` | Lista unidades de disco disponíveis |
+| [DiskItemsGetAll](Feature-DiskItemsGetAll) | `GET /disk-items/{driveIndex}` | Árvore completa de disco com cores |
+| [DiskItemGetByFolder](Feature-DiskItemGetByFolder) | `GET /disk-items/{driveIndex}/folder/{*folderPath}` | Subárvore de pasta específica |
 
 ---
 

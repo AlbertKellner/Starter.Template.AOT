@@ -92,6 +92,9 @@ docker compose down
 | Método | Rota | Autenticação | Descrição | Regra de Negócio |
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
+| `GET` | `/disk-drives` | Não | Lista unidades de disco disponíveis (índice, nome, tipo) | — |
+| `GET` | `/disk-items/{driveIndex}` | Não | Árvore completa de pastas/arquivos de uma unidade com cores | — |
+| `GET` | `/disk-items/{driveIndex}/folder/{*folderPath}` | Não | Subárvore de pasta específica dentro de uma unidade | — |
 
 ---
 

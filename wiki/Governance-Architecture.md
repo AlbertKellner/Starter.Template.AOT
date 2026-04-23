@@ -117,8 +117,9 @@ O enrichment do Serilog é transversal:
 | Feature | Tipo | Endpoint | Autenticação | Descrição |
 |---|---|---|---|---|
 | Health | Infra | `GET /health` | Não | Verificação de disponibilidade da aplicação e do Datadog Agent |
-
-> Features adicionais serão registradas aqui conforme forem implementadas.
+| [DiskDrivesGetAll](Feature-DiskDrivesGetAll) | Query | `GET /disk-drives` | Não | Lista unidades de disco disponíveis com índice, nome e tipo |
+| [DiskItemsGetAll](Feature-DiskItemsGetAll) | Query | `GET /disk-items/{driveIndex}` | Não | Retorna árvore completa de pastas e arquivos com cores para visualização |
+| [DiskItemGetByFolder](Feature-DiskItemGetByFolder) | Query | `GET /disk-items/{driveIndex}/folder/{*folderPath}` | Não | Retorna subárvore de uma pasta específica dentro de uma unidade de disco |
 
 ---
 

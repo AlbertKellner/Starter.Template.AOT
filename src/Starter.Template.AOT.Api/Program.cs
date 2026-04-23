@@ -10,6 +10,10 @@ using Starter.Template.AOT.Api.Infra.Security;
 using Starter.Template.AOT.Api.Infra.Logging;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Starter.Template.AOT.Api.Features.Query.DiskDrivesGetAll;
+using Starter.Template.AOT.Api.Features.Query.DiskItemsGetAll;
+using Starter.Template.AOT.Api.Features.Query.DiskItemGetByFolder;
+using System.Diagnostics.CodeAnalysis;
 const string OutputTemplate =
     "[{Timestamp:dd/MM/yyyy HH:mm:ss.fffffff}] [{CorrelationId}] [{UserName}] {Message:lj}{NewLine}{Exception}";
 
@@ -100,6 +104,14 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
+builder.Services.AddTransient<IDiskDrivesGetAllUseCase, DiskDrivesGetAllUseCase>();
+
+builder.Services.AddTransient<IDiskItemsGetAllRepository, DiskItemsGetAllRepository>();
+builder.Services.AddTransient<IDiskItemsGetAllUseCase, DiskItemsGetAllUseCase>();
+
+builder.Services.AddTransient<IDiskItemGetByFolderRepository, DiskItemGetByFolderRepository>();
+builder.Services.AddTransient<IDiskItemGetByFolderUseCase, DiskItemGetByFolderUseCase>();
+
 Log.Information("[Program] Registrar segurança e autenticação");
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -132,5 +144,8 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DiskDrivesGetAllEndpoint))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DiskItemsGetAllEndpoint))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DiskItemGetByFolderEndpoint))]
     internal static void PreserveControllers() { }
 }

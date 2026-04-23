@@ -348,3 +348,69 @@ EOF
 | **Escopo da tarefa** | PR #66 — execução da skill `auto-pr-review` |
 | **Causa** | Divergência entre conectividade de endpoint MCP (handshake OK) e registro de tools na sessão. O harness externo do Claude Code aparentemente registra o server `github-revisor` mas não carrega seu catálogo de tools em tempo de resolução de ferramentas. Causa raiz exata fora do escopo observável pelo assistente (harness-side). Diferente de Erro 23 (2026-04-16, causado por divergência de nome do server nas rules) — aqui nome e permissão estão corretos (`github-revisor` conforme `auto-pr-review-governance.md` 2026-04-18), mas o catálogo não aparece. |
 | **Novo comando / solução** | **Pendente**. Sem acesso a `mcp__github-revisor__*`, a fase Revisor não pode ser executada sem violar a Regra Crítica de Isolamento MCP da skill (usar `mcp__github__*` no papel Revisor implica que o mesmo usuário Codificador submeteria a review, descaracterizando o ciclo de dois papéis). Workaround possível: (a) usuário reinicia a sessão do Claude Code e verifica se o catálogo de `github-revisor` é recarregado; (b) se persistir, investigar configuração do harness externo (fora do alcance do assistente). A skill foi pausada e reportada ao usuário. |
+
+## Erro 27 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 27 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `export PATH="/root/.dotnet:$PATH" && dotnet build src/Starter.Template.AOT.Api/Starter.Template.AOT.Api.csproj 2>&1` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 28 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 28 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `echo "=== GET /disk-items/0 ===" && curl -s http://localhost:5000/disk-items/0 | python3 -c "import json,sys; d=json.load(sys.stdin); print(json.dumps({'name':d['name'],'value':d['value'],'color':d['color'],'formattedSize':d['formattedSize'],'childrenCount':len(d['children']) if d['children'] else 0, 'firstChild': d['children'][0] if d['children'] else None}, indent=2))" 2>/dev/null` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 29 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 29 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `kill 27427 2>/dev/null; pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 1; echo "Processos encerrados"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 30 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 30 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2; echo "Processos encerrados"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 31 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 31 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2; echo "Processo encerrado"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |
+
+## Erro 32 — Captura automática via hook
+
+| Campo | Valor |
+|---|---|
+| **Número** | 32 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `pkill -9 -f "dotnet" 2>/dev/null; sleep 1; echo "Processos encerrados"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
+| **Causa** | A ser investigada pelo assistente |
+| **Novo comando / solução** | Pendente |

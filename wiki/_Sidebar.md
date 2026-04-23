@@ -23,6 +23,9 @@
 - [Visão Geral](Domain-Overview)
 - [Regras de Negócio](Domain-Business-Rules)
 - [Health Check](Feature-Health)
+- [DiskDrivesGetAll](Feature-DiskDrivesGetAll)
+- [DiskItemsGetAll](Feature-DiskItemsGetAll)
+- [DiskItemGetByFolder](Feature-DiskItemGetByFolder)
 
 ---
 
