@@ -20,7 +20,7 @@ Esta rule define a política de revisão automática de código em Pull Requests
 
 | Campo | Valor |
 |-------|-------|
-| **Username GitHub** | `ClaudeCode-Bot` |
+| **Username GitHub** | `Claude-Codificador` |
 | **Nome (git user.name)** | `Codificador - Claude Agent` |
 | **Token (secret)** | `GH_CLAUDE_CODE_MCP_CODIFICADOR` (token do usuário codificador) |
 | **MCP Server** | `github` (prefixo `mcp__github__*`) |
@@ -58,7 +58,7 @@ Cada subagent (Revisor ou Codificador) deve usar EXCLUSIVAMENTE as ferramentas M
 
 ### Filtragem de Comentários
 
-O Codificador deve IGNORAR comentários que não sejam do Codificador (`ClaudeCode-Bot`) nem do Revisor (`Claude-Revisor`). Para threads com comentários de terceiros, o Codificador só pode implementar quando existir reply do Revisor **dentro da mesma thread** com texto exato **"concordo"** (sem adições). O "concordo" em outra thread, em review separada ou como parte de frase ("Concordo com o apontamento...") NÃO é válido — deve ser reply na mesma thread com texto exato "concordo".
+O Codificador deve IGNORAR comentários que não sejam do Codificador (`Claude-Codificador`) nem do Revisor (`Claude-Revisor`). Para threads com comentários de terceiros, o Codificador só pode implementar quando existir reply do Revisor **dentro da mesma thread** com texto exato **"concordo"** (sem adições). O "concordo" em outra thread, em review separada ou como parte de frase ("Concordo com o apontamento...") NÃO é válido — deve ser reply na mesma thread com texto exato "concordo".
 
 ### Tratamento de Comentários de Terceiros pelo Revisor
 
@@ -174,3 +174,4 @@ O relatório ao encerrar deve incluir:
 | 2026-04-09 | Reforçado: "concordo" deve ser reply na mesma thread do terceiro (texto exato, sem adições); resolução de threads deve ser reply na thread original (não review separada); filtragem do Codificador exige "concordo" na mesma thread | Análise de falhas no PR #55 |
 | 2026-04-09 | Adicionado: Política de Comentários do Revisor — comentários de confirmação proibidos; body de APPROVE sem apontamentos deve ser resumo breve (2-3 frases), sem checklist | Análise de causa raiz — ruído no PR #56 |
 | 2026-04-18 | Corrigido: nome do MCP Server do Codificador revertido de `github-codificador` para `github` e prefixo de tools `mcp__github-codificador__*` para `mcp__github__*`. Razão: divergência entre rule (esperava `github-codificador`) e realidade operacional (harness do Claude Code expõe o server como `github`, conforme `session-start.sh:70` e ferramentas carregadas via ToolSearch). As alterações de 2026-04-07 e 2026-04-08 haviam introduzido o nome inconsistente; este registro reverte ambas. | Análise de causa raiz — bloqueio de `auto-pr-review` no PR #64 (Erro 23 do `bash-errors-log.md`) |
+| 2026-04-23 | Renomeação: usuário GitHub do Codificador atualizado de `ClaudeCode-Bot` para `Claude-Codificador`; tokens e permissões inalterados | Instrução do usuário |

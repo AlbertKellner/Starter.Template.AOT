@@ -131,6 +131,17 @@ Antes de iniciar o polling do CI, o assistente **deve** consultar a seção "Tem
 
 Ver `scripts/pipeline-timing.sh` para cálculo de métricas e `.claude/rules/execution-time-tracking.md` para a política de rastreamento de tempo.
 
+### Proibição de encerrar o turno com checks incompletos
+
+Enquanto algum `check_run` do PR estiver com `status` diferente de `completed`, o assistente **não pode encerrar o turno**. Encerrar com checks em `queued`, `in_progress` ou `pending` é omissão do passo 11 e deve ser classificada como falha de governança, registrada em `bash-errors-log.md` (tipo: Governança) e corrigida na mesma sessão.
+
+Em particular, é **proibido**:
+- Encerrar o turno aguardando um `Monitor` que emite apenas timers (sem consulta real de estado via MCP ou endpoint público).
+- Deduzir conclusão por tempo decorrido ("já passou o tempo médio, deve ter terminado") sem chamar `get_check_runs` e observar `status="completed"` em todos os jobs.
+- Marcar o passo 11 como `completed` no TodoWrite enquanto houver checks pendentes.
+
+Quando o intervalo de polling for maior que alguns segundos, usar `Bash` com `run_in_background: true` + `sleep <intervalo>` — a notificação de conclusão do background autoriza a próxima chamada MCP; o turno só termina quando todos os `check_runs` estiverem `completed`. Ver workflow completo e padrão canônico em `.claude/skills/manage-pr-lifecycle/SKILL.md` seção "Padrão Canônico de Polling".
+
 O workflow de acompanhamento está em `.claude/skills/manage-pr-lifecycle/SKILL.md`.
 
 ---
@@ -221,3 +232,4 @@ PR #56 e sua review foram criados com `\n` literais no body, resultando em Markd
 | 2026-04-08 | Adicionado: calibração obrigatória de intervalos de polling via runbook; proibido usar valores arbitrários de sleep | Análise de causa raiz — polling com valores arbitrários |
 | 2026-04-09 | Adicionado: Política de Formatação de Body em PRs e Reviews — quebras de linha reais obrigatórias; `\n` escapados proibidos | Análise de causa raiz — PR #56 com Markdown quebrado |
 | 2026-04-09 | Expandido: Estrutura Obrigatória da Descrição de 3 para 5 seções (adicionadas Validação e Checklist); tabelas de comportamento/artefatos obrigatórias por escopo; evidências inline obrigatórias na seção Validação | Análise de padrões de PR do repositório |
+| 2026-04-23 | Adicionado: "Proibição de encerrar o turno com checks incompletos" — encerramento com checks em queued/in_progress/pending é omissão do passo 11; Monitor com timer cego e dedução por wall-clock proibidos; padrão obrigatório `run_in_background` + novo `get_check_runs` | Análise de causa raiz — polling passivo com Monitor |

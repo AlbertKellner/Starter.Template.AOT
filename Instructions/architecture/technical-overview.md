@@ -120,7 +120,7 @@ Recursos externos disponíveis para o assistente durante o desenvolvimento. Os G
 | Recurso | Tipo | Configuração | Variáveis Requeridas | Capacidade |
 |---|---|---|---|---|
 | Datadog MCP | MCP Server (HTTP) | `.mcp.json` → `datadog` | `DD_API_KEY`, `DD_APP_KEY` | Acesso a logs de todos os ambientes (local, CI, produção) via ferramentas MCP do Datadog |
-| GitHub MCP (Codificador) | MCP Server (HTTP) | env-driven (server: `github`, prefixo `mcp__github__*`) | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; commits e respostas a comentários via ferramentas MCP do GitHub (usuário ClaudeCode-Bot) |
+| GitHub MCP (Codificador) | MCP Server (HTTP) | env-driven (server: `github`, prefixo `mcp__github__*`) | `GH_CLAUDE_CODE_MCP_CODIFICADOR` | Criação, atualização e consulta de Pull Requests; monitoramento de GitHub Actions; commits e respostas a comentários via ferramentas MCP do GitHub (usuário Claude-Codificador) |
 | GitHub MCP (Revisor) | MCP Server (HTTP) | env-driven (server: `github-revisor`, prefixo `mcp__github-revisor__*`) | `GH_CLAUDE_CODE_MCP_REVISOR` | Revisão automática de código em PRs; submissão de reviews (APPROVE/REQUEST_CHANGES); resolução de threads; comentários inline via ferramentas MCP do GitHub (usuário Claude-Revisor) |
 
 ### Como Novos Recursos São Registrados
@@ -190,3 +190,4 @@ Quando o usuário disponibilizar um novo recurso operacional (MCP server, integr
 | 2026-03-21 | Infra/Logging/ documentada: DatadogHttpSink e DatadogLogEntry adicionados à tabela de componentes; lacuna de governança corrigida | Análise de causas-raiz |
 | 2026-03-30 | Template sanitizado: referências a features e integrações específicas removidas; projeto renomeado para Starter.Template.AOT | Sanitização de template |
 | 2026-04-18 | Corrigida seção "Recursos Operacionais": GitHub MCPs explicitados como env-driven (não `.mcp.json`); coluna "Configuração" agora registra nome do server (`github`, `github-revisor`) e prefixo de tools (`mcp__github__*`, `mcp__github-revisor__*`); item 4 do protocolo de registro qualificado | Análise de causa raiz — bloqueio de `auto-pr-review` no PR #64 |
+| 2026-04-23 | Renomeação: usuário GitHub do Codificador atualizado de `ClaudeCode-Bot` para `Claude-Codificador`; tokens e permissões inalterados | Instrução do usuário |

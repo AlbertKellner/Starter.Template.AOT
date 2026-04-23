@@ -51,6 +51,19 @@ O Claude Code inicializa MCP servers de forma assíncrona no startup da sessão.
 
 Valores recomendados: `MCP_TIMEOUT=60000` (60s), `MCP_TOOL_TIMEOUT=300000` (5min).
 
+### Uso Correto da Ferramenta Monitor
+
+A ferramenta `Monitor` do Claude Code emite eventos a partir de linhas de stdout do script monitorado. A política de cobertura exige que cada linha represente um **estado real do recurso observado** (log de aplicação, status de CI, evento de arquivo). Scripts que emitem apenas **timers** (`sleep 60; echo tick`) violam a cobertura — um timer não descreve o estado do alvo e, na prática, transforma o `Monitor` em um cronômetro cego.
+
+**Proibido**:
+- Usar `Monitor` para "aguardar" um recurso externo (CI, build remoto, fila) sem uma consulta real dentro do script monitorado (chamada a endpoint, `curl`, ferramenta CLI que retorne estado).
+- Confundir `Monitor` com `Bash` + `run_in_background`: para um único "espere até X segundos e continue", usar `Bash` com `run_in_background: true` + `sleep N`. Monitor é para streaming contínuo de eventos reais.
+- Encerrar o turno apoiado apenas em ticks de timer, sem ter chamado a ferramenta que observa o estado real do alvo.
+
+**Recomendado**:
+- Para esperas pontuais (um único intervalo): `Bash` com `run_in_background: true` + `sleep N` + chamada MCP após a notificação de conclusão.
+- Para polling de CI especificamente: ver "Padrão Canônico de Polling" em `.claude/skills/manage-pr-lifecycle/SKILL.md` — é um loop de `get_check_runs` + `run_in_background`, não um `Monitor`.
+
 ### Conversão de Problemas Recorrentes
 
 Todo problema recorrente de ambiente deve ser convertido em pré-requisito verificável:
@@ -82,3 +95,4 @@ O workflow completo (checklist de pré-requisitos, protocolo de ambiente não pr
 | 2026-03-19 | Expandido: eficiência de execução, evolução do script, conversão de problemas recorrentes | Instrução do usuário |
 | 2026-03-21 | Refatorado: workflows procedurais extraídos para skill verify-environment; rule simplificada para conter apenas política | Auditoria de governança |
 | 2026-04-02 | Adicionado: política de timeouts MCP (MCP_TIMEOUT, MCP_TOOL_TIMEOUT) para garantir inicialização confiável | Diagnóstico de MCP — Erro 12 |
+| 2026-04-23 | Adicionado: seção "Uso Correto da Ferramenta Monitor" — proibição de timers cegos; `Bash` + `run_in_background` é a ferramenta correta para esperas pontuais | Análise de causa raiz — polling passivo com Monitor |
