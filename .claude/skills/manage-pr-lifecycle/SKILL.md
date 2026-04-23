@@ -96,6 +96,31 @@ Usar a ferramenta MCP `pull_request_read` com `method: get_check_runs` no PR atu
 - Aplicar o intervalo de espera conforme a estratégia calculada no Passo 1
 - Continuar até que todos os check runs tenham `status: completed`
 
+#### Padrão Canônico de Polling (normativo)
+
+O polling é um **loop de consulta real de estado**, não um cronômetro cego. A cada tick, consultar o estado do CI; aguardar entre ticks com `run_in_background`.
+
+Algoritmo obrigatório:
+
+```
+1. Chamar mcp__github-codificador__pull_request_read (method: get_check_runs, pullNumber: <N>)
+2. Extrair de cada check_run os campos `status` e `conclusion`
+3. Se TODOS os check_runs têm status="completed":
+   - Ir para o Passo 3 (exibir métricas) e Passo 4 (avaliar conclusion)
+4. Caso contrário:
+   - Iniciar um Bash com `run_in_background: true` executando `sleep <intervalo>` (intervalo do Passo 1)
+   - Aguardar a notificação de conclusão do background (NÃO chamar outras ferramentas nesse intervalo)
+   - Ao receber a notificação, voltar ao passo 1 deste algoritmo
+```
+
+**Proibido**:
+- Encerrar o turno enquanto houver `check_run` com `status` diferente de `completed` — é omissão do Passo 11 e deve ser registrada em `bash-errors-log.md`.
+- Usar `Monitor` com scripts que só emitem **timers** (ex.: `sleep 80; echo tick; sleep 60; echo tick`) — a "lâmina de cobertura" do Monitor exige que cada linha de stdout represente um **estado real do recurso observado**. Timer cego ≠ polling. Ver nota em `.claude/rules/environment-readiness.md`.
+- Usar `Monitor` para aguardar o CI sem uma chamada ao endpoint ou ferramenta MCP que consulte o estado real. Se usar `Monitor`, o script interno deve conter uma consulta real (ex.: `curl` ao endpoint público do GitHub Actions ou execução do MCP via script), e a filtragem deve emitir eventos terminais (success, failure, cancelled, timeout).
+- Presumir conclusão a partir de wall-clock ("já passaram ~3min, deve ter acabado"). Só o estado reportado pelo `get_check_runs` autoriza avanço.
+
+**Recomendado**: o padrão `run_in_background: true` + `sleep <intervalo>` + nova chamada MCP é a abordagem simples e segura. `Monitor` é cabível apenas quando o polling exige streaming contínuo de múltiplos estados.
+
 ### Passo 3: Exibir métricas de tempo
 
 Quando todos os check runs estiverem completos, calcular e exibir as métricas:
@@ -224,3 +249,4 @@ Quando a tarefa é análise de PR:
 | 2026-04-07 | Atualizado: explicitado nome do usuário codificador (Codificador - Claude Agent); corrigido servidor MCP de `github` para `github-codificador` com prefixo `mcp__github-codificador__*` | Instrução do usuário |
 | 2026-04-08 | Corrigido: frontmatter allowed-tools atualizado de `mcp__github__*` para `mcp__github-codificador__*` | Auditoria de governança |
 | 2026-04-09 | Atualizado: passos 2a e 2b expandidos para referenciar 5 seções obrigatórias (Motivos, Plano, Realizado, Validação, Checklist) com tabelas de comportamento/artefatos e evidências inline | Padronização de descrições de PR |
+| 2026-04-23 | Adicionado: "Padrão Canônico de Polling" normativo no Passo 2 do acompanhamento de CI — loop real de consulta via MCP + `run_in_background` para intervalos; proibição de timers cegos e Monitor sem consulta de estado | Análise de causa raiz — polling passivo com Monitor |

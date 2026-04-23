@@ -323,3 +323,15 @@ EOF
 | **Erro retornado** | Exit code 144 (no matching processes found) |
 | **Causa** | O processo em background já havia encerrado naturalmente antes da chamada ao `pkill`. Exit code 144 é falso positivo — não indica falha real da aplicação. O health check respondeu com sucesso antes do kill. |
 | **Novo comando / solução** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; true` — suprimir o código de saída quando o processo já não existe. Alternativamente, usar `kill $(cat /tmp/app-pid.txt) 2>/dev/null; true`. |
+
+## Erro 25 — Omissão do passo 11 via Monitor com timer cego (polling passivo)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 25 |
+| **Data** | 2026-04-23 |
+| **Tipo** | Governança |
+| **Comportamento omitido** | Passo 11 (acompanhar CI até a conclusão). O assistente configurou um `Monitor` com script `sleep 80; echo tick; sleep 60; echo tick; ...` e encerrou o turno aguardando os eventos, sem jamais chamar `mcp__github__pull_request_read` com `method: get_check_runs` para observar o estado real dos jobs. O usuário teve que intervir ("Parou porque?") para o ciclo retomar. |
+| **Escopo da tarefa** | Híbrido (Governança + CI/Infra) — PR #66 |
+| **Causa** | (1) A skill `manage-pr-lifecycle` e a rule `pr-metadata-governance` não definiam explicitamente um "padrão canônico de polling" — o workflow dizia para calibrar intervalos pelo runbook mas não dizia que o polling deve ser um loop real de `get_check_runs` + `run_in_background`. (2) Sem receita clara, o assistente interpretou `Monitor` como substituto válido para polling e usou timers cegos. (3) A rule `environment-readiness` não orientava sobre o uso correto de `Monitor`: a "lâmina de cobertura" exige que cada linha de stdout represente estado real do alvo, não ticks de timer. (4) Nenhuma rule proibia encerrar o turno com `check_runs` em `queued`/`in_progress`. |
+| **Correção implementada** | (a) `.claude/skills/manage-pr-lifecycle/SKILL.md` — adicionada seção "Padrão Canônico de Polling" com algoritmo normativo (loop `get_check_runs` + `run_in_background` + `sleep`) e proibições explícitas de timer cego, Monitor sem consulta de estado e dedução por wall-clock. (b) `.claude/rules/pr-metadata-governance.md` — adicionada seção "Proibição de encerrar o turno com checks incompletos", que classifica o encerramento prematuro como omissão do passo 11. (c) `.claude/rules/environment-readiness.md` — adicionada seção "Uso Correto da Ferramenta Monitor" distinguindo Monitor (streaming de estados reais) de `Bash run_in_background` + `sleep` (espera pontual). (d) Este registro, para que o padrão fique visível em futuras consultas ao log. |
