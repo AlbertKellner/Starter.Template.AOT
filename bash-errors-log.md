@@ -323,3 +323,47 @@ EOF
 | **Erro retornado** | Exit code 144 (no matching processes found) |
 | **Causa** | O processo em background já havia encerrado naturalmente antes da chamada ao `pkill`. Exit code 144 é falso positivo — não indica falha real da aplicação. O health check respondeu com sucesso antes do kill. |
 | **Novo comando / solução** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; true` — suprimir o código de saída quando o processo já não existe. Alternativamente, usar `kill $(cat /tmp/app-pid.txt) 2>/dev/null; true`. |
+
+## Erro 25 — `ls` em diretório inexistente captura exit code 2 mesmo com stderr suprimido
+
+| Campo | Valor |
+|---|---|
+| **Número** | 25 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `echo "=== Program.cs linhas 45-145 ==="; awk ... Program.cs 2>/dev/null; cat .../AppJsonContext.cs; ls -R /home/user/Starter.Template.AOT/src/Starter.Template.AOT.Api/Features/ 2>/dev/null` |
+| **Erro retornado** | Exit code 2 propagado pelo `ls -R` final (último comando da cadeia `;`). Stderr suprimido por `2>/dev/null` — mensagem não capturada. |
+| **Causa** | O repositório atual não possui a pasta `Features/` (template limpo). `ls` em diretório inexistente retorna exit 2. Em cadeias `cmd1; cmd2; cmd3`, o exit code final é o do último comando. O hook `bash-error-capture.sh` captura qualquer exit != 0, sem distinguir inspeções benignas de erros reais. |
+| **Novo comando / solução** | Adicionar `|| true` ao final de comandos compostos de inspeção (ex: `... ; ls -R .../Features/ 2>/dev/null || true`). Alternativa: verificar existência antes (`[ -d path ] && ls ...`). Padrão documentado no runbook. |
+
+## Erro 26 — Mesmo padrão: `ls` em Features/ inexistente (GeminiClone vs. atual)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 26 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `ls /tmp/external/GeminiClone/src/Starter.Template.AOT.Api/Features/ 2>/dev/null; echo "---Query---"; ls .../Features/Query/ 2>/dev/null; echo "---Command---"; ls .../Features/Command/ 2>/dev/null` |
+| **Erro retornado** | Exit code 2 do último `ls`. GeminiClone tem `Features/Command/` vazio/inexistente. |
+| **Causa** | Variação de Erro 25 — mesma causa raiz (inspeção benigna captura exit 2 de `ls` em path faltante). |
+| **Novo comando / solução** | Ver Erro 25. Aplicar `|| true` em inspeções de estrutura. |
+
+## Erro 27 — Variação: `ls .../Features/Query/` inexistente no repositório atual
+
+| Campo | Valor |
+|---|---|
+| **Número** | 27 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `ls /home/user/Starter.Template.AOT/src/Starter.Template.AOT.Api/Features/Query/ 2>/dev/null; echo "---Command---"; ls .../Features/Command/ 2>/dev/null` |
+| **Erro retornado** | Exit code 2 |
+| **Causa** | Variação de Erro 25 — `Features/` ausente no repositório atual (template limpo). |
+| **Novo comando / solução** | Ver Erro 25. |
+
+## Erro 28 — Variação: `ls -la` em Features/ inexistente
+
+| Campo | Valor |
+|---|---|
+| **Número** | 28 |
+| **Data** | 2026-04-23 |
+| **Comando executado** | `ls -la /home/user/Starter.Template.AOT/src/Starter.Template.AOT.Api/Features/ 2>&1` |
+| **Erro retornado** | `ls: cannot access '/home/user/Starter.Template.AOT/src/Starter.Template.AOT.Api/Features/': No such file or directory` |
+| **Causa** | Variação de Erro 25 — diretório `Features/` ausente (repo em estado template limpo). Aqui o `2>&1` redireciona stderr para stdout, então a mensagem foi capturada. |
+| **Novo comando / solução** | Ver Erro 25. Padrão preferido para inspeção: `[ -d path ] && ls -la path/ || echo "path ausente"`. |

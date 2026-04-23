@@ -117,8 +117,9 @@ Esta tabela consolida os problemas de ambiente mais frequentes, extraídos de `b
 
 | # | Sintoma | Causa | Solução | Ref |
 |---|---|---|---|---|
+| 1 | Hook `bash-error-capture.sh` cria entradas para `ls`/`cat` em paths inexistentes com `2>/dev/null` | Exit code 2 propaga como último comando em cadeias `;`, mesmo com stderr suprimido | Adicionar `|| true` ao final de comandos compostos de inspeção, ou verificar existência com `[ -d path ]` antes de `ls` | Erros 25–28 |
 
-> **Nota**: Esta tabela é preenchida à medida que problemas são encontrados e documentados em `bash-errors-log.md`. No template base, não há problemas recorrentes registrados.
+> **Nota**: Esta tabela é preenchida à medida que problemas são encontrados e documentados em `bash-errors-log.md`.
 
 ---
 
