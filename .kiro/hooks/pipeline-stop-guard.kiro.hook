@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Pipeline Stop Guard",
+  "description": "Verifica automaticamente se todos os passos do pipeline foram executados antes de permitir o encerramento. Emite lembrete se houver passos pendentes, CI em andamento, ou se a última ação foi uma confirmação solta sem trabalho real.",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "VERIFICAÇÃO AUTOMÁTICA DE COMPLETUDE: Antes de encerrar, verifique:\n\n1. Você declarou um checklist de passos no início desta tarefa? Se sim, todos foram executados?\n2. Há CI/pipeline em andamento que você deveria estar acompanhando?\n3. A sua última ação foi uma confirmação solta (\"understood\", \"ok\") sem trabalho real? Se sim, isso é uma falha — retome.\n4. O usuário pediu explicitamente para parar? Se não, e há trabalho pendente, retome imediatamente.\n\nSó encerre se: (a) todos os passos foram executados, (b) o usuário pediu para parar, ou (c) há bloqueador documentado."
+  }
+}
