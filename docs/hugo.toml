@@ -9,6 +9,7 @@ enableRobotsTXT = true
 enableGitInfo = true
 
 [module]
+  proxy = "direct"
   [module.hugoVersion]
     extended = true
     min = "0.110.0"
