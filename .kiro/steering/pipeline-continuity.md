@@ -15,6 +15,7 @@ Quando o Kiro declarar um checklist de passos no início de uma tarefa (pipeline
 - Tratar o retorno de uma ferramenta como ponto de parada quando há passos pendentes no checklist
 - Parar após verificar status de CI sem reportar o resultado final ao usuário — se jobs estão em andamento, aguardar e re-verificar; se concluíram, reportar resultado
 - Responder "understood" após uma verificação de CI/status e parar — isso é a falha mais recorrente e deve ser tratada como erro crítico
+- Fazer perguntas ao usuário quando a resposta pode ser inferida pela governança — aplicar premissa conservadora e registrar, conforme CLAUDE.md §3
 
 ## Comportamento Esperado
 
@@ -29,5 +30,6 @@ Esta regra existe porque o Kiro demonstrou falhas de continuidade recorrentes:
 1. Após criar arquivos em paralelo, parou com "understood" sem continuar os passos restantes
 2. Após verificar status de CI (jobs em andamento), respondeu "understood" e parou em vez de aguardar e re-verificar
 3. Após merge de PR, não acompanhou o pipeline na main até conclusão
+4. Ao encontrar situação ambígua (PR obsoleto), parou para perguntar ao usuário em vez de aplicar premissa conservadora da governança
 
 O hook `agentStop` (`pipeline-stop-guard`) foi criado para enforcement automático desta regra.
