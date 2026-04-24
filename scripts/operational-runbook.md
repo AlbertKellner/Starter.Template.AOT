@@ -92,6 +92,9 @@ docker compose down
 | Método | Rota | Autenticação | Descrição | Regra de Negócio |
 |---|---|---|---|---|
 | `GET` | `/health` | Não | Verificação de disponibilidade (app + Datadog Agent) | RN-005 |
+| `GET` | `/disk-drives` | Não | Lista drives disponíveis no sistema | RN-006 |
+| `GET` | `/disk-structure/{selectedDrive}` | Não | Escaneia estrutura completa de um drive com cores | RN-007 |
+| `GET` | `/disk-structure/{selectedDrive}/folder/{selectedFolder}` | Não | Busca estrutura de pasta específica em um drive | RN-008 |
 
 ---
 

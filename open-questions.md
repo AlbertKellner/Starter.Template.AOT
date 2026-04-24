@@ -27,6 +27,15 @@ Este arquivo contém **apenas** dúvidas e ambiguidades **ainda abertas**.
 | **Status** | Aberta |
 | **Premissas relacionadas** | — |
 
+### DUV-002
+| Campo | Valor |
+|---|---|
+| **Id** | DUV-002 |
+| **Data** | 2026-04-24 |
+| **Origem** | Migração da documentação de GitHub Wiki para Hugo Pages |
+| **Dúvida** | ~~O script `governance-audit.sh` (checks 7, 8, 20, 21, 24, 25, 37) referencia a pasta `wiki/` como fonte canônica da documentação.~~ |
+| **Status** | **Resolvida** — script atualizado para apontar para `docs/content/` em 2026-04-24 |
+
 ### Template de Dúvida
 
 ```markdown

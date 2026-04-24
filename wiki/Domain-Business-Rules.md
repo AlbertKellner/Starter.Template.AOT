@@ -8,11 +8,11 @@ Cada regra de negócio possui uma página de Feature correspondente que detalha 
 
 ## Regras Ativas
 
-> **Estado atual**: nenhuma regra de negócio implementada. Regras serão adicionadas aqui conforme features forem desenvolvidas.
-
 | Id | Título | Feature | Status |
 |----|--------|---------|--------|
-| — | — | — | — |
+| RN-006 | Listar drives disponíveis no sistema | [DiskDrivesGetAll](Feature-DiskDrivesGetAll) | Ativa |
+| RN-007 | Escanear estrutura de disco com cores hierárquicas | [DiskStructureGetByDrive](Feature-DiskStructureGetByDrive) | Ativa |
+| RN-008 | Buscar pasta específica em drive escaneado | [DiskStructureGetByFolder](Feature-DiskStructureGetByFolder) | Ativa |
 
 ## Referências
 - [Visão Geral do Domínio](Domain-Overview)

@@ -40,6 +40,9 @@ Regras de negócio, funcionalidades implementadas e conceitos de domínio.
 | Página | Endpoint | Descrição |
 |--------|----------|-----------|
 | [Health Check](Feature-Health) | `GET /health` | Verificação de disponibilidade da aplicação |
+| [Listar Drives](Feature-DiskDrivesGetAll) | `GET /disk-drives` | Lista drives disponíveis no sistema |
+| [Escanear Drive](Feature-DiskStructureGetByDrive) | `GET /disk-structure/{drive}` | Escaneia estrutura completa de um drive |
+| [Buscar Pasta](Feature-DiskStructureGetByFolder) | `GET /disk-structure/{drive}/folder/{folder}` | Busca estrutura de pasta específica |
 
 ---
 

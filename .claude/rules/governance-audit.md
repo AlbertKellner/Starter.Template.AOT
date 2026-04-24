@@ -40,8 +40,8 @@ O script `scripts/governance-audit.sh` verifica automaticamente.
 | 4 | Contagem de skills no `README.md` corresponde ao número real — extrai o número da linha que contém `.claude/skills/` (aceita qualquer termo descritivo, não apenas "skills") | Consistência documental |
 | 5 | Variáveis de ambiente do `docker-compose.yml` (via `${...}`) estão documentadas em `required-vars.md` — variáveis com valor literal são excluídas dinamicamente; prefixos de configuração inline (`__`) são excluídos via lista configurável (`INLINE_CONFIG_PREFIXES` no topo do script) | Configuração |
 | 6 | Nenhuma referência ativa a artefatos removidos em arquivos não-históricos — IDs derivados do campo `**Status**` em `architecture-decisions.md` e `business-rules.md` | Higiene |
-| 7 | Todas as features possuem página correspondente na Wiki | Cobertura documental |
-| 8 | Páginas estruturais obrigatórias existem na Wiki | Cobertura documental |
+| 7 | Todas as features possuem página correspondente na documentação Hugo (`docs/content/dominio/features/`) | Cobertura documental |
+| 8 | Páginas estruturais obrigatórias existem na documentação Hugo | Cobertura documental |
 | 9 | Rules não contêm workflows procedurais extensos (headings procedurais + maior sequência contígua > `MAX_POLICY_STEPS`, configurável no topo do script, default 8) | Separação rules/skills |
 | 10 | Referências cruzadas entre rules apontam para arquivos existentes | Integridade referencial |
 | 11 | `README.md` não referencia artefatos removidos — derivação dinâmica dos mesmos IDs do check #6 | Higiene |
@@ -53,25 +53,25 @@ O script `scripts/governance-audit.sh` verifica automaticamente.
 | 17 | Hooks configurados em `settings.json` existem como arquivos e têm sintaxe bash válida | Integridade de hooks |
 | 18 | Contagens de skills são consistentes em todas as ocorrências do `README.md` | Consistência documental |
 | 19 | Todos os diretórios de skills contêm `SKILL.md` com estrutura mínima (Propósito/Nome, Quando Usar, Workflow) | Integridade estrutural |
-| 20 | `wiki/Governance-Architecture.md` lista todas as features implementadas | Completude wiki |
-| 21 | `wiki/Governance-Architecture.md` lista todas as subpastas de `Infra/` | Completude wiki |
-| 22 | `wiki/Governance-Architecture.md` lista todas as integrações de `Shared/ExternalApi/` | Completude wiki |
+| 20 | `docs/content/governanca/arquitetura.md` lista todas as features implementadas | Completude documental |
+| 21 | `docs/content/governanca/arquitetura.md` lista todas as subpastas de `Infra/` | Completude documental |
+| 22 | `docs/content/governanca/arquitetura.md` lista todas as integrações de `Shared/ExternalApi/` | Completude documental |
 | 23 | Todas as rules possuem estrutura mínima (Propósito + Histórico ou Relação com Outras Rules) | Estrutura mínima |
-| 24 | Tabela "Features Implementadas" na wiki lista todas as features | Completude wiki |
-| 37 | Páginas wiki `Feature-*.md` não contêm conteúdo de placeholder (`<!-- TODO:` ou `[Título da Funcionalidade]`) — stubs gerados pelo `--fix` devem ser preenchidos com conteúdo real antes do commit | Completude wiki |
+| 24 | Tabela "Features Implementadas" na documentação lista todas as features | Completude documental |
+| 37 | Páginas de feature em `docs/content/dominio/features/` não contêm conteúdo de placeholder (`<!-- TODO:` ou `[Título da Funcionalidade]`) — stubs gerados pelo `--fix` devem ser preenchidos com conteúdo real antes do commit | Completude documental |
 | 39 | `.github/pull_request_template.md` contém as 5 seções obrigatórias (Motivos da alteração, Plano de execução, O que foi realizado, Validação, Checklist) conforme `pr-metadata-governance.md` | Padronização de PR |
 
 ### Verificações não-bloqueantes (aviso, não bloqueia commit)
 
 | # | Verificação | Categoria |
 |---|---|---|
-| 25 | Nenhuma página wiki `Feature-*.md` órfã (sem feature correspondente no código) | Higiene bidirecional |
+| 25 | Nenhuma página de feature órfã em `docs/content/dominio/features/` (sem feature correspondente no código) | Higiene bidirecional |
 | 26 | Endpoints no runbook correspondem a rotas nos Controllers | Alinhamento operacional |
 | 27 | Regras de negócio ativas possuem cenários BDD correspondentes | Completude semântica |
 | 28 | Contratos OpenAPI refletem endpoints implementados (não são placeholders) | Completude semântica |
 | 29 | Referências em skills apontam para arquivos existentes | Integridade referencial |
 | 30 | Skills reais estão referenciadas em `operating-model.md` | Alinhamento operacional |
-| 31 | `wiki/Domain-Business-Rules.md` lista todas as RNs ativas | Completude wiki |
+| 31 | `docs/content/dominio/regras-negocio.md` lista todas as RNs ativas | Completude documental |
 | 32 | Quantidade e IDs de checks no script correspondem 1:1 à documentação na rule | Meta-consistência |
 | 33 | Grafo de rules conectado — nenhuma rule isolada (sem referências a outras rules); detecta pares bidirecionais sem hierarquia explícita | Integridade referencial |
 | 34 | Todas as skills referenciam pelo menos uma rule | Integridade referencial |
@@ -110,12 +110,12 @@ Toda operação de escrita (`sed -i`, `cat >`) é precedida por `safe_fix <arqui
 ### Correções automáticas suportadas:
 - Checks #1 e #2: adiciona imports faltantes ao `CLAUDE.md`
 - Checks #3 e #4: atualiza contagens de rules e skills no `README.md`
-- Check #7: cria stub de página wiki `Feature-<Nome>.md` com template obrigatório
+- Check #7: cria stub de página Hugo em `docs/content/dominio/features/` com template obrigatório e front-matter YAML
 - Check #13: remove imports quebrados (arquivos inexistentes) do `CLAUDE.md`
 
 ### O que NÃO é corrigido automaticamente:
 - Problemas semânticos (categorização incorreta, referências a artefatos removidos em contexto ativo)
-- Problemas que requerem julgamento (separação rules/skills, conteúdo de wiki, conflitos de referência)
+- Problemas que requerem julgamento (separação rules/skills, conteúdo de documentação, conflitos de referência)
 - Estrutura de SKILL.md (check #19) — requer conteúdo contextual
 - Referências cruzadas quebradas (requer decisão sobre qual arquivo corrigir)
 
@@ -196,3 +196,4 @@ Avisos (checks não-bloqueantes) podem ser promovidos a falhas (bloqueantes) via
 | 2026-04-08 | Adicionado: check #37 (aviso) — limiar de curadoria do bash-errors-log.md (30 erros) | Auditoria de governança — rodada 7 |
 | 2026-04-08 | Check #37 reclassificado: limiar de curadoria movido para #38 (não implementado no script — DUV-001); #37 agora é check bloqueante de completude wiki — detecta páginas Feature-* com conteúdo de placeholder gerado pelo --fix | Análise de causa-raiz — stub wiki não preenchido |
 | 2026-04-09 | Adicionado: check #38 implementado no script (limiar de curadoria bash-errors-log); check #39 adicionado (bloqueante) — PR template contém 5 seções obrigatórias | Padronização de descrições de PR |
+| 2026-04-24 | Migração wiki→Hugo: checks 7, 8, 20-22, 24-25, 31, 37 atualizados para apontar para `docs/content/` em vez de `wiki/`; variáveis `WIKI_DIR`/`WIKI_ARCH` substituídas por `DOCS_DIR`/`DOCS_ARCH`/`DOCS_FEATURES_DIR`; check #7 --fix gera stubs Hugo com front-matter YAML; check #25 adaptado para busca kebab-case; categoria "Completude wiki" renomeada para "Completude documental" | Migração GitHub Wiki → Hugo Pages |

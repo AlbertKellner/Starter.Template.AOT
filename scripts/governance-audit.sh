@@ -99,8 +99,9 @@ ADR_FILE="$REPO_ROOT/Instructions/architecture/architecture-decisions.md"
 COMPOSE="$REPO_ROOT/docker-compose.yml"
 REQUIRED_VARS="$REPO_ROOT/scripts/required-vars.md"
 SETTINGS="$REPO_ROOT/.claude/settings.json"
-WIKI_DIR="$REPO_ROOT/wiki"
-WIKI_ARCH="$REPO_ROOT/wiki/Governance-Architecture.md"
+DOCS_DIR="$REPO_ROOT/docs/content"
+DOCS_ARCH="$REPO_ROOT/docs/content/governanca/arquitetura.md"
+DOCS_FEATURES_DIR="$REPO_ROOT/docs/content/dominio/features"
 FEATURES_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Features"
 INFRA_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Infra"
 EXTERNAL_API_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Shared/ExternalApi"
@@ -347,7 +348,7 @@ for artifact_id in $REMOVED_ARTIFACTS; do
         STALE_REFS="$STALE_REFS $file($artifact_id)"
       fi
     fi
-  done < <(find "$REPO_ROOT/Instructions" "$REPO_ROOT/.claude/rules" "$REPO_ROOT/wiki" -name "*.md" -type f 2>/dev/null | sort)
+  done < <(find "$REPO_ROOT/Instructions" "$REPO_ROOT/.claude/rules" "$DOCS_DIR" -name "*.md" -type f 2>/dev/null | sort)
 done
 
 if [ -z "$STALE_REFS" ]; then
@@ -360,29 +361,40 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 7. Todas as features possuem página correspondente na Wiki
+# 7. Todas as features possuem página correspondente na documentação Hugo
 # ---------------------------------------------------------------------------
 echo ""
-echo "--- 7. Features com página na Wiki ---"
+echo "--- 7. Features com página na documentação ---"
 
-if [ -d "$WIKI_DIR" ] && [ -d "$FEATURES_DIR" ]; then
-  MISSING_WIKI=""
+if [ -d "$DOCS_FEATURES_DIR" ] && [ -d "$FEATURES_DIR" ]; then
+  MISSING_DOCS=""
   while IFS= read -r feature_dir; do
     feature_name=$(basename "$feature_dir")
-    if ! find "$WIKI_DIR" -iname "Feature-*${feature_name}*" -type f 2>/dev/null | grep -q .; then
-      MISSING_WIKI="$MISSING_WIKI $feature_name"
+    # Converter PascalCase para kebab-case para busca no Hugo (ex: DiskDrivesGetAll -> disk-drives-get-all)
+    kebab_name=$(echo "$feature_name" | sed 's/\([A-Z]\)/-\L\1/g' | sed 's/^-//')
+    if ! find "$DOCS_FEATURES_DIR" -iname "*${kebab_name}*" -type f 2>/dev/null | grep -q .; then
+      # Fallback: buscar pelo nome original (case-insensitive)
+      if ! find "$DOCS_FEATURES_DIR" -iname "*${feature_name}*" -type f 2>/dev/null | grep -q .; then
+        MISSING_DOCS="$MISSING_DOCS $feature_name"
+      fi
     fi
   done < <(find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d | sort)
 
-  if [ -z "$MISSING_WIKI" ]; then
-    pass "Todas as features possuem página correspondente na Wiki"
+  if [ -z "$MISSING_DOCS" ]; then
+    pass "Todas as features possuem página correspondente na documentação"
   else
     if [ "$FIX_MODE" = true ]; then
-      for feature in $MISSING_WIKI; do
-        stub_file="$WIKI_DIR/Feature-${feature}.md"
+      for feature in $MISSING_DOCS; do
+        kebab_name=$(echo "$feature" | sed 's/\([A-Z]\)/-\L\1/g' | sed 's/^-//')
+        stub_file="$DOCS_FEATURES_DIR/${kebab_name}.md"
         safe_fix "$stub_file"
-        cat > "$stub_file" << 'WIKI_STUB'
-# [Título da Funcionalidade]
+        cat > "$stub_file" << 'HUGO_STUB'
+---
+title: "[Título da Funcionalidade]"
+linkTitle: "[Título Curto]"
+weight: 99
+description: "[Descrição breve]"
+---
 
 ## Resumo
 <!-- TODO: Descrever o que a funcionalidade faz -->
@@ -404,43 +416,44 @@ Nenhum teste automatizado presente no repositório
 
 ## BDD
 Nenhum cenário BDD definido para esta funcionalidade
-WIKI_STUB
+HUGO_STUB
         FIXES=$((FIXES + 1))
       done
-      pass "Stubs de páginas wiki criados automaticamente (--fix):$MISSING_WIKI"
+      pass "Stubs de páginas Hugo criados automaticamente (--fix):$MISSING_DOCS"
     else
-      fail "Features sem página na Wiki" \
-        "$MISSING_WIKI" \
-        "Feature adicionada ao código sem criação da página wiki correspondente (wiki-governance.md exige)" \
-        "Criar wiki/Feature-<Nome>.md seguindo o template obrigatório de wiki-governance.md; usar --fix para criar stub"
+      fail "Features sem página na documentação" \
+        "$MISSING_DOCS" \
+        "Feature adicionada ao código sem criação da página correspondente em docs/content/dominio/features/" \
+        "Criar docs/content/dominio/features/<nome-kebab>.md seguindo o template; usar --fix para criar stub"
     fi
   fi
 else
-  pass "wiki/ ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/dominio/features/ ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Páginas estruturais obrigatórias existem na Wiki
+# 8. Páginas estruturais obrigatórias existem na documentação Hugo
 # ---------------------------------------------------------------------------
 echo ""
-echo "--- 8. Páginas estruturais obrigatórias na Wiki ---"
+echo "--- 8. Páginas estruturais obrigatórias na documentação ---"
 
-if [ -d "$WIKI_DIR" ]; then
-  REQUIRED_PAGES="Home.md _Sidebar.md Governance-Architecture.md Governance-Operation.md Domain-Business-Rules.md Governance-CI-CD.md"
+if [ -d "$DOCS_DIR" ]; then
+  # Equivalentes Hugo das páginas estruturais obrigatórias da wiki
+  REQUIRED_PAGES="_index.md governanca/_index.md governanca/arquitetura.md governanca/operacao.md dominio/_index.md dominio/regras-negocio.md governanca/ci-cd.md"
   MISSING_PAGES=""
   for page in $REQUIRED_PAGES; do
-    if [ ! -f "$WIKI_DIR/$page" ]; then
+    if [ ! -f "$DOCS_DIR/$page" ]; then
       MISSING_PAGES="$MISSING_PAGES $page"
     fi
   done
 
   if [ -z "$MISSING_PAGES" ]; then
-    pass "Todas as páginas estruturais obrigatórias existem na Wiki"
+    pass "Todas as páginas estruturais obrigatórias existem na documentação"
   else
-    fail "Páginas estruturais ausentes na Wiki" "$MISSING_PAGES"
+    fail "Páginas estruturais ausentes na documentação" "$MISSING_PAGES"
   fi
 else
-  fail "Diretório wiki/ não encontrado"
+  fail "Diretório docs/content/ não encontrado"
 fi
 
 # ---------------------------------------------------------------------------
@@ -790,75 +803,75 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 20. wiki/Governance-Architecture.md lista todas as features implementadas
+# 20. docs/content/governanca/arquitetura.md lista todas as features implementadas
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 20. Governance-Architecture.md lista todas as features ---"
 
-if [ -f "$WIKI_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
+if [ -f "$DOCS_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
   MISSING_IN_ARCH=""
   while IFS= read -r feature_dir; do
     feature_name=$(basename "$feature_dir")
-    if ! grep -qi "$feature_name" "$WIKI_ARCH" 2>/dev/null; then
+    if ! grep -qi "$feature_name" "$DOCS_ARCH" 2>/dev/null; then
       MISSING_IN_ARCH="$MISSING_IN_ARCH $feature_name"
     fi
   done < <(find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d | sort)
 
   if [ -z "$MISSING_IN_ARCH" ]; then
-    pass "wiki/Governance-Architecture.md lista todas as features implementadas"
+    pass "docs/content/governanca/arquitetura.md lista todas as features implementadas"
   else
-    fail "Features ausentes em wiki/Governance-Architecture.md" "$MISSING_IN_ARCH"
+    fail "Features ausentes em docs/content/governanca/arquitetura.md" "$MISSING_IN_ARCH"
   fi
 else
-  pass "wiki/Governance-Architecture.md ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 21. wiki/Governance-Architecture.md lista todas as subpastas de Infra/
+# 21. docs/content/governanca/arquitetura.md lista todas as subpastas de Infra/
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 21. Governance-Architecture.md lista todas as subpastas de Infra/ ---"
 
-if [ -f "$WIKI_ARCH" ] && [ -d "$INFRA_DIR" ]; then
-  MISSING_INFRA_WIKI=""
+if [ -f "$DOCS_ARCH" ] && [ -d "$INFRA_DIR" ]; then
+  MISSING_INFRA_DOCS=""
   while IFS= read -r infra_subdir; do
     subdir_name=$(basename "$infra_subdir")
-    if ! grep -qi "$subdir_name" "$WIKI_ARCH" 2>/dev/null; then
-      MISSING_INFRA_WIKI="$MISSING_INFRA_WIKI Infra/$subdir_name"
+    if ! grep -qi "$subdir_name" "$DOCS_ARCH" 2>/dev/null; then
+      MISSING_INFRA_DOCS="$MISSING_INFRA_DOCS Infra/$subdir_name"
     fi
   done < <(find "$INFRA_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
 
-  if [ -z "$MISSING_INFRA_WIKI" ]; then
-    pass "wiki/Governance-Architecture.md lista todas as subpastas de Infra/"
+  if [ -z "$MISSING_INFRA_DOCS" ]; then
+    pass "docs/content/governanca/arquitetura.md lista todas as subpastas de Infra/"
   else
-    fail "Subpastas de Infra/ ausentes em wiki/Governance-Architecture.md" "$MISSING_INFRA_WIKI"
+    fail "Subpastas de Infra/ ausentes em docs/content/governanca/arquitetura.md" "$MISSING_INFRA_DOCS"
   fi
 else
-  pass "wiki/Governance-Architecture.md ou Infra/ não encontrado — verificação ignorada"
+  pass "docs/content/governanca/arquitetura.md ou Infra/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 22. wiki/Governance-Architecture.md lista todas as integrações Shared/ExternalApi/
+# 22. docs/content/governanca/arquitetura.md lista todas as integrações Shared/ExternalApi/
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 22. Governance-Architecture.md lista Shared/ExternalApi/ ---"
 
-if [ -f "$WIKI_ARCH" ] && [ -d "$EXTERNAL_API_DIR" ]; then
-  MISSING_API_WIKI=""
+if [ -f "$DOCS_ARCH" ] && [ -d "$EXTERNAL_API_DIR" ]; then
+  MISSING_API_DOCS=""
   while IFS= read -r api_subdir; do
     api_name=$(basename "$api_subdir")
-    if ! grep -qi "$api_name" "$WIKI_ARCH" 2>/dev/null; then
-      MISSING_API_WIKI="$MISSING_API_WIKI Shared/ExternalApi/$api_name"
+    if ! grep -qi "$api_name" "$DOCS_ARCH" 2>/dev/null; then
+      MISSING_API_DOCS="$MISSING_API_DOCS Shared/ExternalApi/$api_name"
     fi
   done < <(find "$EXTERNAL_API_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
 
-  if [ -z "$MISSING_API_WIKI" ]; then
-    pass "wiki/Governance-Architecture.md lista todas as integrações de Shared/ExternalApi/"
+  if [ -z "$MISSING_API_DOCS" ]; then
+    pass "docs/content/governanca/arquitetura.md lista todas as integrações de Shared/ExternalApi/"
   else
-    fail "Integrações ausentes em wiki/Governance-Architecture.md" "$MISSING_API_WIKI"
+    fail "Integrações ausentes em docs/content/governanca/arquitetura.md" "$MISSING_API_DOCS"
   fi
 else
-  pass "wiki/Governance-Architecture.md ou Shared/ExternalApi/ não encontrado — verificação ignorada"
+  pass "docs/content/governanca/arquitetura.md ou Shared/ExternalApi/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -899,8 +912,8 @@ fi
 echo ""
 echo "--- 24. Tabela de features na wiki ---"
 
-if [ -f "$WIKI_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
-  FEATURES_TABLE=$(sed -n '/## Features Implementadas/,/^##\s/p' "$WIKI_ARCH" 2>/dev/null)
+if [ -f "$DOCS_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
+  FEATURES_TABLE=$(sed -n '/## Features Implementadas/,/^##\s/p' "$DOCS_ARCH" 2>/dev/null)
   MISSING_IN_TABLE=""
   while IFS= read -r feature_dir; do
     feature_name=$(basename "$feature_dir")
@@ -910,45 +923,69 @@ if [ -f "$WIKI_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
   done < <(find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d | sort)
 
   if [ -z "$MISSING_IN_TABLE" ]; then
-    pass "Tabela 'Features Implementadas' na wiki lista todas as features"
+    pass "Tabela 'Features Implementadas' na documentação lista todas as features"
   else
-    fail "Features ausentes na tabela 'Features Implementadas' da wiki" "$MISSING_IN_TABLE"
+    fail "Features ausentes na tabela 'Features Implementadas' da documentação" "$MISSING_IN_TABLE"
   fi
 else
-  pass "wiki/Governance-Architecture.md ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 25. Nenhuma página wiki Feature-* órfã (sem feature correspondente no código)
+# 25. Nenhuma página de feature órfã (sem feature correspondente no código)
 # ---------------------------------------------------------------------------
 echo ""
-echo "--- 25. Wiki pages órfãs ---"
+echo "--- 25. Páginas de feature órfãs ---"
 
-if [ -d "$WIKI_DIR" ] && [ -d "$FEATURES_DIR" ]; then
+if [ -d "$DOCS_FEATURES_DIR" ] && [ -d "$FEATURES_DIR" ]; then
   ORPHAN_PAGES=""
-  while IFS= read -r wiki_page; do
-    page_name=$(basename "$wiki_page" .md)
-    # Extrair nome da feature do padrão Feature-NomeDaFeature
-    feature_part="${page_name#Feature-}"
-    # Procurar feature correspondente em Features/ ou em Infra/ (ex: Health é HealthChecks)
+  while IFS= read -r docs_page; do
+    page_name=$(basename "$docs_page" .md)
+    # Ignorar _index.md
+    if [ "$page_name" = "_index" ]; then continue; fi
+    # Converter kebab-case de volta para busca (ex: disk-drives-get-all -> DiskDrivesGetAll)
+    # Busca case-insensitive pelo nome kebab nos diretórios de features
     found=false
-    if find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d -iname "*${feature_part}*" 2>/dev/null | grep -q .; then
+    # Tentar match direto pelo nome kebab
+    if find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d 2>/dev/null | while read d; do
+      dir_name=$(basename "$d")
+      dir_kebab=$(echo "$dir_name" | sed 's/\([A-Z]\)/-\L\1/g' | sed 's/^-//')
+      if [ "$dir_kebab" = "$page_name" ]; then exit 0; fi
+    done; then
       found=true
-    elif [ -d "$INFRA_DIR" ] && find "$INFRA_DIR" -mindepth 1 -maxdepth 1 -type d -iname "*${feature_part}*" 2>/dev/null | grep -q .; then
-      found=true
+    fi
+    # Fallback: buscar por substring case-insensitive
+    if [ "$found" = false ]; then
+      # Converter kebab para palavras para busca parcial
+      search_term=$(echo "$page_name" | tr '-' ' ')
+      for word in $search_term; do
+        if [ ${#word} -gt 3 ] && find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d -iname "*${word}*" 2>/dev/null | grep -q .; then
+          found=true
+          break
+        fi
+      done
+    fi
+    # Fallback: buscar em Infra/ (ex: health -> HealthChecks)
+    if [ "$found" = false ] && [ -d "$INFRA_DIR" ]; then
+      for word in $(echo "$page_name" | tr '-' ' '); do
+        if [ ${#word} -gt 3 ] && find "$INFRA_DIR" -mindepth 1 -maxdepth 1 -type d -iname "*${word}*" 2>/dev/null | grep -q .; then
+          found=true
+          break
+        fi
+      done
     fi
     if [ "$found" = false ]; then
       ORPHAN_PAGES="$ORPHAN_PAGES $page_name"
     fi
-  done < <(find "$WIKI_DIR" -name "Feature-*.md" -type f | sort)
+  done < <(find "$DOCS_FEATURES_DIR" -name "*.md" -type f | sort)
 
   if [ -z "$ORPHAN_PAGES" ]; then
-    pass "Nenhuma página wiki Feature-* órfã encontrada"
+    pass "Nenhuma página de feature órfã encontrada"
   else
-    warn "Páginas wiki Feature-* sem feature correspondente no código" "$ORPHAN_PAGES"
+    warn "Páginas de feature sem feature correspondente no código" "$ORPHAN_PAGES"
   fi
 else
-  pass "wiki/ ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/dominio/features/ ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -1097,13 +1134,13 @@ fi
 echo ""
 echo "--- 31. wiki Business-Rules.md ↔ RNs ativas ---"
 
-WIKI_BR="$WIKI_DIR/Domain-Business-Rules.md"
+DOCS_BR="$DOCS_DIR/dominio/regras-negocio.md"
 BUSINESS_RULES_SRC="$REPO_ROOT/Instructions/business/business-rules.md"
-if [ -f "$WIKI_BR" ] && [ -f "$BUSINESS_RULES_SRC" ]; then
-  MISSING_RN_WIKI=""
+if [ -f "$DOCS_BR" ] && [ -f "$BUSINESS_RULES_SRC" ]; then
+  MISSING_RN_DOCS=""
   while IFS= read -r rn_id; do
-    if ! grep -qF "$rn_id" "$WIKI_BR" 2>/dev/null; then
-      MISSING_RN_WIKI="$MISSING_RN_WIKI $rn_id"
+    if ! grep -qF "$rn_id" "$DOCS_BR" 2>/dev/null; then
+      MISSING_RN_DOCS="$MISSING_RN_DOCS $rn_id"
     fi
   done < <(grep -oP '^### (RN-\d+)' "$BUSINESS_RULES_SRC" | sed 's/### //' | while read rn_id; do
     # Excluir RNs removidas/depreciadas
@@ -1112,13 +1149,13 @@ if [ -f "$WIKI_BR" ] && [ -f "$BUSINESS_RULES_SRC" ]; then
     fi
   done)
 
-  if [ -z "$MISSING_RN_WIKI" ]; then
-    pass "wiki/Domain-Business-Rules.md lista todas as RNs ativas"
+  if [ -z "$MISSING_RN_DOCS" ]; then
+    pass "docs/content/dominio/regras-negocio.md lista todas as RNs ativas"
   else
-    fail "RNs ativas ausentes em wiki/Domain-Business-Rules.md" "$MISSING_RN_WIKI"
+    fail "RNs ativas ausentes em docs/content/dominio/regras-negocio.md" "$MISSING_RN_DOCS"
   fi
 else
-  pass "wiki/Domain-Business-Rules.md ou business-rules.md não encontrado — verificação ignorada"
+  pass "docs/content/dominio/regras-negocio.md ou business-rules.md não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -1315,32 +1352,32 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 37. Páginas wiki Feature-* com conteúdo de placeholder (stub não preenchido)
+# 37. Páginas de feature com conteúdo de placeholder (stub não preenchido)
 # ---------------------------------------------------------------------------
 echo ""
-echo "--- 37. Wiki Feature pages com conteúdo real ---"
+echo "--- 37. Feature pages com conteúdo real ---"
 
-WIKI_DIR="$REPO_ROOT/wiki"
-if [ -d "$WIKI_DIR" ]; then
+if [ -d "$DOCS_FEATURES_DIR" ]; then
   STUB_PAGES=""
-  while IFS= read -r wiki_page; do
-    page_name=$(basename "$wiki_page" .md)
+  while IFS= read -r docs_page; do
+    page_name=$(basename "$docs_page" .md)
+    if [ "$page_name" = "_index" ]; then continue; fi
     # Detectar marcadores de template/placeholder
-    if grep -qE '<!-- TODO:|^\[Título da Funcionalidade\]' "$wiki_page" 2>/dev/null; then
+    if grep -qE '<!-- TODO:|^\[Título da Funcionalidade\]|title: "\[Título' "$docs_page" 2>/dev/null; then
       STUB_PAGES="$STUB_PAGES $page_name"
     fi
-  done < <(find "$WIKI_DIR" -name "Feature-*.md" -type f | sort)
+  done < <(find "$DOCS_FEATURES_DIR" -name "*.md" -type f | sort)
 
   if [ -z "$STUB_PAGES" ]; then
-    pass "Todas as páginas wiki Feature-* possuem conteúdo real (sem placeholders)"
+    pass "Todas as páginas de feature possuem conteúdo real (sem placeholders)"
   else
-    fail "Páginas wiki Feature-* com conteúdo de placeholder" \
+    fail "Páginas de feature com conteúdo de placeholder" \
       "$STUB_PAGES" \
       "O --fix gera stubs com TODOs para satisfazer existência, mas o conteúdo real deve ser preenchido pelo assistente antes do commit" \
       "Preencher as páginas listadas com dados reais da feature (resumo, contrato, comportamento) e remover marcadores <!-- TODO: -->"
   fi
 else
-  pass "Diretório wiki/ não encontrado — verificação ignorada"
+  pass "Diretório docs/content/dominio/features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
