@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Starter.Template.AOT.Api.Features.Query.DiskItemGetByFolder;
 
 [ApiController]
+[Route("disk-items")]
 public class DiskItemGetByFolderEndpoint(
     IDiskItemGetByFolderUseCase useCase,
     ILogger<DiskItemGetByFolderEndpoint> logger) : ControllerBase
 {
-    [HttpGet("disk-items/{driveIndex:int}/folder/{*folderPath}")]
+    [HttpGet("{driveIndex:int}/folder/{*folderPath}")]
     public async Task<IActionResult> GetByFolder(int driveIndex, string folderPath)
     {
         logger.LogInformation("[DiskItemGetByFolderEndpoint][GetByFolder] Receber requisição para pasta {FolderPath} na unidade {DriveIndex}", folderPath, driveIndex);

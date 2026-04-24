@@ -22,7 +22,7 @@ public sealed class DiskItemsGetAllUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_DeveRetornarOutputComNomeRoot()
+    public async Task ExecuteAsync_WithValidDrive_ReturnsOutputWithRootName()
     {
         var logger = new FakeLogger<DiskItemsGetAllUseCase>();
         var repository = new FakeRepository(BuildFakeRoot());
@@ -35,7 +35,7 @@ public sealed class DiskItemsGetAllUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_DeveAtribuirCoresAosFilhosRaiz()
+    public async Task ExecuteAsync_WithRootChildren_AssignsColorsToAllChildren()
     {
         var logger = new FakeLogger<DiskItemsGetAllUseCase>();
         var repository = new FakeRepository(BuildFakeRoot());
@@ -48,7 +48,7 @@ public sealed class DiskItemsGetAllUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_DeveRegistrarLogInformationNoInicio()
+    public async Task ExecuteAsync_WhenCalled_LogsInformationAtStart()
     {
         var logger = new FakeLogger<DiskItemsGetAllUseCase>();
         var repository = new FakeRepository(BuildFakeRoot());
@@ -63,7 +63,7 @@ public sealed class DiskItemsGetAllUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_DeveRegistrarLogInformationNoRetorno()
+    public async Task ExecuteAsync_WhenCalled_LogsInformationAtReturn()
     {
         var logger = new FakeLogger<DiskItemsGetAllUseCase>();
         var repository = new FakeRepository(BuildFakeRoot());

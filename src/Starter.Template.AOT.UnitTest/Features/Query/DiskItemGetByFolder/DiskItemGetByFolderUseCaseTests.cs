@@ -22,7 +22,7 @@ public sealed class DiskItemGetByFolderUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ComPastaExistente_DeveRetornarOutput()
+    public async Task ExecuteAsync_WithExistingFolder_ReturnsOutput()
     {
         var logger = new FakeLogger<DiskItemGetByFolderUseCase>();
         var repository = new FakeRepository(BuildFakeFolder());
@@ -35,7 +35,7 @@ public sealed class DiskItemGetByFolderUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ComPastaInexistente_DeveRetornarNull()
+    public async Task ExecuteAsync_WithMissingFolder_ReturnsNull()
     {
         var logger = new FakeLogger<DiskItemGetByFolderUseCase>();
         var repository = new FakeRepository(null);
@@ -47,7 +47,7 @@ public sealed class DiskItemGetByFolderUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_ComPastaExistente_DeveMapearFilhos()
+    public async Task ExecuteAsync_WithExistingFolder_MapsChildren()
     {
         var logger = new FakeLogger<DiskItemGetByFolderUseCase>();
         var repository = new FakeRepository(BuildFakeFolder());
@@ -60,7 +60,7 @@ public sealed class DiskItemGetByFolderUseCaseTests
     }
 
     [Fact]
-    public async Task ExecuteAsync_DeveRegistrarLogInformationNaBusca()
+    public async Task ExecuteAsync_WhenCalled_LogsInformationAtSearch()
     {
         var logger = new FakeLogger<DiskItemGetByFolderUseCase>();
         var repository = new FakeRepository(BuildFakeFolder());

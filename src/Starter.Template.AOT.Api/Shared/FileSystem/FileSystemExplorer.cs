@@ -35,7 +35,11 @@ public static class FileSystemExplorer
             if (!dir.Exists)
                 return;
         }
-        catch (Exception)
+        catch (IOException)
+        {
+            return;
+        }
+        catch (UnauthorizedAccessException)
         {
             return;
         }
@@ -50,7 +54,11 @@ public static class FileSystemExplorer
         {
             return;
         }
-        catch (Exception)
+        catch (DirectoryNotFoundException)
+        {
+            return;
+        }
+        catch (IOException)
         {
             return;
         }
@@ -88,9 +96,11 @@ public static class FileSystemExplorer
 
                     folder.Children.Add(fileItem);
                 }
-                catch (Exception)
+                catch (FileNotFoundException)
                 {
-                    // skip special files (e.g. /dev/fd/*, /proc/*)
+                }
+                catch (IOException)
+                {
                 }
             }
         }

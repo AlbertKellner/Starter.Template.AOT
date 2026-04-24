@@ -6,11 +6,19 @@ namespace Starter.Template.AOT.UnitTest.Features.Query.DiskDrivesGetAll;
 
 public sealed class DiskDrivesGetAllUseCaseTests
 {
+    private sealed class FakeRepository(DriveInfo[] drives) : IDiskDrivesGetAllRepository
+    {
+        public DriveInfo[] GetAllDrives() => drives;
+    }
+
+    private static DriveInfo[] BuildFakeDrives() => [new DriveInfo("/")];
+
     [Fact]
-    public void Execute_DeveRetornarListaDeDrives()
+    public void Execute_WithAvailableDrives_ReturnsDriveList()
     {
         var logger = new FakeLogger<DiskDrivesGetAllUseCase>();
-        var useCase = new DiskDrivesGetAllUseCase(logger);
+        var repository = new FakeRepository(BuildFakeDrives());
+        var useCase = new DiskDrivesGetAllUseCase(repository, logger);
 
         var result = useCase.Execute();
 
@@ -19,10 +27,11 @@ public sealed class DiskDrivesGetAllUseCaseTests
     }
 
     [Fact]
-    public void Execute_DeveAtribuirIndicesSequenciais()
+    public void Execute_WithAvailableDrives_AssignsSequentialIndexes()
     {
         var logger = new FakeLogger<DiskDrivesGetAllUseCase>();
-        var useCase = new DiskDrivesGetAllUseCase(logger);
+        var repository = new FakeRepository(BuildFakeDrives());
+        var useCase = new DiskDrivesGetAllUseCase(repository, logger);
 
         var result = useCase.Execute();
 
@@ -31,10 +40,11 @@ public sealed class DiskDrivesGetAllUseCaseTests
     }
 
     [Fact]
-    public void Execute_DeveRegistrarLogInformationNoInicio()
+    public void Execute_WhenCalled_LogsInformationAtStart()
     {
         var logger = new FakeLogger<DiskDrivesGetAllUseCase>();
-        var useCase = new DiskDrivesGetAllUseCase(logger);
+        var repository = new FakeRepository(BuildFakeDrives());
+        var useCase = new DiskDrivesGetAllUseCase(repository, logger);
 
         useCase.Execute();
 
@@ -45,10 +55,11 @@ public sealed class DiskDrivesGetAllUseCaseTests
     }
 
     [Fact]
-    public void Execute_DeveRegistrarLogInformationNoRetorno()
+    public void Execute_WhenCalled_LogsInformationAtReturn()
     {
         var logger = new FakeLogger<DiskDrivesGetAllUseCase>();
-        var useCase = new DiskDrivesGetAllUseCase(logger);
+        var repository = new FakeRepository(BuildFakeDrives());
+        var useCase = new DiskDrivesGetAllUseCase(repository, logger);
 
         useCase.Execute();
 

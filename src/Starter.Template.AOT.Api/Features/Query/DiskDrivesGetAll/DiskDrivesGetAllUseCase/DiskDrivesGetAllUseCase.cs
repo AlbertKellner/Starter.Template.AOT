@@ -1,12 +1,14 @@
 namespace Starter.Template.AOT.Api.Features.Query.DiskDrivesGetAll;
 
-public class DiskDrivesGetAllUseCase(ILogger<DiskDrivesGetAllUseCase> logger) : IDiskDrivesGetAllUseCase
+public class DiskDrivesGetAllUseCase(
+    IDiskDrivesGetAllRepository repository,
+    ILogger<DiskDrivesGetAllUseCase> logger) : IDiskDrivesGetAllUseCase
 {
     public List<DiskDrivesGetAllOutput> Execute()
     {
         logger.LogInformation("[DiskDrivesGetAllUseCase][Execute] Listar todas as unidades de disco disponíveis");
 
-        var drives = DriveInfo.GetDrives();
+        var drives = repository.GetAllDrives();
 
         logger.LogInformation("[DiskDrivesGetAllUseCase][Execute] Encontradas {Count} unidades de disco", drives.Length);
 

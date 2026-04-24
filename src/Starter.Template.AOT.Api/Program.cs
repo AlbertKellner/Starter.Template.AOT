@@ -104,6 +104,7 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
+builder.Services.AddTransient<IDiskDrivesGetAllRepository, DiskDrivesGetAllRepository>();
 builder.Services.AddTransient<IDiskDrivesGetAllUseCase, DiskDrivesGetAllUseCase>();
 
 builder.Services.AddTransient<IDiskItemsGetAllRepository, DiskItemsGetAllRepository>();
