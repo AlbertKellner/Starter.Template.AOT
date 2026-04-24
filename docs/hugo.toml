@@ -3,11 +3,35 @@ title = 'Starter.Template.AOT'
 languageCode = 'pt-br'
 defaultContentLanguage = 'pt-br'
 
-theme = ["github.com/google/docsy"]
-
 enableRobotsTXT = true
 enableGitInfo = true
 
+# Taxonomias
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+# Highlighting
+pygmentsCodeFences = true
+pygmentsUseClasses = false
+pygmentsStyle = "tango"
+
+# Permalinks
+[permalinks]
+  blog = "/:section/:year/:month/:day/:slug"
+
+# Image processing
+[imaging]
+  resampleFilter = "CatmullRom"
+  quality = 75
+  anchor = "smart"
+
+# Outputs — habilita print e RSS
+[outputs]
+  home = ["HTML", "print", "RSS"]
+  section = ["HTML", "print", "RSS"]
+
+# Módulo Docsy
 [module]
   proxy = "direct"
   [module.hugoVersion]
@@ -17,29 +41,57 @@ enableGitInfo = true
     path = "github.com/google/docsy"
     disable = false
 
+# Markup
 [markup]
   [markup.goldmark]
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
     style = "tango"
+    noClasses = false
 
+# Parâmetros do site
 [params]
   description = "Documentação do Starter.Template.AOT — API .NET 10 com Native AOT"
   github_repo = "https://github.com/AlbertKellner/Starter.Template.AOT"
   github_branch = "main"
+  github_subdir = "docs"
+  offlineSearch = true
+
+  [params.taxonomy]
+    taxonomyCloud = ["tags", "categories"]
+    taxonomyCloudTitle = ["Tag Cloud", "Categorias"]
+    taxonomyPageHeader = ["tags", "categories"]
 
   [params.ui]
-    sidebar_menu_compact = true
     breadcrumb_disable = false
-    sidebar_search_disable = false
     navbar_logo = false
+    navbar_translucent_over_cover_disable = false
+    sidebar_menu_foldable = true
+    sidebar_menu_compact = false
+    sidebar_search_disable = false
+    showLightDarkModeMenu = true
 
+    [params.ui.readingtime]
+      enable = false
+
+  [params.links]
+    [[params.links.developer]]
+      name = "GitHub"
+      url = "https://github.com/AlbertKellner/Starter.Template.AOT"
+      icon = "fab fa-github"
+      desc = "Repositório do projeto"
+
+# Idiomas
 [languages]
   [languages.pt-br]
     languageName = "Português"
     weight = 1
 
+# Menu principal
 [menu]
   [[menu.main]]
     name = "GitHub"
