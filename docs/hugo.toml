@@ -3,18 +3,10 @@ title = 'Starter.Template.AOT'
 languageCode = 'pt-br'
 defaultContentLanguage = 'pt-br'
 
-theme = ["github.com/google/docsy"]
+theme = ["docsy"]
 
 enableRobotsTXT = true
 enableGitInfo = true
-
-[module]
-  [module.hugoVersion]
-    extended = true
-    min = "0.110.0"
-  [[module.imports]]
-    path = "github.com/google/docsy"
-    disable = false
 
 [markup]
   [markup.goldmark]
