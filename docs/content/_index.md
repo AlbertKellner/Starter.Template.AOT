@@ -18,17 +18,17 @@ Diretrizes, padrões, restrições, decisões técnicas e operacionais deste rep
 
 | Página | Descrição |
 |--------|-----------|
-| [Arquitetura]({{< relref "governanca/arquitetura" >}}) | Estilo Vertical Slice, estrutura de pastas, componentes e fluxo de request |
-| [Padrões de Desenvolvimento]({{< relref "governanca/padroes-desenvolvimento" >}}) | Vertical Slice, CQRS, UseCase, Decorator, validação em Input |
-| [Convenções de Código]({{< relref "governanca/convencoes-codigo" >}}) | Nomenclatura, namespaces, variáveis, padrão de logging SNP-001 |
-| [Testes]({{< relref "governanca/testes" >}}) | Estratégia de testes, padrões e cobertura |
-| [Segurança]({{< relref "governanca/seguranca" >}}) | Autenticação JWT, proteção de endpoints |
-| [Observabilidade]({{< relref "governanca/observabilidade" >}}) | Correlation ID, Serilog, Datadog Agent |
-| [CI/CD e Deploy]({{< relref "governanca/ci-cd" >}}) | Pipelines de build, execução e validação |
-| [Integrações]({{< relref "governanca/integracoes" >}}) | Padrão Refit + Polly, Memory Cache, APIs externas |
-| [Operação]({{< relref "governanca/operacao" >}}) | Pré-requisitos, configuração, build, Docker |
-| [Qualidade e Manutenção]({{< relref "governanca/qualidade" >}}) | Tratamento de exceções, Problem Details |
-| [Restrições e Decisões]({{< relref "governanca/decisoes" >}}) | Decisões arquiteturais, restrições AOT, evolução |
+| [Arquitetura]({{< relref "docs/governanca/arquitetura" >}}) | Estilo Vertical Slice, estrutura de pastas, componentes e fluxo de request |
+| [Padrões de Desenvolvimento]({{< relref "docs/governanca/padroes-desenvolvimento" >}}) | Vertical Slice, CQRS, UseCase, Decorator, validação em Input |
+| [Convenções de Código]({{< relref "docs/governanca/convencoes-codigo" >}}) | Nomenclatura, namespaces, variáveis, padrão de logging SNP-001 |
+| [Testes]({{< relref "docs/governanca/testes" >}}) | Estratégia de testes, padrões e cobertura |
+| [Segurança]({{< relref "docs/governanca/seguranca" >}}) | Autenticação JWT, proteção de endpoints |
+| [Observabilidade]({{< relref "docs/governanca/observabilidade" >}}) | Correlation ID, Serilog, Datadog Agent |
+| [CI/CD e Deploy]({{< relref "docs/governanca/ci-cd" >}}) | Pipelines de build, execução e validação |
+| [Integrações]({{< relref "docs/governanca/integracoes" >}}) | Padrão Refit + Polly, Memory Cache, APIs externas |
+| [Operação]({{< relref "docs/governanca/operacao" >}}) | Pré-requisitos, configuração, build, Docker |
+| [Qualidade e Manutenção]({{< relref "docs/governanca/qualidade" >}}) | Tratamento de exceções, Problem Details |
+| [Restrições e Decisões]({{< relref "docs/governanca/decisoes" >}}) | Decisões arquiteturais, restrições AOT, evolução |
 
 ---
 
@@ -36,17 +36,17 @@ Diretrizes, padrões, restrições, decisões técnicas e operacionais deste rep
 
 | Página | Descrição |
 |--------|-----------|
-| [Visão Geral do Domínio]({{< relref "dominio/visao-geral" >}}) | Propósito da aplicação e conceitos de domínio |
-| [Regras de Negócio]({{< relref "dominio/regras-negocio" >}}) | Índice das regras de negócio com links para as Features |
+| [Visão Geral do Domínio]({{< relref "docs/dominio/visao-geral" >}}) | Propósito da aplicação e conceitos de domínio |
+| [Regras de Negócio]({{< relref "docs/dominio/regras-negocio" >}}) | Índice das regras de negócio com links para as Features |
 
 ### Funcionalidades (Features)
 
 | Página | Endpoint | Descrição |
 |--------|----------|-----------|
-| [Health Check]({{< relref "dominio/features/health" >}}) | `GET /health` | Verificação de disponibilidade da aplicação |
-| [Listar Drives]({{< relref "dominio/features/disk-drives-get-all" >}}) | `GET /disk-drives` | Lista drives disponíveis no sistema |
-| [Escanear Drive]({{< relref "dominio/features/disk-structure-get-by-drive" >}}) | `GET /disk-structure/{drive}` | Escaneia estrutura completa de um drive |
-| [Buscar Pasta]({{< relref "dominio/features/disk-structure-get-by-folder" >}}) | `GET /disk-structure/{drive}/folder/{folder}` | Busca estrutura de pasta específica |
+| [Health Check]({{< relref "docs/dominio/features/health" >}}) | `GET /health` | Verificação de disponibilidade da aplicação |
+| [Listar Drives]({{< relref "docs/dominio/features/disk-drives-get-all" >}}) | `GET /disk-drives` | Lista drives disponíveis no sistema |
+| [Escanear Drive]({{< relref "docs/dominio/features/disk-structure-get-by-drive" >}}) | `GET /disk-structure/{drive}` | Escaneia estrutura completa de um drive |
+| [Buscar Pasta]({{< relref "docs/dominio/features/disk-structure-get-by-folder" >}}) | `GET /disk-structure/{drive}/folder/{folder}` | Busca estrutura de pasta específica |
 
 ---
 
@@ -54,8 +54,8 @@ Diretrizes, padrões, restrições, decisões técnicas e operacionais deste rep
 
 | Página | Descrição |
 |--------|-----------|
-| [Visão Geral]({{< relref "claude/visao-geral" >}}) | Sistema de governança operacional e pipeline de validação |
-| [Skills]({{< relref "claude/skills" >}}) | Catálogo de skills disponíveis por tipo de ativação |
-| [Hooks]({{< relref "claude/hooks" >}}) | Hooks configurados e seus comportamentos |
-| [Convenções e Restrições]({{< relref "claude/convencoes" >}}) | Comportamentos obrigatórios, linguagem, restrições |
-| [Recursos Avançados]({{< relref "claude/recursos-avancados" >}}) | Frontmatter, agentes dedicados, contexto dinâmico, proteção |
+| [Visão Geral]({{< relref "docs/claude/visao-geral" >}}) | Sistema de governança operacional e pipeline de validação |
+| [Skills]({{< relref "docs/claude/skills" >}}) | Catálogo de skills disponíveis por tipo de ativação |
+| [Hooks]({{< relref "docs/claude/hooks" >}}) | Hooks configurados e seus comportamentos |
+| [Convenções e Restrições]({{< relref "docs/claude/convencoes" >}}) | Comportamentos obrigatórios, linguagem, restrições |
+| [Recursos Avançados]({{< relref "docs/claude/recursos-avancados" >}}) | Frontmatter, agentes dedicados, contexto dinâmico, proteção |

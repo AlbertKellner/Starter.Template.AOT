@@ -99,9 +99,9 @@ ADR_FILE="$REPO_ROOT/Instructions/architecture/architecture-decisions.md"
 COMPOSE="$REPO_ROOT/docker-compose.yml"
 REQUIRED_VARS="$REPO_ROOT/scripts/required-vars.md"
 SETTINGS="$REPO_ROOT/.claude/settings.json"
-DOCS_DIR="$REPO_ROOT/docs/content"
-DOCS_ARCH="$REPO_ROOT/docs/content/governanca/arquitetura.md"
-DOCS_FEATURES_DIR="$REPO_ROOT/docs/content/dominio/features"
+DOCS_DIR="$REPO_ROOT/docs/content/docs"
+DOCS_ARCH="$REPO_ROOT/docs/content/docs/governanca/arquitetura.md"
+DOCS_FEATURES_DIR="$REPO_ROOT/docs/content/docs/dominio/features"
 FEATURES_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Features"
 INFRA_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Infra"
 EXTERNAL_API_DIR="$REPO_ROOT/src/Starter.Template.AOT.Api/Shared/ExternalApi"
@@ -423,12 +423,12 @@ HUGO_STUB
     else
       fail "Features sem página na documentação" \
         "$MISSING_DOCS" \
-        "Feature adicionada ao código sem criação da página correspondente em docs/content/dominio/features/" \
-        "Criar docs/content/dominio/features/<nome-kebab>.md seguindo o template; usar --fix para criar stub"
+        "Feature adicionada ao código sem criação da página correspondente em docs/content/docs/dominio/features/" \
+        "Criar docs/content/docs/dominio/features/<nome-kebab>.md seguindo o template; usar --fix para criar stub"
     fi
   fi
 else
-  pass "docs/content/dominio/features/ ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/dominio/features/ ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -453,7 +453,7 @@ if [ -d "$DOCS_DIR" ]; then
     fail "Páginas estruturais ausentes na documentação" "$MISSING_PAGES"
   fi
 else
-  fail "Diretório docs/content/ não encontrado"
+  fail "Diretório docs/content/docs/ não encontrado"
 fi
 
 # ---------------------------------------------------------------------------
@@ -803,7 +803,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 20. docs/content/governanca/arquitetura.md lista todas as features implementadas
+# 20. docs/content/docs/governanca/arquitetura.md lista todas as features implementadas
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 20. Governance-Architecture.md lista todas as features ---"
@@ -818,16 +818,16 @@ if [ -f "$DOCS_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
   done < <(find "$FEATURES_DIR" -mindepth 2 -maxdepth 2 -type d | sort)
 
   if [ -z "$MISSING_IN_ARCH" ]; then
-    pass "docs/content/governanca/arquitetura.md lista todas as features implementadas"
+    pass "docs/content/docs/governanca/arquitetura.md lista todas as features implementadas"
   else
-    fail "Features ausentes em docs/content/governanca/arquitetura.md" "$MISSING_IN_ARCH"
+    fail "Features ausentes em docs/content/docs/governanca/arquitetura.md" "$MISSING_IN_ARCH"
   fi
 else
-  pass "docs/content/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 21. docs/content/governanca/arquitetura.md lista todas as subpastas de Infra/
+# 21. docs/content/docs/governanca/arquitetura.md lista todas as subpastas de Infra/
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 21. Governance-Architecture.md lista todas as subpastas de Infra/ ---"
@@ -842,16 +842,16 @@ if [ -f "$DOCS_ARCH" ] && [ -d "$INFRA_DIR" ]; then
   done < <(find "$INFRA_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
 
   if [ -z "$MISSING_INFRA_DOCS" ]; then
-    pass "docs/content/governanca/arquitetura.md lista todas as subpastas de Infra/"
+    pass "docs/content/docs/governanca/arquitetura.md lista todas as subpastas de Infra/"
   else
-    fail "Subpastas de Infra/ ausentes em docs/content/governanca/arquitetura.md" "$MISSING_INFRA_DOCS"
+    fail "Subpastas de Infra/ ausentes em docs/content/docs/governanca/arquitetura.md" "$MISSING_INFRA_DOCS"
   fi
 else
-  pass "docs/content/governanca/arquitetura.md ou Infra/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/governanca/arquitetura.md ou Infra/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
-# 22. docs/content/governanca/arquitetura.md lista todas as integrações Shared/ExternalApi/
+# 22. docs/content/docs/governanca/arquitetura.md lista todas as integrações Shared/ExternalApi/
 # ---------------------------------------------------------------------------
 echo ""
 echo "--- 22. Governance-Architecture.md lista Shared/ExternalApi/ ---"
@@ -866,12 +866,12 @@ if [ -f "$DOCS_ARCH" ] && [ -d "$EXTERNAL_API_DIR" ]; then
   done < <(find "$EXTERNAL_API_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
 
   if [ -z "$MISSING_API_DOCS" ]; then
-    pass "docs/content/governanca/arquitetura.md lista todas as integrações de Shared/ExternalApi/"
+    pass "docs/content/docs/governanca/arquitetura.md lista todas as integrações de Shared/ExternalApi/"
   else
-    fail "Integrações ausentes em docs/content/governanca/arquitetura.md" "$MISSING_API_DOCS"
+    fail "Integrações ausentes em docs/content/docs/governanca/arquitetura.md" "$MISSING_API_DOCS"
   fi
 else
-  pass "docs/content/governanca/arquitetura.md ou Shared/ExternalApi/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/governanca/arquitetura.md ou Shared/ExternalApi/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -928,7 +928,7 @@ if [ -f "$DOCS_ARCH" ] && [ -d "$FEATURES_DIR" ]; then
     fail "Features ausentes na tabela 'Features Implementadas' da documentação" "$MISSING_IN_TABLE"
   fi
 else
-  pass "docs/content/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/governanca/arquitetura.md ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -985,7 +985,7 @@ if [ -d "$DOCS_FEATURES_DIR" ] && [ -d "$FEATURES_DIR" ]; then
     warn "Páginas de feature sem feature correspondente no código" "$ORPHAN_PAGES"
   fi
 else
-  pass "docs/content/dominio/features/ ou Features/ não encontrado — verificação ignorada"
+  pass "docs/content/docs/dominio/features/ ou Features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -1150,12 +1150,12 @@ if [ -f "$DOCS_BR" ] && [ -f "$BUSINESS_RULES_SRC" ]; then
   done)
 
   if [ -z "$MISSING_RN_DOCS" ]; then
-    pass "docs/content/dominio/regras-negocio.md lista todas as RNs ativas"
+    pass "docs/content/docs/dominio/regras-negocio.md lista todas as RNs ativas"
   else
-    fail "RNs ativas ausentes em docs/content/dominio/regras-negocio.md" "$MISSING_RN_DOCS"
+    fail "RNs ativas ausentes em docs/content/docs/dominio/regras-negocio.md" "$MISSING_RN_DOCS"
   fi
 else
-  pass "docs/content/dominio/regras-negocio.md ou business-rules.md não encontrado — verificação ignorada"
+  pass "docs/content/docs/dominio/regras-negocio.md ou business-rules.md não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
@@ -1377,7 +1377,7 @@ if [ -d "$DOCS_FEATURES_DIR" ]; then
       "Preencher as páginas listadas com dados reais da feature (resumo, contrato, comportamento) e remover marcadores <!-- TODO: -->"
   fi
 else
-  pass "Diretório docs/content/dominio/features/ não encontrado — verificação ignorada"
+  pass "Diretório docs/content/docs/dominio/features/ não encontrado — verificação ignorada"
 fi
 
 # ---------------------------------------------------------------------------
