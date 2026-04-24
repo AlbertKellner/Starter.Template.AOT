@@ -9,3 +9,5 @@ obj/
 .claude/.session-timer
 .claude/.pre-planning-done
 .claude/.compact-state
+docs/public/
+docs/resources/

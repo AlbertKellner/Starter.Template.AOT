@@ -8,6 +8,14 @@ Este repositório preserva toda a governança técnica, infraestrutura, pipeline
 
 ---
 
+## Documentação
+
+A documentação completa do projeto está disponível em **[GitHub Pages](https://AlbertKellner.github.io/Starter.Template.AOT/)**.
+
+Os arquivos fonte da documentação estão em `docs/` e são publicados automaticamente via GitHub Actions a cada push na `main`.
+
+---
+
 ## Stack Tecnológica
 
 | Camada | Tecnologia |
@@ -76,7 +84,7 @@ Sistema de governança persistente que opera como "sistema operacional" de todas
 | Workflow | Propósito |
 |----------|-----------|
 | `ci.yml` | Pipeline: Compilação (AOT) → Execução → Testes → Health Check (debug + publish) |
-| `wiki-publish.yml` | Publicação automática da wiki a cada push em `main` |
+| `hugo-pages.yml` | Build e deploy da documentação Hugo no GitHub Pages |
 
 ---
 

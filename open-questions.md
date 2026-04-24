@@ -27,6 +27,19 @@ Este arquivo contém **apenas** dúvidas e ambiguidades **ainda abertas**.
 | **Status** | Aberta |
 | **Premissas relacionadas** | — |
 
+### DUV-002
+| Campo | Valor |
+|---|---|
+| **Id** | DUV-002 |
+| **Data** | 2026-04-24 |
+| **Origem** | Migração da documentação de GitHub Wiki para Hugo Pages |
+| **Dúvida** | O script `governance-audit.sh` (checks 7, 8, 20, 21, 24, 25, 37) referencia a pasta `wiki/` como fonte canônica da documentação. Com a migração para Hugo Pages (`docs/content/`), esses checks precisam ser atualizados para apontar para a nova estrutura. A pasta `wiki/` foi mantida intacta para que o audit continue passando até a atualização do script. |
+| **Por que importa** | Sem atualização, o audit valida a pasta `wiki/` (legado) em vez de `docs/content/` (fonte canônica atual). Novas features teriam que criar páginas em ambos os locais. |
+| **Artefatos impactados** | `scripts/governance-audit.sh`, `.claude/rules/governance-audit.md`, `Instructions/wiki/wiki-governance.md` |
+| **Bloqueante** | Não — a pasta `wiki/` permanece intacta e o audit continua passando |
+| **Status** | Aberta |
+| **Premissas relacionadas** | — |
+
 ### Template de Dúvida
 
 ```markdown
