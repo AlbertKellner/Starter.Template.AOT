@@ -56,7 +56,7 @@ jobs:
           hugo mod get
           hugo mod npm pack
           npm install
-          hugo --minify
+          hugo --minify --baseURL "https://AlbertKellner.github.io/Starter.Template.AOT/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
