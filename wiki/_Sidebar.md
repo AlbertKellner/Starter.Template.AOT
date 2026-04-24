@@ -23,6 +23,9 @@
 - [Visão Geral](Domain-Overview)
 - [Regras de Negócio](Domain-Business-Rules)
 - [Health Check](Feature-Health)
+- [Listar Drives](Feature-DiskDrivesGetAll)
+- [Escanear Drive](Feature-DiskStructureGetByDrive)
+- [Buscar Pasta](Feature-DiskStructureGetByFolder)
 
 ---
 

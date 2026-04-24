@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Starter.Template.AOT.Api.Infra.HealthChecks;
 using Starter.Template.AOT.Api.Infra.Security;
 using Starter.Template.AOT.Api.Infra.Logging;
+using Starter.Template.AOT.Api.Shared.DiskAnalysis;
+using Starter.Template.AOT.Api.Features.Query.DiskDrivesGetAll;
+using Starter.Template.AOT.Api.Features.Query.DiskStructureGetByDrive;
+using Starter.Template.AOT.Api.Features.Query.DiskStructureGetByFolder;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 const string OutputTemplate =
@@ -100,6 +104,11 @@ builder.Services.AddHttpContextAccessor();
 
 Log.Information("[Program] Registrar dependências das features");
 
+builder.Services.AddSingleton<IDiskScannerService, DiskScannerService>();
+builder.Services.AddTransient<IDiskDrivesGetAllUseCase, DiskDrivesGetAllUseCase>();
+builder.Services.AddTransient<IDiskStructureGetByDriveUseCase, DiskStructureGetByDriveUseCase>();
+builder.Services.AddTransient<IDiskStructureGetByFolderUseCase, DiskStructureGetByFolderUseCase>();
+
 Log.Information("[Program] Registrar segurança e autenticação");
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -132,5 +141,8 @@ app.Run();
 // tenham efeito — um método privado nunca chamado é trimado pelo AOT junto com seus atributos.
 internal static class AotControllerPreservation
 {
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.DiskDrivesGetAll.DiskDrivesGetAllEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.DiskStructureGetByDrive.DiskStructureGetByDriveEndpoint))]
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All, typeof(Starter.Template.AOT.Api.Features.Query.DiskStructureGetByFolder.DiskStructureGetByFolderEndpoint))]
     internal static void PreserveControllers() { }
 }
