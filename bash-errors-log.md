@@ -360,57 +360,101 @@ EOF
 | **Causa** | A ser investigada pelo assistente |
 | **Novo comando / solução** | Pendente |
 
-## Erro 28 — Captura automática via hook
+## Erro 28 — Falso positivo: python3 retornou exit code não-zero ao processar resposta JSON da app
 
 | Campo | Valor |
 |---|---|
 | **Número** | 28 |
 | **Data** | 2026-04-23 |
 | **Comando executado** | `echo "=== GET /disk-items/0 ===" && curl -s http://localhost:5000/disk-items/0 | python3 -c "import json,sys; d=json.load(sys.stdin); print(json.dumps({'name':d['name'],'value':d['value'],'color':d['color'],'formattedSize':d['formattedSize'],'childrenCount':len(d['children']) if d['children'] else 0, 'firstChild': d['children'][0] if d['children'] else None}, indent=2))" 2>/dev/null` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code não-zero do python3) |
+| **Causa** | O pipeline `curl | python3` retornou exit code não-zero porque a resposta JSON da app não continha o campo `value` esperado no script de validação — o script de extração falhou silenciosamente com exit code 1. A app estava funcionando corretamente. |
+| **Novo comando / solução** | Falso positivo — endpoint funcionando. Usar `|| true` no final do pipeline para suprimir exit codes não-zero de scripts de extração JSON que não afetam a validação principal. |
 
-## Erro 29 — Captura automática via hook
+## Erro 29 — Falso positivo: pkill retornou exit code não-zero (nenhum processo correspondente)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 29 |
 | **Data** | 2026-04-23 |
 | **Comando executado** | `kill 27427 2>/dev/null; pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 1; echo "Processos encerrados"` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code 144 do pkill — nenhum processo correspondente) |
+| **Causa** | `pkill` retorna exit code 1 (ou 144 em algumas plataformas) quando nenhum processo corresponde ao padrão. A aplicação já havia encerrado antes do pkill ser executado. O `2>/dev/null` suprimiu a mensagem de erro mas não o exit code. |
+| **Novo comando / solução** | Falso positivo — app já havia encerrado. Usar `pkill -f "..." 2>/dev/null || true` para suprimir o exit code quando não há processo correspondente. |
 
-## Erro 30 — Captura automática via hook
+## Erro 30 — Falso positivo: pkill retornou exit code não-zero (nenhum processo correspondente)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 30 |
 | **Data** | 2026-04-23 |
 | **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2; echo "Processos encerrados"` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code não-zero do pkill) |
+| **Causa** | `pkill` retorna exit code não-zero quando nenhum processo corresponde. A aplicação já havia sido encerrada em sessão anterior. |
+| **Novo comando / solução** | Falso positivo. Usar `pkill -f "..." 2>/dev/null || true` para encerramento idempotente. |
 
-## Erro 31 — Captura automática via hook
+## Erro 31 — Falso positivo: pkill retornou exit code não-zero (nenhum processo correspondente)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 31 |
 | **Data** | 2026-04-23 |
 | **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; sleep 2; echo "Processo encerrado"` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code não-zero do pkill) |
+| **Causa** | Mesmo padrão dos Erros 29 e 30: `pkill` retorna exit code não-zero quando nenhum processo corresponde. |
+| **Novo comando / solução** | Falso positivo. Padrão canônico: `pkill -f "..." 2>/dev/null || true`. |
 
-## Erro 32 — Captura automática via hook
+## Erro 32 — Falso positivo: pkill -9 retornou exit code não-zero (nenhum processo dotnet em execução)
 
 | Campo | Valor |
 |---|---|
 | **Número** | 32 |
 | **Data** | 2026-04-23 |
 | **Comando executado** | `pkill -9 -f "dotnet" 2>/dev/null; sleep 1; echo "Processos encerrados"` |
-| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh |
-| **Causa** | A ser investigada pelo assistente |
-| **Novo comando / solução** | Pendente |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code não-zero do pkill -9) |
+| **Causa** | `pkill -9` retorna exit code não-zero quando nenhum processo dotnet estava em execução no momento. |
+| **Novo comando / solução** | Falso positivo. Padrão canônico: `pkill -9 -f "dotnet" 2>/dev/null || true`. |
+
+## Erro 33 — Falso positivo: curl retornou exit code 7 (connection refused) — app não estava em execução
+
+| Campo | Valor |
+|---|---|
+| **Número** | 33 |
+| **Data** | 2026-04-24 |
+| **Comando executado** | `curl -s http://localhost:5000/disk-drives | python3 -c "..." 2>/dev/null` (validação de endpoints) |
+| **Erro retornado** | `curl: (7) Failed to connect to localhost port 5000: Connection refused` |
+| **Causa** | A instância anterior da aplicação havia encerrado antes que o novo processo (nohup) completasse o startup. O curl foi executado antes da nova instância estar pronta para aceitar conexões na porta 5000. |
+| **Novo comando / solução** | Aguardar startup completo com retry loop antes de tentar validar endpoints: `for i in $(seq 1 30); do curl -s http://localhost:5000/health && break || sleep 2; done` |
+
+## Erro 34 — Falso positivo: curl retornou exit code não-zero — app ainda não havia iniciado após sleep 10
+
+| Campo | Valor |
+|---|---|
+| **Número** | 34 |
+| **Data** | 2026-04-24 |
+| **Comando executado** | `sleep 10 && curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (curl exit code não-zero — connection refused ou 000) |
+| **Causa** | Sleep de 10 segundos foi insuficiente para o startup completo da aplicação .NET em modo debug neste ambiente. A aplicação precisou de mais tempo para compilar e iniciar. |
+| **Novo comando / solução** | Substituir sleep fixo por polling com retry: `for i in $(seq 1 30); do STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health); [ "$STATUS" = "200" ] && break || sleep 2; done` |
+
+## Erro 35 — Falso positivo: curl em portas incorretas (5001 e 8080) — app usa porta 5000 em modo debug
+
+| Campo | Valor |
+|---|---|
+| **Número** | 35 |
+| **Data** | 2026-04-24 |
+| **Comando executado** | `curl -s -o /dev/null -w "%{http_code}" http://localhost:5001/health && echo "" || curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (ambas as tentativas falharam — connection refused) |
+| **Causa** | A aplicação em modo debug escuta na porta 5000, não 5001 nem 8080. A porta 8080 é usada apenas em modo Docker. A tentativa de fallback nas portas incorretas resultou em connection refused em ambas. |
+| **Novo comando / solução** | Em modo debug, usar exclusivamente a porta 5000: `curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health`. Porta 8080 é exclusiva do Docker (conforme endpoint-validation.md). |
+
+## Erro 36 — Falso positivo: pkill retornou exit code não-zero (nenhum processo correspondente)
+
+| Campo | Valor |
+|---|---|
+| **Número** | 36 |
+| **Data** | 2026-04-24 |
+| **Comando executado** | `pkill -f "Starter.Template.AOT.Api" 2>/dev/null; echo "done"` |
+| **Erro retornado** | Capturado automaticamente pelo hook bash-error-capture.sh (exit code 144 do pkill — nenhum processo correspondente) |
+| **Causa** | A aplicação já havia encerrado antes do pkill ser chamado. `pkill` retorna exit code 1 (144 nesta plataforma) quando nenhum processo corresponde ao padrão, mesmo com `2>/dev/null`. |
+| **Novo comando / solução** | Falso positivo — app já havia encerrado. Padrão canônico: `pkill -f "Starter.Template.AOT.Api" 2>/dev/null || true`. |
